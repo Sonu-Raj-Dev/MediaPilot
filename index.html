@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="MediaPilot online tools for video, images, and file conversion.">
+  <title>MediaPilot — Online tools</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="navVideo">Video Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button><span class="account-icon">◎</span><span data-i18n="signIn">Sign In</span></div>
+    </div>
+  </header>
+
+  <main id="homeView" class="home-view">
+    <section class="home-hero">
+      <div class="hero-brand"><span class="brand-dots large" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></div>
+      <h1 data-i18n="homeTagline">Simple online tools for video, images, and file conversion</h1>
+    </section>
+
+    <section class="tool-index" id="video-tools">
+      <h2 data-i18n="videoTools">Video Tools</h2>
+      <div class="tool-columns single">
+        <div class="tool-column">
+          <a class="tool-link" href="/remove-logo"><span class="list-icon">⌕</span><span data-i18n="removeLogo">Remove Logo from Video</span></a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <main id="toolView" class="tool-view is-hidden">
+    <section class="tool-page-hero">
+      <h1 data-i18n="toolTitle">Remove Logo from Video</h1>
+      <p data-i18n="toolSubtitle">Easily remove logos and watermarks from video files online</p>
+      <div class="tool-upload" id="toolUploadHero">
+        <label class="dropzone" id="dropzone" for="videoInput" tabindex="0">
+          <input id="videoInput" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-msvideo,video/x-matroska,.mp4,.mov,.m4v,.webm,.avi,.mkv,.wmv">
+          <span class="choose-file-button"><span data-i18n="chooseFile">Choose File</span><b>⌄</b></span>
+          <span class="drop-hint"><span class="download-arrow">⇩</span> <span data-i18n="dropFile">or drop a file here</span></span>
+        </label>
+        <div class="asset-card is-hidden" id="assetCard">
+          <div class="asset-thumb"><span id="assetThumbLetter">V</span></div>
+          <div class="asset-copy"><strong id="assetName">source.mp4</strong><span id="assetMeta">1920 × 1080 · 00:00</span></div>
+          <button class="icon-button" id="replaceButton" type="button" aria-label="Replace video" title="Replace video">↻</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Watermark removal steps">
+      <div class="steps-bar">
+        <div class="step-item active"><span>1</span><strong data-i18n="stepUpload">Upload video</strong></div><i></i><div class="step-item active"><span>2</span><strong data-i18n="stepMark">Mark watermark</strong></div><i></i><div class="step-item"><span>3</span><strong data-i18n="stepDownload">Download result</strong></div>
+      </div>
+      <div class="editing-grid">
+        <section class="preview-panel">
+          <div class="preview-topline"><div><p class="panel-eyebrow" data-i18n="stepTwo">Step 2</p><h2 data-i18n="selectArea">Select the watermark area</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span data-i18n="readyToMark">Ready to mark</span></div></div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <div class="empty-preview" id="emptyPreview"><span class="empty-stage-icon">▧</span><span data-i18n="uploadToPreview">Upload a video to see its preview</span></div>
+            <canvas id="frameCanvas" class="is-hidden" aria-label="Video frame preview. Draw selection rectangles here."></canvas>
+            <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div><div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
+          </div>
+          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span data-i18n="dragToMark">Click and drag on the frame to mark an area</span></div><div class="frame-readout" id="frameReadout">—</div></div>
+          <div class="processing-card is-hidden" id="processingCard"><div class="processing-head"><div class="processing-spinner"><span></span></div><div><strong id="processingTitle" data-i18n="cleaningVideo">Cleaning your video</strong><span id="processingMessage" data-i18n="preparingFrames">Preparing frames…</span></div><output id="progressValue">0%</output></div><div class="progress-track"><span id="progressBar"></span></div></div>
+          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong data-i18n="cleanedReady">Cleaned video ready</strong><span id="resultMeta" data-i18n="exportReady">Your export is ready to review.</span></div><a class="download-button" id="downloadButton" href="#" download><span data-i18n="downloadMp4">Download MP4</span><b>⇩</b></a></div><video id="resultVideo" controls playsinline></video></div>
+        </section>
+
+        <aside class="control-panel">
+          <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2 data-i18n="markWatermark">Mark the watermark</h2><p data-i18n="drawEveryPosition">Draw a box around every position</p></div></div><div class="zone-actions"><button class="text-button" id="presetButton" type="button">＋ <span data-i18n="lowerCorners">Lower corners</span></button><button class="text-button" id="topPresetButton" type="button">＋ <span data-i18n="topCorners">Top corners</span></button><button class="text-button subtle" id="clearButton" type="button" data-i18n="clearAll">Clear all</button></div><div class="zones-list" id="zonesList"><div class="zones-empty" id="zonesEmpty"><span>＋</span><span data-i18n="selectionsHere">Selections will appear here</span></div></div><p class="zone-note" data-i18n="fixedSelections">Selections stay fixed across the full video.</p></div>
+          <div class="step-card"><div class="step-card-heading"><span>3</span><div><h2 data-i18n="chooseFinish">Choose a finish</h2><p data-i18n="leastAggressive">Use the least aggressive option</p></div></div><div class="mode-grid" role="radiogroup" aria-label="Cleanup method"><label class="mode-option active"><input type="radio" name="mode" value="inpaint" checked><span class="mode-symbol">✎</span><span><strong data-i18n="reconstruct">Reconstruct</strong><small data-i18n="cleanBackgrounds">Best for clean backgrounds</small></span><span class="radio-dot"></span></label><label class="mode-option"><input type="radio" name="mode" value="blur"><span class="mode-symbol">≋</span><span><strong data-i18n="soften">Soften</strong><small data-i18n="subtleBlur">Subtle blur over the mark</small></span><span class="radio-dot"></span></label><label class="mode-option"><input type="radio" name="mode" value="pixelate"><span class="mode-symbol">▦</span><span><strong data-i18n="pixelate">Pixelate</strong><small data-i18n="unreadable">Make the area unreadable</small></span><span class="radio-dot"></span></label></div><div class="slider-row"><div class="slider-label"><span data-i18n="maskExpansion">Mask expansion</span><output id="strengthValue">6 px</output></div><input id="strengthSlider" type="range" min="1" max="20" value="6" step="1"><div class="slider-hints"><span data-i18n="precise">Precise</span><span data-i18n="moreCoverage">More coverage</span></div></div><button class="primary-button" id="processButton" type="button" disabled><span data-i18n="cleanVideo">Clean this video</span><b>→</b></button><p class="legal-note" data-i18n="legalNote">Use this only on videos you own or have permission to edit. Original audio is restored when available.</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle" data-i18n="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" data-i18n-placeholder="search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+        <button class="language-option" type="button" data-code="ZH-CN" data-name="简体中文"><span class="language-code">cn</span><span>简体中文</span></button>
+        <button class="language-option" type="button" data-code="ES" data-name="Español"><span class="language-code">es</span><span>Español</span></button>
+        <button class="language-option" type="button" data-code="PT" data-name="Português"><span class="language-code">pt</span><span>Português</span></button>
+        <button class="language-option" type="button" data-code="IT" data-name="Italiano"><span class="language-code">it</span><span>Italiano</span></button>
+        <button class="language-option" type="button" data-code="DE" data-name="Deutsch"><span class="language-code">de</span><span>Deutsch</span></button>
+        <button class="language-option" type="button" data-code="FR" data-name="Français"><span class="language-code">fr</span><span>Français</span></button>
+        <button class="language-option" type="button" data-code="RU" data-name="Русский"><span class="language-code">ru</span><span>Русский</span></button>
+        <button class="language-option" type="button" data-code="PL" data-name="Polski"><span class="language-code">pl</span><span>Polski</span></button>
+        <button class="language-option" type="button" data-code="TR" data-name="Türkçe"><span class="language-code">tr</span><span>Türkçe</span></button>
+        <button class="language-option" type="button" data-code="ID" data-name="Bahasa Indonesia"><span class="language-code">id</span><span>Bahasa Indonesia</span></button>
+        <button class="language-option" type="button" data-code="JA" data-name="日本語"><span class="language-code">ja</span><span>日本語</span></button>
+        <button class="language-option" type="button" data-code="KO" data-name="한국어"><span class="language-code">ko</span><span>한국어</span></button>
+        <button class="language-option" type="button" data-code="ZH-TW" data-name="繁體中文"><span class="language-code">tw</span><span>繁體中文</span></button>
+        <button class="language-option" type="button" data-code="VI" data-name="tiếng Việt"><span class="language-code">vi</span><span>tiếng Việt</span></button>
+        <button class="language-option" type="button" data-code="TH" data-name="ภาษาไทย"><span class="language-code">th</span><span>ภาษาไทย</span></button>
+      </div>
+      <div class="language-empty is-hidden" id="languageEmpty" data-i18n="noLanguages">No languages found</div>
+      <div class="language-divider"></div>
+      <p class="translation-note"><span data-i18n="translationError">Found a translation error?</span> <a href="mailto:hello@mediapilot.local" data-i18n="letUsKnow">Let us know</a></p>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
