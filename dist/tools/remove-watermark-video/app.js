@@ -11,7 +11,6 @@ const state = {
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
 
-const homeView = $('#homeView');
 const toolView = $('#toolView');
 const editingModule = $('#editingModule');
 const videoInput = $('#videoInput');
@@ -76,7 +75,7 @@ const ENGLISH_TRANSLATIONS = {
 
 const TRANSLATIONS = {
   EN: ENGLISH_TRANSLATIONS,
-  ES: { ...ENGLISH_TRANSLATIONS, navVideo: 'Herramientas de vídeo', signIn: 'Iniciar sesión', homeTagline: 'Herramientas online sencillas para vídeo, imágenes y conversión de archivos', videoTools: 'Herramientas de vídeo', removeLogo: 'Eliminar logotipo del vídeo', toolTitle: 'Eliminar logotipo del vídeo', toolSubtitle: 'Elimina fácilmente logotipos y marcas de agua de tus vídeos', chooseFile: 'Elegir archivo', dropFile: 'o suelta un archivo aquí', stepUpload: 'Subir vídeo', stepMark: 'Marcar marca de agua', stepDownload: 'Descargar resultado', stepTwo: 'Paso 2', selectArea: 'Selecciona el área de la marca de agua', readyToMark: 'Listo para marcar', uploadToPreview: 'Sube un vídeo para ver su vista previa', dragToMark: 'Haz clic y arrastra para marcar un área', markWatermark: 'Marca la marca de agua', drawEveryPosition: 'Dibuja un recuadro en cada posición', lowerCorners: 'Esquinas inferiores', topCorners: 'Esquinas superiores', clearAll: 'Borrar todo', selectionsHere: 'Las selecciones aparecerán aquí', fixedSelections: 'Las selecciones permanecen fijas durante todo el vídeo.', chooseFinish: 'Elige un acabado', leastAggressive: 'Usa la opción menos agresiva', reconstruct: 'Reconstruir', cleanBackgrounds: 'Mejor para fondos limpios', soften: 'Suavizar', subtleBlur: 'Desenfoque sutil sobre la marca', pixelate: 'Pixelar', unreadable: 'Haz que el área sea ilegible', maskExpansion: 'Expansión de máscara', precise: 'Preciso', moreCoverage: 'Más cobertura', cleanVideo: 'Limpiar este vídeo', legalNote: 'Usa esto solo en vídeos que poseas o tengas permiso para editar. El audio original se restaura cuando está disponible.', cleaningVideo: 'Limpiando tu vídeo', preparingFrames: 'Preparando fotogramas…', cleanedReady: 'Vídeo limpio listo', exportReady: 'Tu exportación está lista para revisar.', downloadMp4: 'Descargar MP4', languageTitle: 'Idioma', search: 'Buscar', noLanguages: 'No se encontraron idiomas', translationError: '¿Encontraste un error de traducción?', letUsKnow: 'Avísanos', footerTagline: 'Herramientas online para vídeo, imágenes y conversión de archivos' },
+  ES: { ...ENGLISH_TRANSLATIONS, navVideo: 'Herramientas de vídeo', signIn: 'Iniciar sesión', homeTagline: 'Herramientas online sencillas para vídeo, imágenes y conversión de archivos', videoTools: 'Herramientas de vídeo', removeLogo: 'Eliminar logotipo del vídeo', toolTitle: 'Eliminar logotipo del vídeo', toolSubtitle: 'Elimina fácilmente logotipos y marcas de agua de tus vídeos', chooseFile: 'Elegir archivo', dropFile: 'o suelta un archivo aquí', stepUpload: 'Subir vídeo', stepMark: 'Marcar marca de agua', stepDownload: 'Descargar resultado', stepTwo: 'Paso 2', selectArea: 'Selecciona el área de la marca de agua', readyToMark: 'Listo para marcar', uploadToPreview: 'Sube un vídeo para ver su vista previa', dragToMark: 'Haz clic y arrastra para marcar un área', markWatermark: 'Marca la marca de agua', drawEveryPosition: 'Dibuja un recuadro en cada posición', lowerCorners: 'Esquinas inferiores', topCorners: 'Esquinas superiores', clearAll: 'Borrar todo', selectionsHere: 'Las selecciones aparecerán aquí', fixedSelections: 'Las selecciones permanecen fijas durante todo el vídeo.', chooseFinish: 'Elige un acabado', leastAggressive: 'Usa la opción menos agresiva', reconstruct: 'Reconstruir', cleanBackgrounds: 'Mejor para fondos limpios', soften: 'Suavizar', subtleBlur: 'Desenfoque sutil sobre la marca', pixelate: 'Pixelar', unreadable: 'Haz que el área sea ilegible', maskExpansion: 'Expansión de máscara', precise: 'Preciso', moreCoverage: 'Más cobertura', cleanVideo: 'Limpiar este vídeo', legalNote: 'Usa esto solo en vídeos que poseas o tengas permiso para editar. El audio original se restaura cuando está disponible.', cleaningVideo: 'Limpiando tu vídeo', preparingFrames: 'Preparando fotogramas…', cleanedReady: 'Vídeo limpio listo', exportReady: 'Tu exportación está lista para revisar.', downloadMp4: 'Descargar MP4', languageTitle: 'Idioma', search: 'Buscar', noLanguages: 'No se encontraron idiomas', translationError: '¿Encontraste un error de traducción?', letUsKnow: 'A [truncated]', footerTagline: 'Herramientas online para vídeo, imágenes y conversión de archivos' },
   PT: { ...ENGLISH_TRANSLATIONS, navVideo: 'Ferramentas de vídeo', signIn: 'Entrar', homeTagline: 'Ferramentas online simples para vídeo, imagens e conversão de arquivos', videoTools: 'Ferramentas de vídeo', removeLogo: 'Remover logotipo do vídeo', toolTitle: 'Remover logotipo do vídeo', toolSubtitle: 'Remova logotipos e marcas d’água dos seus vídeos', chooseFile: 'Escolher arquivo', dropFile: 'ou arraste um arquivo aqui', stepUpload: 'Enviar vídeo', stepMark: 'Marcar marca d’água', stepDownload: 'Baixar resultado', selectArea: 'Selecione a área da marca d’água', readyToMark: 'Pronto para marcar', markWatermark: 'Marcar a marca d’água', lowerCorners: 'Cantos inferiores', topCorners: 'Cantos superiores', clearAll: 'Limpar tudo', chooseFinish: 'Escolha o acabamento', reconstruct: 'Reconstruir', soften: 'Suavizar', pixelate: 'Pixelizar', maskExpansion: 'Expansão da máscara', precise: 'Preciso', moreCoverage: 'Mais cobertura', cleanVideo: 'Limpar este vídeo', cleaningVideo: 'Limpando seu vídeo', cleanedReady: 'Vídeo limpo pronto', downloadMp4: 'Baixar MP4', languageTitle: 'Idioma', search: 'Pesquisar', footerTagline: 'Ferramentas online para vídeo, imagens e conversão de arquivos' },
   FR: { ...ENGLISH_TRANSLATIONS, navVideo: 'Outils vidéo', signIn: 'Connexion', homeTagline: 'Outils en ligne simples pour la vidéo, les images et la conversion de fichiers', videoTools: 'Outils vidéo', removeLogo: 'Supprimer le logo de la vidéo', toolTitle: 'Supprimer le logo de la vidéo', toolSubtitle: 'Supprimez facilement les logos et filigranes de vos vidéos', chooseFile: 'Choisir un fichier', dropFile: 'ou déposez un fichier ici', stepUpload: 'Importer la vidéo', stepMark: 'Marquer le filigrane', stepDownload: 'Télécharger le résultat', selectArea: 'Sélectionnez la zone du filigrane', readyToMark: 'Prêt à marquer', markWatermark: 'Marquer le filigrane', lowerCorners: 'Coins inférieurs', topCorners: 'Coins supérieurs', clearAll: 'Tout effacer', chooseFinish: 'Choisir le rendu', reconstruct: 'Reconstruire', soften: 'Adoucir', pixelate: 'Pixelliser', maskExpansion: 'Extension du masque', precise: 'Précis', moreCoverage: 'Plus de couverture', cleanVideo: 'Nettoyer cette vidéo', cleaningVideo: 'Nettoyage de votre vidéo', cleanedReady: 'Vidéo nettoyée prête', downloadMp4: 'Télécharger MP4', languageTitle: 'Langue', search: 'Rechercher', footerTagline: 'Outils en ligne pour vidéo, images et conversion de fichiers' },
   DE: { ...ENGLISH_TRANSLATIONS, navVideo: 'Video-Tools', signIn: 'Anmelden', homeTagline: 'Einfache Online-Tools für Video, Bilder und Dateikonvertierung', videoTools: 'Video-Tools', removeLogo: 'Logo aus Video entfernen', toolTitle: 'Logo aus Video entfernen', toolSubtitle: 'Logos und Wasserzeichen einfach aus Videos entfernen', chooseFile: 'Datei auswählen', dropFile: 'oder Datei hier ablegen', stepUpload: 'Video hochladen', stepMark: 'Wasserzeichen markieren', stepDownload: 'Ergebnis herunterladen', selectArea: 'Wasserzeichenbereich auswählen', readyToMark: 'Bereit zum Markieren', markWatermark: 'Wasserzeichen markieren', lowerCorners: 'Untere Ecken', topCorners: 'Obere Ecken', clearAll: 'Alles löschen', chooseFinish: 'Methode wählen', reconstruct: 'Rekonstruieren', soften: 'Weichzeichnen', pixelate: 'Pixeln', maskExpansion: 'Maskenerweiterung', precise: 'Präzise', moreCoverage: 'Mehr Abdeckung', cleanVideo: 'Video bereinigen', cleaningVideo: 'Video wird bereinigt', cleanedReady: 'Bereinigtes Video bereit', downloadMp4: 'MP4 herunterladen', languageTitle: 'Sprache', search: 'Suchen', footerTagline: 'Online-Tools für Video, Bilder und Dateikonvertierung' },
@@ -109,7 +108,7 @@ function translatePage(code = 'EN') {
   });
 }
 
-function openLanguageSelector() { 
+function openLanguageSelector() {
   languageModal.classList.remove('is-hidden');
   languageButton.setAttribute('aria-expanded', 'true');
   languageSearch.value = '';
@@ -139,21 +138,15 @@ function chooseLanguage(option) {
   activeLanguageCode = option.dataset.code;
   currentLanguage.textContent = option.dataset.code.split('-')[0];
   translatePage(option.dataset.code);
-  try { localStorage.setItem('mediapilot-language', option.dataset.code); } catch (_) { /* storage can be disabled */ }
+  try { localStorage.setItem('mediapilot-language', option.dataset.code); } catch (_) { }
   closeLanguageSelector();
 }
 
 function restoreLanguage() {
   let stored = 'EN';
-  try { stored = localStorage.getItem('mediapilot-language') || 'EN'; } catch (_) { /* storage can be disabled */ }
+  try { stored = localStorage.getItem('mediapilot-language') || 'EN'; } catch (_) { }
   const option = languageOptions.find((item) => item.dataset.code === stored) || languageOptions[0];
   chooseLanguage(option);
-}
-
-function showRoute() {
-  const toolRoute = window.location.pathname === '/remove-logo' || window.location.pathname === '/watermark-remover' || window.location.pathname === '/tools/remove-watermark-video' || window.location.hash === '#remove-logo';
-  homeView.classList.toggle('is-hidden', toolRoute);
-  toolView.classList.toggle('is-hidden', !toolRoute);
 }
 
 function setPreviewStatus(label, kind = '') {
@@ -470,8 +463,6 @@ function requestDownload(event) {
     showToast('Process a video before downloading.', true);
     return;
   }
-  // Keep this as a native, user-initiated link. The previous Blob approach could be
-  // blocked by the embedded preview sandbox after its async fetch completed.
   downloadButton.href = url;
   downloadButton.setAttribute('download', downloadButton.dataset.fileName || 'cleaned-video.mp4');
   showToast('Download requested — check your browser downloads.');
@@ -495,7 +486,6 @@ async function pollProcessing() {
       processingCard.classList.add('is-hidden');
       resultCard.classList.remove('is-hidden');
       const cacheBust = `?t=${Date.now()}`;
-      // The MP4 remains the download, while the VP8 WebM copy is used for reliable browser playback.
       resultVideo.src = `${job.previewUrl || job.outputUrl}${cacheBust}`;
       resultVideo.load();
       const downloadUrl = `${job.outputUrl}?download=1`;
@@ -520,7 +510,6 @@ async function pollProcessing() {
   state.pollTimer = window.setTimeout(pollProcessing, 550);
 }
 
-// Upload interactions.
 videoInput.addEventListener('change', (event) => uploadVideo(event.target.files?.[0]));
 replaceButton.addEventListener('click', () => {
   dropzone.classList.remove('is-hidden');
@@ -542,7 +531,6 @@ dropzone.addEventListener('keydown', (event) => {
 }));
 dropzone.addEventListener('drop', (event) => uploadVideo(event.dataTransfer.files?.[0]));
 
-// Canvas marking interactions.
 frameCanvas.addEventListener('pointerdown', startDrawing);
 frameCanvas.addEventListener('pointermove', moveDrawing);
 frameCanvas.addEventListener('pointerup', finishDrawing);
@@ -571,9 +559,8 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !languageModal.classList.contains('is-hidden')) closeLanguageSelector();
 });
 
-showRoute();
 restoreLanguage();
-window.addEventListener('popstate', showRoute);
+window.addEventListener('popstate', () => {});
 updateStrength();
 updateModeStyles();
 renderZones();

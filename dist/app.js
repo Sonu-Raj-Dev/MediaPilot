@@ -151,7 +151,7 @@ function restoreLanguage() {
 }
 
 function showRoute() {
-  const toolRoute = window.location.pathname === '/remove-logo' || window.location.pathname === '/watermark-remover' || window.location.hash === '#remove-logo';
+  const toolRoute = window.location.pathname === '/remove-logo' || window.location.pathname === '/watermark-remover' || window.location.pathname === '/tools/remove-watermark-video' || window.location.hash === '#remove-logo';
   homeView.classList.toggle('is-hidden', toolRoute);
   toolView.classList.toggle('is-hidden', !toolRoute);
 }

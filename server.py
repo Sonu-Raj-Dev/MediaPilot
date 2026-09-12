@@ -365,8 +365,21 @@ class AppHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
         path = parsed.path
-        if path in {"/", "/index.html", "/remove-logo", "/watermark-remover"}:
+        if path in {"/", "/index.html"}:
             return self._serve_static("index.html", "text/html; charset=utf-8")
+        if path in {"/remove-logo", "/watermark-remover", "/tools/remove-watermark-video", "/tools/remove-watermark-video/index.html"}:
+            return self._serve_static("tools/remove-watermark-video/index.html", "text/html; charset=utf-8")
+        if path.startswith("/tools/"):
+            relative = path.lstrip("/")
+            candidate = ROOT / relative
+            if candidate.is_dir():
+                index_file = candidate / "index.html"
+                if index_file.exists():
+                    return self._serve_static(str(index_file.relative_to(ROOT)).replace('\\', '/'), "text/html; charset=utf-8")
+            if candidate.exists() and candidate.is_file():
+                content_type = mimetypes.guess_type(candidate.name)[0] or "application/octet-stream"
+                return self._send_bytes(candidate.read_bytes(), content_type)
+            return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
         if path == "/app.js":
             return self._serve_static("app.js", "text/javascript; charset=utf-8")
         if path == "/styles.css":
