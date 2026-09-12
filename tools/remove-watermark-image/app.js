@@ -15,6 +15,7 @@ const beforePreview = document.getElementById('beforePreview');
 const afterPreview = document.getElementById('afterPreview');
 const downloadLink = document.getElementById('downloadLink');
 
+
 const ctx = imageCanvas.getContext('2d');
 
 const state = {
