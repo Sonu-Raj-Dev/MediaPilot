@@ -1,0 +1,16 @@
+# Local runtime data
+runtime/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local editor files
+.vscode/
+
+# Cloudflare / build output
+.wrangler/
+public/
+
+# Local vendor FFmpeg binary is kept for the app runtime.
+# Do not ignore vendor/imageio_ffmpeg/ when needed locally.
