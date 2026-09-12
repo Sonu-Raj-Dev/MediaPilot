@@ -10,7 +10,7 @@ __pycache__/
 
 # Cloudflare / build output
 .wrangler/
-public/
+node_modules/
 
-# Local vendor FFmpeg binary is kept for the app runtime.
-# Do not ignore vendor/imageio_ffmpeg/ when needed locally.
+# Keep the actual frontend bundle separate from the local Python runtime files.
+# The FFmpeg vendor directory is required for local processing and must remain available.
