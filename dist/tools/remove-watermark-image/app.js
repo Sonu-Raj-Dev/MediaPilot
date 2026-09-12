@@ -17,6 +17,7 @@ const downloadLink = document.getElementById('downloadLink');
 
 const ctx = imageCanvas.getContext('2d');
 
+
 const state = {
   image: null,
   selection: null,
