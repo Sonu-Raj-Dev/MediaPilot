@@ -3,8 +3,8 @@ const state = {
   image: null,
   regions: [],
   drawing: null,
-  processId: null,
-  pollTimer: null,
+  sourceFile: null,
+  resultUrl: null,
   processing: false,
 };
 
@@ -66,7 +66,7 @@ function showToast(message, isError = false) {
 }
 
 const ENGLISH_TRANSLATIONS = {
-  navVideo: 'Video Tools', signIn: 'Sign In', homeTagline: 'Simple online tools for video, images, and file conversion', videoTools: 'Video Tools', removeLogo: 'Remove Logo from Video',
+  navVideo: 'Video Tools', signIn: 'Sign In', homeTagline: 'Simple online tools for video, images, and file conversion', videoTools: 'Video Tools', imageTools: 'Image Tools', backToTools: 'Back to all tools', removeLogo: 'Remove Logo from Video',
   toolTitle: 'Remove Logo from Video', toolSubtitle: 'Easily remove logos and watermarks from video files online', chooseFile: 'Choose File', dropFile: 'or drop a file here',
   stepUpload: 'Upload video', stepMark: 'Mark watermark', stepDownload: 'Download result', stepTwo: 'Step 2', selectArea: 'Select the watermark area', readyToMark: 'Ready to mark', uploadToPreview: 'Upload a video to see its preview', dragToMark: 'Click and drag on the frame to mark an area',
   markWatermark: 'Mark the watermark', drawEveryPosition: 'Draw a box around every position', lowerCorners: 'Lower corners', topCorners: 'Top corners', clearAll: 'Clear all', selectionsHere: 'Selections will appear here', fixedSelections: 'Selections stay fixed across the full video.',
@@ -151,9 +151,13 @@ function restoreLanguage() {
 }
 
 function showRoute() {
-  const toolRoute = window.location.pathname === '/remove-logo' || window.location.pathname === '/watermark-remover' || window.location.pathname === '/tools/remove-watermark-video' || window.location.hash === '#remove-logo';
-  homeView.classList.toggle('is-hidden', toolRoute);
-  toolView.classList.toggle('is-hidden', !toolRoute);
+  // Trailing slashes are stripped so /tools/remove-watermark-video/ matches too.
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  const toolPaths = ['/remove-logo', '/watermark-remover', '/tools/remove-watermark-video'];
+  // The standalone tool pages ship only the tool view, so they are always on the tool route.
+  const toolRoute = !homeView || toolPaths.includes(path) || window.location.hash === '#remove-logo';
+  homeView?.classList.toggle('is-hidden', toolRoute);
+  toolView?.classList.toggle('is-hidden', !toolRoute);
 }
 
 function setPreviewStatus(label, kind = '') {
@@ -193,6 +197,208 @@ function loadPreviewImage(dataUrl) {
     image.onerror = () => reject(new Error('The first frame could not be displayed.'));
     image.src = dataUrl;
   });
+}
+
+// ---------------------------------------------------------------------------
+// Video cleaning runs entirely in the browser through ffmpeg.wasm, so the site
+// is static and needs no backend.
+// ponytail: single-threaded core, which avoids the COOP/COEP headers the
+// multi-threaded build requires. Switch to @ffmpeg/core-mt plus a Cloudflare
+// `_headers` file if processing speed becomes the complaint.
+const FFMPEG_DIST = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.15/dist/esm';
+const FFMPEG_CORE = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm';
+
+let enginePromise = null;
+let progressSink = null;
+let lastEngineLog = '';
+
+// Resolves to a loaded ffmpeg.wasm instance. The ~31 MB core downloads once and is
+// served from the browser cache afterwards.
+function getEngine(onMessage) {
+  if (!enginePromise) {
+    enginePromise = (async () => {
+      onMessage?.('Loading the video engine (one-time download)…');
+      const { FFmpeg } = await import(`${FFMPEG_DIST}/index.js`);
+      const engine = new FFmpeg();
+      engine.on('progress', (event) => progressSink?.(event.progress));
+      engine.on('log', (event) => { lastEngineLog = event.message; });
+      // A worker cannot be constructed from another origin, so it is started from a same-origin
+      // blob that re-imports the real one. Copying worker.js into the blob instead would break
+      // its relative imports, which would resolve against the blob URL.
+      const workerShim = URL.createObjectURL(
+        new Blob([`import "${FFMPEG_DIST}/worker.js";`], { type: 'text/javascript' })
+      );
+      try {
+        await engine.load({
+          classWorkerURL: workerShim,
+          coreURL: `${FFMPEG_CORE}/ffmpeg-core.js`,
+          wasmURL: `${FFMPEG_CORE}/ffmpeg-core.wasm`,
+        });
+      } finally {
+        URL.revokeObjectURL(workerShim);
+      }
+      return engine;
+    })();
+    enginePromise.catch(() => { enginePromise = null; });
+  }
+  return enginePromise;
+}
+
+function extensionOf(name) {
+  const match = /\.[a-z0-9]+$/i.exec(name || '');
+  return match ? match[0].toLowerCase() : '.mp4';
+}
+
+async function runEngine(engine, args) {
+  lastEngineLog = '';
+  const code = await engine.exec(args);
+  if (code !== 0) throw new Error(lastEngineLog || 'The video engine could not process this file.');
+}
+
+// Reads dimensions and a preview frame with the built-in decoder. Rejects for containers
+// the browser cannot play, which the ffmpeg fallback below then handles.
+function readVideoMetadata(file) {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement('video');
+    const url = URL.createObjectURL(file);
+    let settled = false;
+    const finish = (action) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      URL.revokeObjectURL(url);
+      action();
+    };
+    const capture = () => {
+      if (!video.videoWidth || !video.videoHeight) {
+        finish(() => reject(new Error('This video cannot be decoded by the browser.')));
+        return;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0);
+      const preview = canvas.toDataURL('image/jpeg', 0.85);
+      const duration = Number.isFinite(video.duration) ? video.duration : 0;
+      finish(() => resolve({ width: video.videoWidth, height: video.videoHeight, duration, preview }));
+    };
+    // Screen and camera recordings report an infinite duration and may never fire `seeked`,
+    // so fall back to whichever frame has decoded by then.
+    const timer = window.setTimeout(capture, 4000);
+    video.preload = 'metadata';
+    video.muted = true;
+    video.onloadeddata = () => {
+      // The very first frame is often black, so sample a little way in when that is possible.
+      if (Number.isFinite(video.duration) && video.duration > 1) video.currentTime = Math.min(0.5, video.duration / 3);
+      else capture();
+    };
+    video.onseeked = capture;
+    video.onerror = () => finish(() => reject(new Error('This video cannot be decoded by the browser.')));
+    video.src = url;
+  });
+}
+
+// Fallback for AVI, MKV and WMV, which browsers generally refuse to decode.
+async function readVideoMetadataWithEngine(file, onMessage) {
+  const engine = await getEngine(onMessage);
+  const input = `probe${extensionOf(file.name)}`;
+  onMessage?.('Reading the first frame…');
+  await engine.writeFile(input, new Uint8Array(await file.arrayBuffer()));
+  try {
+    await runEngine(engine, ['-i', input, '-frames:v', '1', '-q:v', '3', 'probe.jpg']);
+    const jpeg = await engine.readFile('probe.jpg');
+    const preview = await blobToDataUrl(new Blob([jpeg], { type: 'image/jpeg' }));
+    const image = await loadPreviewImage(preview);
+    return { width: image.naturalWidth, height: image.naturalHeight, duration: 0, preview };
+  } finally {
+    await engine.deleteFile(input).catch(() => {});
+    await engine.deleteFile('probe.jpg').catch(() => {});
+  }
+}
+
+function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error('The first frame could not be read.'));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function clampInt(value, min, max) {
+  return Math.max(min, Math.min(max, Math.round(value)));
+}
+
+// Turns the normalised selection boxes into pixel rectangles that sit strictly inside
+// the frame, which delogo and overlay both require.
+function toPixelBoxes(regions, mode, strength, width, height) {
+  const pad = mode === 'inpaint' ? Math.round(strength / 2) : 0;
+  const boxes = [];
+  for (const region of regions) {
+    // Drop empty selections here; clamping below would otherwise inflate them to 2px.
+    if (!(region.w * width >= 2) || !(region.h * height >= 2)) continue;
+    const x = clampInt(region.x * width - pad, 1, width - 3);
+    const y = clampInt(region.y * height - pad, 1, height - 3);
+    const w = clampInt(region.w * width + pad * 2, 2, width - x - 1);
+    const h = clampInt(region.h * height + pad * 2, 2, height - y - 1);
+    boxes.push({ x, y, w, h });
+  }
+  if (!boxes.length) throw new Error('Those selection zones fall outside the video frame.');
+  return boxes;
+}
+
+function buildFilterGraph(boxes, mode, strength) {
+  if (mode === 'inpaint') {
+    // delogo interpolates each box from the pixels around it, the closest match to the
+    // OpenCV inpaint the old backend used.
+    return `[0:v]${boxes.map((b) => `delogo=x=${b.x}:y=${b.y}:w=${b.w}:h=${b.h}`).join(',')}[v]`;
+  }
+  // blur and pixelate operate on a crop of each box that is composited back over the frame.
+  const block = Math.max(4, Math.min(32, 52 - strength));
+  const parts = [`[0:v]split=${boxes.length + 1}[bg]${boxes.map((_, i) => `[c${i}]`).join('')}`];
+  boxes.forEach((b, i) => {
+    const effect = mode === 'blur'
+      ? `boxblur=${Math.max(2, Math.round(strength * 0.9))}:2`
+      : `scale=${Math.max(1, Math.round(b.w / block))}:${Math.max(1, Math.round(b.h / block))},scale=${b.w}:${b.h}:flags=neighbor`;
+    parts.push(`[c${i}]crop=${b.w}:${b.h}:${b.x}:${b.y},${effect}[e${i}]`);
+  });
+  boxes.forEach((b, i) => {
+    const base = i === 0 ? '[bg]' : `[s${i - 1}]`;
+    const out = i === boxes.length - 1 ? '[v]' : `[s${i}]`;
+    parts.push(`${base}[e${i}]overlay=${b.x}:${b.y}${out}`);
+  });
+  return parts.join(';');
+}
+
+async function cleanVideo(file, { regions, mode, strength, width, height, onMessage, onProgress }) {
+  const boxes = toPixelBoxes(regions, mode, strength, width, height);
+  const graph = buildFilterGraph(boxes, mode, strength);
+  const engine = await getEngine(onMessage);
+  const input = `source${extensionOf(file.name)}`;
+  onMessage?.('Reading your video…');
+  await engine.writeFile(input, new Uint8Array(await file.arrayBuffer()));
+  progressSink = onProgress;
+  try {
+    onMessage?.('Cleaning frames…');
+    await runEngine(engine, [
+      '-i', input,
+      '-fps_mode', 'passthrough',
+      '-filter_complex', graph,
+      '-map', '[v]',
+      // The audio track is copied straight through when the source has one.
+      '-map', '0:a?',
+      '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '23', '-pix_fmt', 'yuv420p',
+      '-c:a', 'aac',
+      '-movflags', '+faststart',
+      'cleaned.mp4',
+    ]);
+    const data = await engine.readFile('cleaned.mp4');
+    return new Blob([data], { type: 'video/mp4' });
+  } finally {
+    progressSink = null;
+    await engine.deleteFile(input).catch(() => {});
+    await engine.deleteFile('cleaned.mp4').catch(() => {});
+  }
 }
 
 function clamp(value, min = 0, max = 1) {
@@ -311,17 +517,18 @@ async function uploadVideo(file) {
   assetName.textContent = 'Reading video…';
   assetMeta.textContent = 'Inspecting source frame';
   processButton.disabled = true;
-  const form = new FormData();
-  form.append('file', file);
-
   try {
-    const response = await fetch('/api/upload', { method: 'POST', body: form });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Upload failed.');
-    state.image = await loadPreviewImage(data.preview);
+    let meta;
+    try {
+      meta = await readVideoMetadata(file);
+    } catch {
+      meta = await readVideoMetadataWithEngine(file, (text) => setPreviewStatus(text, 'working'));
+    }
+    state.sourceFile = file;
+    state.image = await loadPreviewImage(meta.preview);
     state.regions = [];
     state.drawing = null;
-    setAssetUi(data, file);
+    setAssetUi({ fileName: file.name, ...meta }, file);
     renderZones();
     drawFrame();
     resultCard.classList.add('is-hidden');
@@ -329,6 +536,7 @@ async function uploadVideo(file) {
     showToast('Video loaded. Draw boxes around each watermark.');
   } catch (error) {
     state.asset = null;
+    state.sourceFile = null;
     state.image = null;
     assetCard.classList.add('is-hidden');
     dropzone.classList.remove('is-hidden');
@@ -387,12 +595,14 @@ function startDrawing(event) {
 
 function moveDrawing(event) {
   if (!state.drawing) return;
+  event.preventDefault();
   state.drawing.current = normalizedPointer(event);
   drawFrame();
 }
 
 function finishDrawing(event) {
   if (!state.drawing) return;
+  event.preventDefault();
   const point = normalizedPointer(event);
   const start = state.drawing.start;
   state.drawing = null;
@@ -421,7 +631,6 @@ async function beginProcessing() {
     return;
   }
   state.processing = true;
-  state.processId = null;
   updateProcessButton();
   processButton.querySelector('span').textContent = t('cleaningVideo', 'Cleaning…');
   processingCard.classList.remove('is-hidden');
@@ -434,28 +643,49 @@ async function beginProcessing() {
 
   const selectedMode = document.querySelector('input[name="mode"]:checked')?.value || 'inpaint';
   try {
-    const response = await fetch('/api/process', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        assetId: state.asset.id,
-        regions: state.regions,
-        mode: selectedMode,
-        strength: Number(strengthSlider.value),
-      }),
+    const blob = await cleanVideo(state.sourceFile, {
+      regions: state.regions,
+      mode: selectedMode,
+      strength: Number(strengthSlider.value),
+      width: state.asset.width,
+      height: state.asset.height,
+      onMessage: (text) => { processingMessage.textContent = text; },
+      onProgress: (ratio) => {
+        const percent = Math.max(0, Math.min(100, Math.round((ratio || 0) * 100)));
+        progressBar.style.width = `${percent}%`;
+        progressValue.textContent = `${percent}%`;
+      },
     });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'Could not start processing.');
-    state.processId = data.processId;
-    pollProcessing();
+    showResult(blob);
   } catch (error) {
-    finishWithError(error.message || 'Could not start processing.');
+    finishWithError(error.message || 'Could not clean this video.');
   }
+}
+
+function showResult(blob) {
+  state.processing = false;
+  processButton.querySelector('span').textContent = t('cleanVideo', 'Clean again');
+  updateProcessButton();
+  processingCard.classList.add('is-hidden');
+  resultCard.classList.remove('is-hidden');
+  progressBar.style.width = '100%';
+  progressValue.textContent = '100%';
+  if (state.resultUrl) URL.revokeObjectURL(state.resultUrl);
+  state.resultUrl = URL.createObjectURL(blob);
+  resultVideo.src = state.resultUrl;
+  resultVideo.load();
+  const name = `cleaned-${(state.asset?.fileName || 'video').replace(/\.[^.]+$/, '')}.mp4`;
+  downloadButton.href = state.resultUrl;
+  downloadButton.dataset.downloadUrl = state.resultUrl;
+  downloadButton.dataset.fileName = name;
+  downloadButton.setAttribute('download', name);
+  resultMeta.textContent = `MP4 · ${formatSize(blob.size)} · audio kept when the source had it`;
+  setPreviewStatus(t('cleanedReady', 'Clean video ready'), 'ready');
+  showToast('Done — your cleaned video is ready to review.');
 }
 
 function finishWithError(message) {
   state.processing = false;
-  state.processId = null;
   processingCard.classList.add('is-hidden');
   processButton.querySelector('span').textContent = 'Clean this video';
   updateProcessButton();
@@ -477,48 +707,6 @@ function requestDownload(event) {
   showToast('Download requested — check your browser downloads.');
 }
 
-async function pollProcessing() {
-  if (!state.processId) return;
-  try {
-    const response = await fetch(`/api/status/${state.processId}`);
-    const job = await response.json();
-    if (!response.ok) throw new Error(job.error || 'Processing status unavailable.');
-    const percent = Math.max(0, Math.min(100, Math.round((job.progress || 0) * 100)));
-    progressBar.style.width = `${percent}%`;
-    progressValue.textContent = `${percent}%`;
-    processingMessage.textContent = job.message || 'Working through frames…';
-
-    if (job.state === 'complete') {
-      state.processing = false;
-      processButton.querySelector('span').textContent = t('cleanVideo', 'Clean again');
-      updateProcessButton();
-      processingCard.classList.add('is-hidden');
-      resultCard.classList.remove('is-hidden');
-      const cacheBust = `?t=${Date.now()}`;
-      // The MP4 remains the download, while the VP8 WebM copy is used for reliable browser playback.
-      resultVideo.src = `${job.previewUrl || job.outputUrl}${cacheBust}`;
-      resultVideo.load();
-      const downloadUrl = `${job.outputUrl}?download=1`;
-      const downloadName = job.outputName || 'cleaned-video.mp4';
-      downloadButton.href = downloadUrl;
-      downloadButton.dataset.downloadUrl = downloadUrl;
-      downloadButton.dataset.fileName = downloadName;
-      downloadButton.setAttribute('download', downloadName);
-      resultMeta.textContent = `${job.frames ? `${job.frames.toLocaleString()} frames · ` : ''}${job.audioPresent ? 'original audio preserved' : 'no source audio found'}`;
-      setPreviewStatus(t('cleanedReady', 'Clean video ready'), 'ready');
-      showToast(job.audioPresent ? 'Done — video cleaned with original audio.' : 'Done — your cleaned video is ready to review.');
-      return;
-    }
-    if (job.state === 'error') {
-      finishWithError(job.message || 'Processing failed.');
-      return;
-    }
-  } catch (error) {
-    finishWithError(error.message || 'Processing status unavailable.');
-    return;
-  }
-  state.pollTimer = window.setTimeout(pollProcessing, 550);
-}
 
 // Upload interactions.
 videoInput.addEventListener('change', (event) => uploadVideo(event.target.files?.[0]));

@@ -7,19 +7,24 @@
   <meta name="description" content="MediaPilot online tools for video, images, and file conversion.">
   <title>MediaPilot — Remove Logo from Video</title>
   <link rel="stylesheet" href="/styles.css">
+  <style>#frameCanvas { touch-action: none; user-select: none; }</style>
 </head>
 <body>
   <header class="global-header">
     <div class="header-inner">
       <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
       <nav class="global-nav" aria-label="Tool categories">
-        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="navVideo">Video Tools</span> <b>⌄</b></a>
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="videoTools">Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span data-i18n="imageTools">Image Tools</span> <b>⌄</b></a>
       </nav>
       <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button><span class="account-icon">◎</span><span data-i18n="signIn">Sign In</span></div>
     </div>
   </header>
 
   <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
+    </div>
     <section class="tool-page-hero">
       <h1 data-i18n="toolTitle">Remove Logo from Video</h1>
       <p data-i18n="toolSubtitle">Easily remove logos and watermarks from video files online</p>

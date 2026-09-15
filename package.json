@@ -3,5 +3,8 @@
   "private": true,
   "scripts": {
     "build": "node ./scripts/build-static.mjs"
+  },
+  "dependencies": {
+    "@techstark/opencv-js": "^5.0.0-release.1"
   }
 }
