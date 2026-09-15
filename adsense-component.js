@@ -61,10 +61,10 @@ export function createAdSlot(location) {
   // Create the ad slot
   const adSlot = document.createElement('ins');
   adSlot.className = 'adsbygoogle';
-  adSlot.setAttribute('style', 'display:block');
+  adSlot.setAttribute('style', 'display:inline-block');
   adSlot.setAttribute('data-ad-client', ADSENSE_CONFIG.publisherId);
   adSlot.setAttribute('data-ad-slot', ADSENSE_CONFIG.slots[location]);
-  adSlot.setAttribute('data-ad-format', getAdFormat(location));
+  adSlot.setAttribute('data-ad-format', 'auto');
   adSlot.setAttribute('data-full-width-responsive', 'true');
 
   container.appendChild(adSlot);
