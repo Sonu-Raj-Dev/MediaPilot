@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Crop images to any size or aspect ratio. Free online image cropper with presets for common dimensions.">
+  <title>MediaPilot — Crop Image</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    #cropCanvas { touch-action: none; user-select: none; cursor: crosshair; }
+    .crop-overlay { position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.5); pointer-events: none; }
+    .crop-handles { position: absolute; width: 100%; height: 100%; }
+    .crop-handle { position: absolute; width: 10px; height: 10px; background: #2e63ff; border-radius: 50%; cursor: pointer; }
+    .crop-handle.tl { top: -5px; left: -5px; cursor: nwse-resize; }
+    .crop-handle.tr { top: -5px; right: -5px; cursor: nesw-resize; }
+    .crop-handle.bl { bottom: -5px; left: -5px; cursor: nesw-resize; }
+    .crop-handle.br { bottom: -5px; right: -5px; cursor: nwse-resize; }
+    .crop-box { position: absolute; border: 2px solid #2e63ff; background: transparent; }
+  </style>
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="videoTools">Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span data-i18n="imageTools">Image Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button><span class="account-icon">◎</span><span data-i18n="signIn">Sign In</span></div>
+    </div>
+  </header>
+
+  <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
+    </div>
+
+    <section class="tool-page-hero">
+      <h1>Crop Image</h1>
+      <p>Crop images to any size or aspect ratio</p>
+      <div class="tool-upload" id="toolUploadHero">
+        <label class="dropzone" id="dropzone" for="imageInput" tabindex="0">
+          <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
+          <span class="choose-file-button"><span data-i18n="chooseFile">Choose File</span><b>⌄</b></span>
+          <span class="drop-hint"><span class="download-arrow">⇩</span> <span>or drop an image here</span></span>
+        </label>
+        <div class="asset-card is-hidden" id="assetCard">
+          <div class="asset-thumb"><span id="assetThumbLetter">I</span></div>
+          <div class="asset-copy"><strong id="assetName">image.jpg</strong><span id="assetMeta">1920 × 1080</span></div>
+          <button class="icon-button" id="replaceButton" type="button" aria-label="Replace image" title="Replace image">↻</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Image cropping">
+      <div class="steps-bar">
+        <div class="step-item active"><span>1</span><strong>Upload image</strong></div><i></i><div class="step-item active"><span>2</span><strong>Crop</strong></div><i></i><div class="step-item"><span>3</span><strong>Download</strong></div>
+      </div>
+      <div class="editing-grid">
+        <section class="preview-panel">
+          <div class="preview-topline"><div><p class="panel-eyebrow">Step 2</p><h2>Select crop area</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span>Ready to crop</span></div></div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <div class="empty-preview" id="emptyPreview"><span class="empty-stage-icon">▧</span><span>Upload an image to see its preview</span></div>
+            <canvas id="cropCanvas" class="is-hidden" aria-label="Image preview. Drag to select crop area."></canvas>
+            <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div><div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
+          </div>
+          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>Click and drag on the image to select crop area</span></div><div class="frame-readout" id="frameReadout">—</div></div>
+          <div class="processing-card is-hidden" id="processingCard"><div class="processing-head"><div class="processing-spinner"><span></span></div><div><strong>Cropping image</strong><span>Processing…</span></div><output id="progressValue">0%</output></div><div class="progress-track"><span id="progressBar"></span></div></div>
+          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Cropped image ready</strong><span id="resultMeta">Your image is ready to download.</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download Image</span><b>⇩</b></a></div><img id="resultImage" style="display: block; width: 100%; max-height: 360px; margin-top: 12px;" alt="Cropped image preview"></div>
+        </section>
+
+        <aside class="control-panel">
+          <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2>Crop area</h2><p>Choose preset or drag to crop</p></div></div><div class="zone-actions"><button class="text-button" id="preset16x9" type="button">＋ 16:9</button><button class="text-button" id="preset9x16" type="button">＋ 9:16</button><button class="text-button" id="preset1x1" type="button">＋ 1:1</button><button class="text-button" id="preset4x5" type="button">＋ 4:5</button><button class="text-button subtle" id="presetFree" type="button">＋ Free</button></div><div id="cropInfo" style="margin-top: 16px; padding: 12px; border: 1px solid #e3e5e7; border-radius: 3px; background: #fff; font-size: 11px; color: #3d3f42; line-height: 1.6;"><div><strong>Crop dimensions:</strong></div><div id="cropDimensions">—</div></div></div>
+          <div class="step-card"><div class="step-card-heading"><span>3</span><div><h2>Download</h2><p>Save your cropped image</p></div></div><button class="primary-button" id="processButton" type="button" disabled><span>Crop image</span><b>→</b></button><p class="legal-note">You can download the cropped image in its original format.</p></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div>Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle" data-i18n="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" data-i18n-placeholder="search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+      </div>
+      <div class="language-divider"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
