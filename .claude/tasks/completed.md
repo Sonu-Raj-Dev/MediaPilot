@@ -13,11 +13,21 @@ Format: `- [RISK] Title — owner agent — outcome (date)`
 - [LOW] Mark `tools/remove-watermark-video/app.js` as dead code + add
   `test-script-wiring.mjs` regression test — owner: developer — outcome:
   header comment added (no behavior change, file is unloaded by any page),
-  new test pins which `app.js` each page's `<script>` tag loads; all three
-  test scripts + `npm run build` pass; committed as `7b19434` on branch
-  `chore/mark-dead-video-app-js`, not merged, not deployed. Full deletion of
-  the orphaned file remains open in backlog.md, HIGH risk, needs human
-  approval (known-issues.md #2) (2026-09-15)
+  new test pins which `app.js` each page's `<script>` tag loads. Original
+  commit `7b19434`, rebased onto `agents/autopilot-operational-workflow`
+  (f8abb35) to resolve app.js lineage conflict with other approved tasks.
+  Merged to main as fast-forward (changes already in f8abb35 ancestry). All 4
+  test scripts + `npm run build` pass. Full deletion of the orphaned file
+  remains in backlog.md, HIGH risk, needs human approval (known-issues.md #2)
+  (2026-09-15)
+- [LOW] Track 3 untracked test scripts in git (`test-filter-graph.mjs`,
+  `test-image-regions.mjs`, `validate-media-contracts.mjs`) — owner:
+  developer — outcome: original commit `3ff00e5`, rebased onto
+  `agents/autopilot-operational-workflow` resulting in new commit `af95466`.
+  Merged to main via fast-forward. Test files now tracked in git and
+  discoverable by fresh clones and CI. All 4 test scripts + `npm run build`
+  pass. Blocker (app.js lineage conflict) resolved via rebase strategy
+  (2026-09-15)
 - [N/A] Operational-workflow update — owner: lead (this setup pass) —
   integration audit (GitHub/Cloudflare/logs/analytics/GSC/db/media
   workers/queue/cron/domain, all confirmed absent except git+Cloudflare
