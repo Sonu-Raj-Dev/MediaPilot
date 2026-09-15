@@ -23,26 +23,201 @@
   </header>
 
   <main id="homeView" class="home-view">
-    <section class="home-hero">
-      <div class="hero-brand"><span class="brand-dots large" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></div>
-      <h1 data-i18n="homeTagline">Simple online tools for video, images, and file conversion</h1>
-    </section>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-pretitle">MediaPilot</div>
+        <h1 class="hero-headline">Fix Your Images & Videos in Seconds</h1>
+        <p class="hero-description">Simple online tools to crop, resize, compress, enhance, convert and clean up your media files.</p>
 
-    <section class="tool-index" id="video-tools">
-      <h2 data-i18n="videoTools">Video Tools</h2>
-      <div class="tool-columns single">
-        <div class="tool-column">
-          <a class="tool-link" href="/tools/remove-watermark-video"><span class="list-icon">⌕</span><span data-i18n="removeLogo">Remove Logo from Video</span></a>
+        <div class="hero-cta-group">
+          <a href="#popular-tools" class="cta-button primary">Upload Image or Video</a>
+          <a href="#all-tools" class="cta-button secondary">Explore Tools</a>
+        </div>
+
+        <div class="hero-trust-line">
+          <span>✓</span> No software installation
+          <span>✓</span> Fast browser-based processing
+          <span>✓</span> Simple workflow
         </div>
       </div>
     </section>
 
-    <section class="tool-index" id="image-tools">
-      <h2>Image Tools</h2>
-      <div class="tool-columns single">
-        <div class="tool-column">
-          <a class="tool-link" href="/tools/remove-watermark-image"><span class="list-icon">✦</span><span>Remove Watermark from Image</span></a>
-          <a class="tool-link" href="/tools/crop-image"><span class="list-icon">✂️</span><span>Crop Image</span></a>
+    <!-- POPULAR TOOLS SECTION -->
+    <section class="popular-tools" id="popular-tools">
+      <div class="section-header">
+        <h2>Popular Tools</h2>
+        <p>Quick access to the most-used media tools</p>
+      </div>
+
+      <div class="tools-grid">
+        <!-- Video Tools -->
+        <div class="tool-category-group">
+          <h3 class="tool-category-title">Video</h3>
+          <div class="tool-cards">
+            <a href="/tools/remove-watermark-video" class="tool-card">
+              <div class="tool-card-icon">⌕</div>
+              <div class="tool-card-content">
+                <h4>Remove Logo</h4>
+                <p>Remove watermarks and logos from videos</p>
+              </div>
+              <div class="tool-card-arrow">→</div>
+            </a>
+            <a href="/tools/crop-image" class="tool-card">
+              <div class="tool-card-icon">✂️</div>
+              <div class="tool-card-content">
+                <h4>Crop Video</h4>
+                <p>Crop to any aspect ratio or dimensions</p>
+              </div>
+              <div class="tool-card-arrow">→</div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Image Tools -->
+        <div class="tool-category-group">
+          <h3 class="tool-category-title">Image</h3>
+          <div class="tool-cards">
+            <a href="/tools/remove-watermark-image" class="tool-card">
+              <div class="tool-card-icon">✦</div>
+              <div class="tool-card-content">
+                <h4>Remove Watermark</h4>
+                <p>Remove watermarks from photos</p>
+              </div>
+              <div class="tool-card-arrow">→</div>
+            </a>
+            <a href="/tools/crop-image" class="tool-card">
+              <div class="tool-card-icon">✂️</div>
+              <div class="tool-card-content">
+                <h4>Crop Image</h4>
+                <p>Crop to any size or aspect ratio</p>
+              </div>
+              <div class="tool-card-arrow">→</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION -->
+    <section class="how-it-works">
+      <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Three simple steps to fix your media</p>
+      </div>
+
+      <div class="steps-container">
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Upload</h3>
+          <p>Choose your image or video file</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Edit</h3>
+          <p>Select the tool you need</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Download</h3>
+          <p>Get your finished file</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOLVE PROBLEMS SECTION -->
+    <section class="solve-problems">
+      <div class="section-header">
+        <h2>Solve Common Media Problems</h2>
+        <p>MediaPilot has a tool for nearly every task</p>
+      </div>
+
+      <div class="problems-grid">
+        <div class="problem-card">
+          <div class="problem-icon">📏</div>
+          <h3>Wrong Aspect Ratio?</h3>
+          <p>Crop or resize images and videos to the perfect dimensions for any platform.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">💾</div>
+          <h3>File Too Large?</h3>
+          <p>Compress images and videos to reduce file size without losing quality.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🏷️</div>
+          <h3>Unwanted Watermark?</h3>
+          <p>Remove logos and watermarks from your images and videos.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-icon">🔄</div>
+          <h3>Need a Format?</h3>
+          <p>Convert between different image and video formats easily.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALL TOOLS SECTION -->
+    <section class="all-tools-section" id="all-tools">
+      <div class="section-header">
+        <h2>All Tools</h2>
+        <p>Browse our complete collection</p>
+      </div>
+
+      <!-- Video Tools -->
+      <div class="tools-category">
+        <h3 class="tools-category-title">Video Tools</h3>
+        <div class="tool-index" id="video-tools">
+          <div class="tool-columns">
+            <div class="tool-column">
+              <a class="tool-link" href="/tools/remove-watermark-video"><span class="list-icon">⌕</span><span>Remove Logo from Video</span></a>
+              <a class="tool-link" href="/tools/crop-image"><span class="list-icon">✂️</span><span>Crop Video</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Image Tools -->
+      <div class="tools-category">
+        <h3 class="tools-category-title">Image Tools</h3>
+        <div class="tool-index" id="image-tools">
+          <div class="tool-columns">
+            <div class="tool-column">
+              <a class="tool-link" href="/tools/remove-watermark-image"><span class="list-icon">✦</span><span>Remove Watermark from Image</span></a>
+              <a class="tool-link" href="/tools/crop-image"><span class="list-icon">✂️</span><span>Crop Image</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY MEDIAPILOT SECTION -->
+    <section class="why-section">
+      <div class="section-header">
+        <h2>Why MediaPilot?</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature">
+          <div class="feature-icon">⚡</div>
+          <h3>Lightning Fast</h3>
+          <p>Process your media in seconds, not minutes</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🔒</div>
+          <h3>No Account Needed</h3>
+          <p>Just upload, edit, and download. No signup required.</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎯</div>
+          <h3>Simple & Intuitive</h3>
+          <p>Clear workflows designed for anyone to use</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🆓</div>
+          <h3>Completely Free</h3>
+          <p>All tools are free to use, no hidden charges</p>
         </div>
       </div>
     </section>
