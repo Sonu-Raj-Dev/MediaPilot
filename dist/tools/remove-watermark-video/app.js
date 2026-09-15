@@ -1,3 +1,9 @@
+// ORPHANED — not loaded by any page. tools/remove-watermark-video/index.html loads the
+// root /app.js instead, which has its own (ffmpeg.wasm-based) implementation of this tool.
+// This file still targets the old server-backed API (/api/upload, /api/process,
+// /api/status/:id) that server.py implements but nothing deploys. Editing this file has no
+// effect on the live site. See docs/known-issues.md #2 before touching it — deleting it is a
+// separate, human-approved decision (.claude/rules/safety.md), not made here.
 const state = {
   asset: null,
   image: null,
