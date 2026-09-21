@@ -270,34 +270,42 @@ function buildInpaintMask(width, height, box, expansion = 3) {
   return { mask, x1, y1, x2, y2 };
 }
 
-function loadOpenCV() {
-  return new Promise((resolve, reject) => {
-    if (window.cv && window.cv.imread) {
-      resolve(window.cv);
-      return;
-    }
-
-    const existing = document.getElementById('opencv-script');
-    if (existing) {
-      existing.addEventListener('load', () => resolve(window.cv), { once: true });
-      existing.addEventListener('error', () => reject(new Error('OpenCV failed to load.')), { once: true });
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = 'opencv-script';
-    script.src = '/vendor/opencv.js';
-    script.async = true;
-    script.onload = () => {
-      if (window.cv && window.cv.imread) {
-        resolve(window.cv);
-      } else {
-        reject(new Error('OpenCV did not initialize correctly.'));
+// The vendored opencv.js assigns a promise to window.cv that only resolves to the usable
+// module once its WebAssembly has instantiated, so window.cv.imread is never set on the
+// value the bundle first assigns.
+async function loadOpenCV() {
+  if (!window.cv) {
+    await new Promise((resolve, reject) => {
+      const existing = document.getElementById('opencv-script');
+      if (existing) {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', () => reject(new Error('OpenCV failed to load.')), { once: true });
+        return;
       }
-    };
-    script.onerror = () => reject(new Error('OpenCV failed to load from the local static bundle.'));
-    document.head.appendChild(script);
-  });
+
+      const script = document.createElement('script');
+      script.id = 'opencv-script';
+      script.src = '/vendor/opencv.js';
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('OpenCV failed to load from the local static bundle.'));
+      document.head.appendChild(script);
+    });
+  }
+
+  if (window.cv && typeof window.cv.then === 'function') {
+    const ready = await window.cv;
+    if (ready && ready.imread) {
+      window.cv = ready;
+      return ready;
+    }
+  }
+
+  if (window.cv && window.cv.imread) {
+    return window.cv;
+  }
+
+  throw new Error('OpenCV did not initialize correctly.');
 }
 
 // These four constants trade quality against time. Each step of the fill compares every
@@ -626,19 +634,22 @@ async function processImage() {
     const src = cv.imread(originalCanvas);
     const mask = new cv.Mat.zeros(originalHeight, originalWidth, cv.CV_8UC1);
     const maskColor = new cv.Scalar(255);
-    const rect = new cv.Rect(box.sx, box.sy, box.sw, box.sh);
     cv.rectangle(mask, new cv.Point(box.sx, box.sy), new cv.Point(box.sx + box.sw - 1, box.sy + box.sh - 1), maskColor, -1);
 
     const expanded = new cv.Mat();
     const kernelSize = Math.max(3, Math.min(17, Math.round(Math.min(box.sw, box.sh) * 0.08) + 3));
     const kernel = cv.getStructuringElement(cv.MORPH_ELLIPSE, new cv.Size(kernelSize, kernelSize));
-    cv.dilate(mask, expanded, kernel, new cv.Point(-1, -1), 1, cv.BORDER_CONSTANT, cv.Scalar.all(0));
+    cv.dilate(mask, expanded, kernel, new cv.Point(-1, -1), 1, cv.BORDER_CONSTANT, new cv.Scalar(0, 0, 0, 0));
 
     const inpainted = new cv.Mat();
     const selectedMode = document.querySelector('input[name="mode"]:checked')?.value || 'telea';
     const inpaintFlags = selectedMode === 'ns' ? cv.INPAINT_NS : cv.INPAINT_TELEA;
     const radius = Math.max(1, Math.min(12, Math.round(Math.min(box.sw, box.sh) * 0.05) + 1));
-    cv.inpaint(src, expanded, inpainted, radius, inpaintFlags);
+    // cv.imread returns RGBA, but inpaint accepts only 1- or 3-channel images.
+    const rgb = new cv.Mat();
+    cv.cvtColor(src, rgb, cv.COLOR_RGBA2RGB);
+    cv.inpaint(rgb, expanded, inpainted, radius, inpaintFlags);
+    rgb.delete();
 
     const outputCanvas = document.createElement('canvas');
     outputCanvas.width = originalWidth;
@@ -661,7 +672,8 @@ async function processImage() {
     downloadLink.download = `${(state.fileName || 'watermark-removed').replace(/\.[^.]+$/, '')}.png`;
   } catch (error) {
     console.error(error);
-    showError('Processing failed. Please choose a different selection and try again.');
+    // An engine-load failure is not a bad selection; saying so sends users hunting the wrong thing.
+    showError(String(error && error.message || '').startsWith('OpenCV') ? error.message : 'Processing failed. Please choose a different selection and try again.');
   } finally {
     setProcessing(false, 'Processing…');
   }

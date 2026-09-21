@@ -332,6 +332,16 @@ def run_processing(process_id: str, asset_id: str, regions: list[dict[str, Any]]
             preview_writer.release()
 
 
+ROOT_ASSETS = {
+    "app.js": "text/javascript; charset=utf-8",
+    "adsense-component.js": "text/javascript; charset=utf-8",
+    "adsense-config.js": "text/javascript; charset=utf-8",
+    "vendor/opencv.js": "text/javascript; charset=utf-8",
+    "styles.css": "text/css; charset=utf-8",
+    "favicon.svg": "image/svg+xml",
+    "reference.png": "image/png",
+}
+
 class AppHandler(BaseHTTPRequestHandler):
     server_version = "Clearframe/1.0"
 
@@ -375,17 +385,21 @@ class AppHandler(BaseHTTPRequestHandler):
             if candidate.is_dir():
                 index_file = candidate / "index.html"
                 if index_file.exists():
+                    # Serving the index straight off "/tools/x" would leave the browser resolving
+                    # the page's relative src/href against "/tools/", so redirect the way every
+                    # static host does and let the page load its own app.js.
+                    if not path.endswith("/"):
+                        target = path + "/" + (f"?{parsed.query}" if parsed.query else "")
+                        return self._send_bytes(b"", "text/plain; charset=utf-8",
+                                                HTTPStatus.MOVED_PERMANENTLY, {"Location": target})
                     return self._serve_static(str(index_file.relative_to(ROOT)).replace('\\', '/'), "text/html; charset=utf-8")
             if candidate.exists() and candidate.is_file():
                 content_type = mimetypes.guess_type(candidate.name)[0] or "application/octet-stream"
                 return self._send_bytes(candidate.read_bytes(), content_type)
             return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
-        if path == "/app.js":
-            return self._serve_static("app.js", "text/javascript; charset=utf-8")
-        if path == "/styles.css":
-            return self._serve_static("styles.css", "text/css; charset=utf-8")
-        if path == "/reference.png":
-            return self._serve_static("reference.png", "image/png")
+        if path.lstrip("/") in ROOT_ASSETS:
+            name = path.lstrip("/")
+            return self._serve_static(name, ROOT_ASSETS[name])
         if path.startswith("/api/status/"):
             process_id = path.rsplit("/", 1)[-1]
             with STATE_LOCK:

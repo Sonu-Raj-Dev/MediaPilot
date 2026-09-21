@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Enhance video quality online for free. Reduce noise, sharpen soft footage, brighten dark clips and upscale to 1080p — processed in your browser.">
+  <title>MediaPilot — Enhance Video Quality</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .compare-grid { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .compare-grid figure { min-width:0; margin:0; }
+    .compare-grid figcaption { margin-bottom:6px; color:#95979c; font-size:10px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; }
+    .compare-grid img { display:block; width:100%; max-height:380px; object-fit:contain; border:1px solid #e3e5e7; background:#fff; }
+    @media (max-width:700px) { .compare-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="videoTools">Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span data-i18n="imageTools">Image Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button><span class="account-icon">◎</span><span data-i18n="signIn">Sign In</span></div>
+    </div>
+  </header>
+
+  <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
+    </div>
+
+    <section class="tool-page-hero">
+      <h1>Enhance Video Quality</h1>
+      <p>Reduce noise, sharpen soft footage and brighten dark clips — free, in your browser</p>
+      <div class="tool-upload" id="toolUploadHero">
+        <label class="dropzone" id="dropzone" for="videoInput" tabindex="0">
+          <input id="videoInput" type="file" accept="video/mp4,video/quicktime,video/webm,video/x-msvideo,video/x-matroska,.mp4,.mov,.m4v,.webm,.avi,.mkv,.wmv">
+          <span class="choose-file-button"><span data-i18n="chooseFile">Choose File</span><b>⌄</b></span>
+          <span class="drop-hint"><span class="download-arrow">⇩</span> <span>or drop a video here</span></span>
+        </label>
+        <div class="asset-card is-hidden" id="assetCard">
+          <div class="asset-thumb"><span>V</span></div>
+          <div class="asset-copy"><strong id="assetName">source.mp4</strong><span id="assetMeta">—</span></div>
+          <button class="icon-button" id="replaceButton" type="button" aria-label="Replace video" title="Replace video">↻</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Video enhancement steps">
+      <div class="steps-bar">
+        <div class="step-item active"><span>1</span><strong>Upload video</strong></div><i></i><div class="step-item active"><span>2</span><strong>Choose a preset</strong></div><i></i><div class="step-item"><span>3</span><strong>Download result</strong></div>
+      </div>
+      <div class="editing-grid">
+        <section class="preview-panel">
+          <div class="preview-topline"><div><p class="panel-eyebrow">Step 2</p><h2>Before and after</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span>Waiting for a video</span></div></div>
+          <div class="canvas-wrap">
+            <div class="empty-preview" id="compareEmpty"><span class="empty-stage-icon">▧</span><span>Upload a video to preview the enhancement</span></div>
+            <div class="compare-grid is-hidden" id="compareGrid">
+              <figure><figcaption>Before</figcaption><img id="beforeFrame" alt="Original frame"></figure>
+              <figure><figcaption>After</figcaption><img id="afterFrame" alt="Enhanced frame"></figure>
+            </div>
+            <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div><div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
+          </div>
+          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>The preview updates when you change the preset</span></div><div class="frame-readout" id="frameReadout">—</div></div>
+
+          <div class="processing-card is-hidden" id="processingCard"><div class="processing-head"><div class="processing-spinner"><span></span></div><div><strong>Enhancing your video</strong><span id="processingMessage">Preparing frames…</span></div><output id="progressValue">0%</output></div><div class="progress-track"><span id="progressBar"></span></div></div>
+          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Enhanced video ready</strong><span id="resultMeta">Your export is ready to review.</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download MP4</span><b>⇩</b></a></div><video id="resultVideo" controls playsinline></video></div>
+        </section>
+
+        <aside class="control-panel">
+          <div class="step-card">
+            <div class="step-card-heading"><span>2</span><div><h2>Choose a preset</h2><p>Pick what's wrong with the footage</p></div></div>
+            <div class="mode-grid" id="presetGrid" role="radiogroup" aria-label="Enhancement preset">
+              <label class="mode-option"><input type="radio" name="preset" value="auto" checked><span class="mode-symbol">✦</span><span><strong>Auto</strong><small>Light cleanup for most videos</small></span><span class="radio-dot"></span></label>
+              <label class="mode-option"><input type="radio" name="preset" value="lowlight"><span class="mode-symbol">☾</span><span><strong>Low light</strong><small>Brighten dark, grainy footage</small></span><span class="radio-dot"></span></label>
+              <label class="mode-option"><input type="radio" name="preset" value="soft"><span class="mode-symbol">◎</span><span><strong>Soft footage</strong><small>Crisper edges on slightly blurry video</small></span><span class="radio-dot"></span></label>
+              <label class="mode-option"><input type="radio" name="preset" value="old"><span class="mode-symbol">▤</span><span><strong>Old video</strong><small>Deinterlace, denoise and restore colour</small></span><span class="radio-dot"></span></label>
+            </div>
+          </div>
+
+          <div class="step-card">
+            <div class="step-card-heading"><span>3</span><div><h2>Export</h2><p>Save the enhanced video as MP4</p></div></div>
+            <div id="sizeBlock">
+              <p class="zone-note">Output size. Upscaling adds pixels, not new detail.</p>
+              <div class="mode-grid" id="sizeGrid" role="radiogroup" aria-label="Output size"></div>
+            </div>
+            <button class="primary-button" id="processButton" type="button" disabled><span>Enhance video</span><b>→</b></button>
+            <p class="legal-note">Your video is processed on your device and never uploaded. Browser processing is slow: expect roughly 5–15 minutes per minute of video, depending on your device and output size.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle" data-i18n="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" data-i18n-placeholder="search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+      </div>
+      <div class="language-divider"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/tools/enhance-video/app.js"></script>
+</body>
+</html>
