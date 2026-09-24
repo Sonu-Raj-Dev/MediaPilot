@@ -1,0 +1,16 @@
+# Vercel runs `npm run build` itself, so the local build output is not uploaded.
+dist/
+vendor/
+
+# Local dev server and its tests are not part of the deployed site.
+server.py
+test-*.mjs
+__pycache__/
+
+# Working notes, not shipped.
+docs/
+CLEANUP_REPORT.md
+HOMEPAGE_REDESIGN.md
+
+# Cloudflare Workers config, kept for reference but unused on Vercel.
+wrangler.jsonc

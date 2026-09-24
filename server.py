@@ -332,15 +332,38 @@ def run_processing(process_id: str, asset_id: str, regions: list[dict[str, Any]]
             preview_writer.release()
 
 
+# Nested assets still need naming explicitly. Plain root-level files are matched by extension
+# below instead, so adding a new stylesheet or module does not mean editing this file — the
+# previous hand-maintained list silently 404'd every file someone forgot to add.
 ROOT_ASSETS = {
-    "app.js": "text/javascript; charset=utf-8",
-    "adsense-component.js": "text/javascript; charset=utf-8",
-    "adsense-config.js": "text/javascript; charset=utf-8",
     "vendor/opencv.js": "text/javascript; charset=utf-8",
-    "styles.css": "text/css; charset=utf-8",
-    "favicon.svg": "image/svg+xml",
-    "reference.png": "image/png",
 }
+
+ROOT_FILE_TYPES = {
+    ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".svg": "image/svg+xml",
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".webp": "image/webp",
+    ".woff2": "font/woff2",
+}
+
+# One path segment, no separators and no dot-segments, so nothing outside ROOT is reachable and
+# server.py itself is not servable (.py is not a listed type).
+SAFE_ROOT_NAME = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]*$")
+
+
+def root_file_type(name: str) -> str | None:
+    if not SAFE_ROOT_NAME.match(name) or ".." in name:
+        return None
+    suffix = Path(name).suffix.lower()
+    content_type = ROOT_FILE_TYPES.get(suffix)
+    if not content_type:
+        return None
+    candidate = ROOT / name
+    return content_type if candidate.is_file() else None
+
 
 class AppHandler(BaseHTTPRequestHandler):
     server_version = "Clearframe/1.0"
@@ -397,9 +420,12 @@ class AppHandler(BaseHTTPRequestHandler):
                 content_type = mimetypes.guess_type(candidate.name)[0] or "application/octet-stream"
                 return self._send_bytes(candidate.read_bytes(), content_type)
             return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
-        if path.lstrip("/") in ROOT_ASSETS:
-            name = path.lstrip("/")
+        name = path.lstrip("/")
+        if name in ROOT_ASSETS:
             return self._serve_static(name, ROOT_ASSETS[name])
+        content_type = root_file_type(name)
+        if content_type:
+            return self._serve_static(name, content_type)
         if path.startswith("/api/status/"):
             process_id = path.rsplit("/", 1)[-1]
             with STATE_LOCK:

@@ -14,12 +14,26 @@ Then open `http://localhost:4173`.
 
 ## Deploy
 
+Hosted on Vercel as a static site. `vercel.json` sets the build command, the output
+directory and the response headers; Vercel installs dependencies and runs the build itself,
+so nothing in `dist/` is committed or uploaded.
+
 ```bash
-npm run build
-npx wrangler deploy
+npx vercel --prod
 ```
 
-`wrangler.jsonc` publishes `dist/` as a Cloudflare Workers static asset site.
+From a connected Git repository the same settings apply automatically. If the repository root
+is the parent folder rather than this one, set the project's **Root Directory** to `MediaPilot`.
+
+`wrangler.jsonc` is the previous Cloudflare Workers config. It is unused and not uploaded.
+
+### Headers, and one that must not be added
+
+`vercel.json` deliberately does **not** set `Cross-Origin-Embedder-Policy` or
+`Cross-Origin-Opener-Policy`. ffmpeg.wasm here is the single-threaded core, which does not need
+them, and `COEP: require-corp` would block the ffmpeg and ONNX bundles loaded from jsDelivr.
+Those headers only become necessary alongside a switch to `@ffmpeg/core-mt`, and then the CDN
+loads have to move too.
 
 ## How it works
 

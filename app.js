@@ -210,7 +210,7 @@ const FFMPEG_CORE = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.10/dist/esm'
 
 let enginePromise = null;
 let progressSink = null;
-let lastEngineLog = '';
+let engineLog = [];
 
 // Resolves to a loaded ffmpeg.wasm instance. The ~31 MB core downloads once and is
 // served from the browser cache afterwards.
@@ -221,7 +221,10 @@ function getEngine(onMessage) {
       const { FFmpeg } = await import(`${FFMPEG_DIST}/index.js`);
       const engine = new FFmpeg();
       engine.on('progress', (event) => progressSink?.(event.progress));
-      engine.on('log', (event) => { lastEngineLog = event.message; });
+      engine.on('log', (event) => {
+        engineLog.push(event.message);
+        if (engineLog.length > 60) engineLog.shift();
+      });
       // A worker cannot be constructed from another origin, so it is started from a same-origin
       // blob that re-imports the real one. Copying worker.js into the blob instead would break
       // its relative imports, which would resolve against the blob URL.
@@ -249,10 +252,27 @@ function extensionOf(name) {
   return match ? match[0].toLowerCase() : '.mp4';
 }
 
+// ffmpeg's trailing log line is usually "Aborted()", which says nothing; report the line that
+// names the problem instead.
+function engineError() {
+  const reason = engineLog.find((line) => /error|failed|invalid|no such|unable/i.test(line));
+  return reason || engineLog.at(-1) || 'The video engine could not process this file.';
+}
+
+// ffmpeg.wasm does not release its heap between exec() calls, so a memory-hungry command issued
+// right after another one can fail to allocate even when it is perfectly valid — measured: the
+// same command returned exit 1 with no output, then succeeded on an immediate retry.
 async function runEngine(engine, args) {
-  lastEngineLog = '';
-  const code = await engine.exec(args);
-  if (code !== 0) throw new Error(lastEngineLog || 'The video engine could not process this file.');
+  engineLog = [];
+  try {
+    if (await engine.exec(args) === 0) return;
+  } catch (error) {
+    // A throw rather than an exit code means the wasm instance itself is gone; a retry on it
+    // would only throw again.
+    throw new Error(`The video engine ran out of memory (${String(error).slice(0, 60)}). Try a shorter clip.`);
+  }
+  engineLog = [];
+  if (await engine.exec(args) !== 0) throw new Error(engineError());
 }
 
 // Reads dimensions and a preview frame with the built-in decoder. Rejects for containers

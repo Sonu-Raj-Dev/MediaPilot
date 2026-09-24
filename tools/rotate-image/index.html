@@ -4,22 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101114">
-  <meta name="description" content="Crop images to any size or aspect ratio. Free online image cropper with presets for common dimensions.">
-  <title>MediaPilot — Crop Image</title>
+  <meta name="description" content="Rotate and flip images online for free. Turn a sideways photo upright in one tap, or mirror it horizontally or vertically. Nothing is uploaded.">
+  <title>MediaPilot — Rotate &amp; Flip Image</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
   <link rel="stylesheet" href="/tool.css">
   <style>
-    #cropCanvas { touch-action: none; user-select: none; cursor: crosshair; }
-    /* The box sits over the canvas, so it must not intercept the drag the canvas handles. */
-    .crop-box { position: absolute; border: 2px solid #2e63ff; pointer-events: none; box-shadow: 0 0 0 9999px rgba(0,0,0,0.45); }
-    .crop-handle { position: absolute; width: 11px; height: 11px; background: #2e63ff; border: 2px solid #fff; border-radius: 50%; }
-    .crop-handle.tl { top: -7px; left: -7px; }
-    .crop-handle.tr { top: -7px; right: -7px; }
-    .crop-handle.bl { bottom: -7px; left: -7px; }
-    .crop-handle.br { bottom: -7px; right: -7px; }
-    #resultImage { display: block; max-width: 100%; max-height: 360px; width: auto; height: auto; margin: 12px auto 0; }
+    #rotateCanvas { display:block; max-width:100%; max-height:100%; border:1px solid rgba(0,0,0,.18); background:#fff; }
+    #resultImage { display:block; max-width:100%; max-height:340px; width:auto; height:auto; margin:12px auto 0; }
   </style>
   <script>
     // Applied before first paint so a dark-mode visitor never sees a white flash.
@@ -47,8 +40,8 @@
     </div>
 
     <section class="tool-page-hero">
-      <h1>Crop Image</h1>
-      <p>Crop images to any size or aspect ratio</p>
+      <h1>Rotate &amp; Flip Image</h1>
+      <p>Turn a sideways photo upright, or mirror it</p>
       <div class="tool-upload" id="toolUploadHero">
         <label class="dropzone" id="dropzone" for="imageInput" tabindex="0">
           <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
@@ -57,38 +50,65 @@
         </label>
         <div class="asset-card is-hidden" id="assetCard">
           <div class="asset-thumb"><span id="assetThumbLetter">I</span></div>
-          <div class="asset-copy"><strong id="assetName">image.jpg</strong><span id="assetMeta">1920 × 1080</span></div>
+          <div class="asset-copy"><strong id="assetName">image.jpg</strong><span id="assetMeta">—</span></div>
           <button class="icon-button" id="replaceButton" type="button" aria-label="Replace image" title="Replace image">↻</button>
         </div>
       </div>
     </section>
 
-    <section id="editingModule" class="editing-module is-hidden" aria-label="Image cropping">
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Image rotation">
       <div class="steps-bar">
-        <div class="step-item active"><span>1</span><strong>Upload image</strong></div><i></i><div class="step-item active"><span>2</span><strong>Crop</strong></div><i></i><div class="step-item"><span>3</span><strong>Download</strong></div>
+        <div class="step-item active"><span>1</span><strong>Upload image</strong></div><i></i><div class="step-item active"><span>2</span><strong>Rotate or flip</strong></div><i></i><div class="step-item"><span>3</span><strong>Download</strong></div>
       </div>
       <div class="editing-grid">
         <section class="preview-panel">
-          <div class="preview-topline"><div><p class="panel-eyebrow">Step 2</p><h2>Select crop area</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span>Ready to crop</span></div></div>
+          <div class="preview-topline"><div><p class="panel-eyebrow">Step 2</p><h2>Preview</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span>Ready</span></div></div>
           <div class="canvas-wrap" id="canvasWrap">
             <div class="empty-preview" id="emptyPreview"><span class="empty-stage-icon">▧</span><span>Upload an image to see its preview</span></div>
-            <canvas id="cropCanvas" class="is-hidden" aria-label="Image preview. Drag to select crop area."></canvas>
+            <canvas id="rotateCanvas" class="is-hidden" aria-label="Image preview with the current rotation applied"></canvas>
             <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div><div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
           </div>
-          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>Click and drag on the image to select crop area</span></div><div class="frame-readout" id="frameReadout">—</div></div>
-          <div class="processing-card is-hidden" id="processingCard"><div class="processing-head"><div class="processing-spinner"><span></span></div><div><strong>Cropping image</strong><span>Processing…</span></div><output id="progressValue">0%</output></div><div class="progress-track"><span id="progressBar"></span></div></div>
-          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Cropped image ready</strong><span id="resultMeta">Your image is ready to download.</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download Image</span><b>⇩</b></a></div><img id="resultImage" alt="Cropped image preview"></div>
+          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>The preview shows exactly what you will download</span></div><div class="frame-readout" id="frameReadout">—</div></div>
+          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Image ready</strong><span id="resultMeta">—</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download</span><b>⇩</b></a></div><img id="resultImage" alt="Rotated image preview"></div>
         </section>
 
         <aside class="control-panel">
-          <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2>Crop area</h2><p>Choose preset or drag to crop</p></div></div><div class="zone-actions"><button class="text-button" id="preset16x9" type="button">＋ 16:9</button><button class="text-button" id="preset9x16" type="button">＋ 9:16</button><button class="text-button" id="preset1x1" type="button">＋ 1:1</button><button class="text-button" id="preset4x5" type="button">＋ 4:5</button><button class="text-button subtle" id="presetFree" type="button">＋ Free</button></div><div id="cropInfo" class="crop-info"><div><strong>Crop dimensions:</strong></div><div id="cropDimensions">—</div></div></div>
-          <div class="step-card"><div class="step-card-heading"><span>3</span><div><h2>Download</h2><p>Save your cropped image</p></div></div><button class="primary-button" id="processButton" type="button" disabled><span>Crop image</span><b>→</b></button><p class="legal-note">You can download the cropped image in its original format.</p></div>
+          <div class="step-card">
+            <div class="step-card-heading"><span>2</span><div><h2>Rotate</h2><p>In 90° steps</p></div></div>
+            <div class="zone-actions">
+              <button class="text-button" id="rotateLeft" type="button">↺ Left 90°</button>
+              <button class="text-button" id="rotateRight" type="button">↻ Right 90°</button>
+              <button class="text-button" id="rotate180" type="button">↻ 180°</button>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-heading"><span>⇄</span><div><h2>Flip</h2><p>Mirror the image</p></div></div>
+            <div class="zone-actions">
+              <button class="text-button" id="flipH" type="button" aria-pressed="false">⇄ Horizontal</button>
+              <button class="text-button" id="flipV" type="button" aria-pressed="false">⇅ Vertical</button>
+              <button class="text-button subtle" id="resetTransform" type="button">Reset</button>
+            </div>
+            <div class="crop-info"><div><strong>Result:</strong></div><div id="transformSummary">Original orientation</div></div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-heading"><span>3</span><div><h2>Download</h2><p>Save the rotated image</p></div></div>
+            <label class="size-field full"><span>Format</span>
+              <select id="formatSelect">
+                <option value="">Same as original</option>
+                <option value="image/jpeg">JPG</option>
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+              </select>
+            </label>
+            <button class="primary-button" id="processButton" type="button" disabled><span>Apply and save</span><b>→</b></button>
+            <p class="legal-note">A 90° turn maps every pixel exactly. Saving as JPG re-encodes the file, so choose PNG or WebP if you need it lossless.</p>
+          </div>
         </aside>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer"><div>MEDIAPILOT</div><div>Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
+  <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
 
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
     <div class="language-backdrop" data-language-close></div>
@@ -109,6 +129,6 @@
 
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/tools/crop-image/app.js"></script>
+  <script src="/tools/rotate-image/app.js"></script>
 </body>
 </html>

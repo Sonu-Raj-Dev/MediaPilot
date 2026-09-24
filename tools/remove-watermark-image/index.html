@@ -8,6 +8,8 @@
   <title>MediaPilot — Remove Watermark from Image</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
   <style>
     #imageCanvas { display:block; max-width:100%; height:auto; cursor:crosshair; touch-action:none; user-select:none; }
     .result-compare { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
@@ -17,8 +19,15 @@
     .error-note { margin-top:14px; padding:10px 12px; border:1px solid #fecdca; border-radius:3px; background:#fef3f2; color:#b42318; font-size:11px; }
     @media (max-width:700px) { .result-compare { grid-template-columns:1fr; } }
   </style>
+  <script>
+    // Applied before first paint so a dark-mode visitor never sees a white flash.
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch { /* private mode: fall through to the system preference */ }
+  </script>
 </head>
-<body>
+<body class="tool-body">
   <header class="global-header">
     <div class="header-inner">
       <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
@@ -128,6 +137,7 @@
     </section>
   </div>
 
+  <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/vendor/opencv.js"></script>
   <script src="/tools/remove-watermark-image/app.js"></script>

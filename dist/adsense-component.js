@@ -102,10 +102,9 @@ export function insertAd(location, targetElement) {
     targetElement = document.querySelector(targetElement);
   }
 
-  if (!targetElement) {
-    console.error(`Target element not found for ad location: ${location}`);
-    return false;
-  }
+  // Slots are per-page: the homepage has no sidebar, tool pages have no in-article slot. An
+  // absent target means this page simply does not offer that placement, which is not an error.
+  if (!targetElement) return false;
 
   const adContainer = createAdSlot(location);
   if (!adContainer) return false;

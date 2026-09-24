@@ -176,7 +176,13 @@ function displayImage() {
   state.canvas = cropCanvas;
   state.ctx = cropCanvas.getContext('2d');
   const container = canvasWrap;
+  // Measure against the stage the stylesheet sets, not a height this function left behind — and
+  // with the previous canvas out of flow, or the stage just reports the size it already had and
+  // the image can never shrink to fit a shorter screen.
+  container.style.minHeight = '';
+  cropCanvas.style.display = 'none';
   const containerRect = container.getBoundingClientRect();
+  cropCanvas.style.display = '';
 
   const maxWidth = containerRect.width - 36;
   const maxHeight = containerRect.height - 36;
@@ -187,6 +193,9 @@ function displayImage() {
 
   cropCanvas.width = displayWidth;
   cropCanvas.height = displayHeight;
+  // The stage is centred and taller than a wide image needs, which on a phone leaves a screenful
+  // of empty grey under the picture. Shrink it to what was actually drawn.
+  container.style.minHeight = Math.round(displayHeight + 36) + 'px';
 
   state.ctx.drawImage(state.image, 0, 0, displayWidth, displayHeight);
 }
@@ -355,3 +364,45 @@ $('#preset4x5').addEventListener('click', () => setCropAspectRatio('4:5'));
 $('#presetFree').addEventListener('click', () => setCropAspectRatio('free'));
 
 updateProcessButton();
+
+// displayImage() sizes the canvas from .canvas-wrap's measured box, once. Rotating a phone or
+// resizing the window changes that box, so re-fit and carry the crop across in proportion —
+// state.crop is in canvas pixels, which the new canvas no longer shares.
+let refitTimer;
+let lastStageWidth = 0;
+
+function refitStage() {
+  if (!state.image) return;
+  const width = Math.round(canvasWrap.getBoundingClientRect().width);
+  // displayImage sets the stage's own height, so reacting to height would loop. Width-only also
+  // means mobile browser chrome sliding in and out does not rescale the image under the finger.
+  if (width === lastStageWidth) return;
+  lastStageWidth = width;
+  window.clearTimeout(refitTimer);
+  refitTimer = window.setTimeout(() => {
+    const prevWidth = cropCanvas.width;
+    const prevHeight = cropCanvas.height;
+    displayImage();
+    if (prevWidth && prevHeight) {
+      const scaleX = cropCanvas.width / prevWidth;
+      const scaleY = cropCanvas.height / prevHeight;
+      state.crop.x *= scaleX;
+      state.crop.y *= scaleY;
+      state.crop.w *= scaleX;
+      state.crop.h *= scaleY;
+    }
+    constrainCrop();
+    updateCropInfo();
+    drawCrop();
+  }, 150);
+}
+
+// Both signals, because neither is dependable alone: ResizeObserver catches layout changes the
+// window never reports, but is tied to the rendering lifecycle and stays silent while the page
+// is not being painted; resize/orientationchange fire regardless. refitStage is idempotent, so
+// whichever arrives first wins and the other returns at the width check.
+// The observer is kept in a variable — an unreferenced one can be collected.
+const stageObserver = new ResizeObserver(refitStage);
+stageObserver.observe(canvasWrap);
+window.addEventListener('resize', refitStage);
+window.addEventListener('orientationchange', refitStage);

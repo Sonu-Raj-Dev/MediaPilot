@@ -8,6 +8,8 @@
   <title>MediaPilot — Crop Image</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
   <style>
     #cropCanvas { touch-action: none; user-select: none; cursor: crosshair; }
     /* The box sits over the canvas, so it must not intercept the drag the canvas handles. */
@@ -19,8 +21,15 @@
     .crop-handle.br { bottom: -7px; right: -7px; }
     #resultImage { display: block; max-width: 100%; max-height: 360px; width: auto; height: auto; margin: 12px auto 0; }
   </style>
+  <script>
+    // Applied before first paint so a dark-mode visitor never sees a white flash.
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch { /* private mode: fall through to the system preference */ }
+  </script>
 </head>
-<body>
+<body class="tool-body">
   <header class="global-header">
     <div class="header-inner">
       <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
@@ -72,7 +81,7 @@
         </section>
 
         <aside class="control-panel">
-          <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2>Crop area</h2><p>Choose preset or drag to crop</p></div></div><div class="zone-actions"><button class="text-button" id="preset16x9" type="button">＋ 16:9</button><button class="text-button" id="preset9x16" type="button">＋ 9:16</button><button class="text-button" id="preset1x1" type="button">＋ 1:1</button><button class="text-button" id="preset4x5" type="button">＋ 4:5</button><button class="text-button subtle" id="presetFree" type="button">＋ Free</button></div><div id="cropInfo" style="margin-top: 16px; padding: 12px; border: 1px solid #e3e5e7; border-radius: 3px; background: #fff; font-size: 11px; color: #3d3f42; line-height: 1.6;"><div><strong>Crop dimensions:</strong></div><div id="cropDimensions">—</div></div></div>
+          <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2>Crop area</h2><p>Choose preset or drag to crop</p></div></div><div class="zone-actions"><button class="text-button" id="preset16x9" type="button">＋ 16:9</button><button class="text-button" id="preset9x16" type="button">＋ 9:16</button><button class="text-button" id="preset1x1" type="button">＋ 1:1</button><button class="text-button" id="preset4x5" type="button">＋ 4:5</button><button class="text-button subtle" id="presetFree" type="button">＋ Free</button></div><div id="cropInfo" class="crop-info"><div><strong>Crop dimensions:</strong></div><div id="cropDimensions">—</div></div></div>
           <div class="step-card"><div class="step-card-heading"><span>3</span><div><h2>Download</h2><p>Save your cropped image</p></div></div><button class="primary-button" id="processButton" type="button" disabled><span>Crop image</span><b>→</b></button><p class="legal-note">You can download the cropped image in its original format.</p></div>
         </aside>
       </div>
@@ -98,7 +107,8 @@
     </section>
   </div>
 
+  <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="app.js"></script>
+  <script src="/tools/crop-image/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101114">
+  <meta name="description" content="Convert images online for free between JPG, PNG and WebP. Handles transparency properly. Nothing is uploaded.">
+  <title>MediaPilot — Convert Image</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
+  <style>
+    /* The checkerboard is the point: it shows which areas are actually transparent. */
+    #convertCanvas { display:block; max-width:100%; max-height:100%; border:1px solid rgba(0,0,0,.18);
+      background-image:linear-gradient(45deg,#e8e9eb 25%,transparent 25%),linear-gradient(-45deg,#e8e9eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e8e9eb 75%),linear-gradient(-45deg,transparent 75%,#e8e9eb 75%);
+      background-size:16px 16px; background-position:0 0,0 8px,8px -8px,-8px 0; }
+    #resultImage { display:block; max-width:100%; max-height:340px; width:auto; height:auto; margin:12px auto 0; }
+    .savings-line { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:14px; padding:11px 12px; border:1px solid #e3e5e7; border-radius:3px; background:#fff; font-size:12px; }
+    .savings-line strong { font-size:15px; font-variant-numeric:tabular-nums; }
+    .savings-line.is-good strong { color:#1f9d57; }
+    .savings-line.is-bad strong { color:#c0392b; }
+    .format-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+    .format-option { position:relative; display:grid; gap:2px; padding:11px 10px; text-align:center; border:1px solid #d6d8dc; border-radius:3px; background:#fff; cursor:pointer; }
+    .format-option input { position:absolute; opacity:0; pointer-events:none; }
+    .format-option strong { font-size:13px; }
+    .format-option small { color:#95979c; font-size:10px; }
+    .format-option:has(input:checked) { border-color:#2e63ff; background:#f4f6ff; }
+    .format-option:has(input:checked) strong { color:#2e63ff; }
+    .flatten-row { display:flex; align-items:center; gap:9px; margin-top:12px; color:#3d3f42; font-size:12px; line-height:1.4; }
+    .flatten-row input[type=color] { flex:none; width:34px; height:28px; padding:2px; border:1px solid #d6d8dc; border-radius:3px; background:#fff; cursor:pointer; }
+  </style>
+  <script>
+    // Applied before first paint so a dark-mode visitor never sees a white flash.
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch { /* private mode: fall through to the system preference */ }
+  </script>
+</head>
+<body class="tool-body">
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span data-i18n="videoTools">Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span data-i18n="imageTools">Image Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button><span class="account-icon">◎</span><span data-i18n="signIn">Sign In</span></div>
+    </div>
+  </header>
+
+  <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
+    </div>
+
+    <section class="tool-page-hero">
+      <h1>Convert Image</h1>
+      <p>Change between JPG, PNG and WebP</p>
+      <div class="tool-upload" id="toolUploadHero">
+        <label class="dropzone" id="dropzone" for="imageInput" tabindex="0">
+          <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp">
+          <span class="choose-file-button"><span data-i18n="chooseFile">Choose File</span><b>⌄</b></span>
+          <span class="drop-hint"><span class="download-arrow">⇩</span> <span>or drop an image here</span></span>
+        </label>
+        <div class="asset-card is-hidden" id="assetCard">
+          <div class="asset-thumb"><span id="assetThumbLetter">I</span></div>
+          <div class="asset-copy"><strong id="assetName">image.png</strong><span id="assetMeta">—</span></div>
+          <button class="icon-button" id="replaceButton" type="button" aria-label="Replace image" title="Replace image">↻</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Image conversion">
+      <div class="steps-bar">
+        <div class="step-item active"><span>1</span><strong>Upload image</strong></div><i></i><div class="step-item active"><span>2</span><strong>Pick a format</strong></div><i></i><div class="step-item"><span>3</span><strong>Download</strong></div>
+      </div>
+      <div class="editing-grid">
+        <section class="preview-panel">
+          <div class="preview-topline"><div><p class="panel-eyebrow">Step 2</p><h2>Preview</h2></div><div class="preview-status" id="previewStatus"><span class="status-dot"></span><span>Ready</span></div></div>
+          <div class="canvas-wrap" id="canvasWrap">
+            <div class="empty-preview" id="emptyPreview"><span class="empty-stage-icon">▧</span><span>Upload an image to see its preview</span></div>
+            <canvas id="convertCanvas" class="is-hidden" aria-label="Converted image preview"></canvas>
+            <div class="canvas-corner corner-tl"></div><div class="canvas-corner corner-tr"></div><div class="canvas-corner corner-bl"></div><div class="canvas-corner corner-br"></div>
+          </div>
+          <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>The checkerboard shows transparent areas</span></div><div class="frame-readout" id="frameReadout">—</div></div>
+          <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Converted image ready</strong><span id="resultMeta">—</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download</span><b>⇩</b></a></div><img id="resultImage" alt="Converted image preview"></div>
+        </section>
+
+        <aside class="control-panel">
+          <div class="step-card">
+            <div class="step-card-heading"><span>2</span><div><h2>Convert to</h2><p id="sourceFormatLine">—</p></div></div>
+            <div class="format-grid" id="formatGrid" role="radiogroup" aria-label="Target format">
+              <label class="format-option"><input type="radio" name="format" value="image/jpeg"><strong>JPG</strong><small>Smallest</small></label>
+              <label class="format-option"><input type="radio" name="format" value="image/png" checked><strong>PNG</strong><small>Lossless</small></label>
+              <label class="format-option"><input type="radio" name="format" value="image/webp"><strong>WebP</strong><small>Best of both</small></label>
+            </div>
+            <div id="qualityBlock" class="resolution-bar is-hidden">
+              <div class="resolution-readout"><strong id="qualityLabel">90</strong><small>Quality</small></div>
+              <input type="range" id="qualityRange" min="10" max="100" step="5" value="90" aria-label="Quality">
+            </div>
+            <div class="flatten-row is-hidden" id="flattenRow">
+              <input type="color" id="flattenColor" value="#ffffff" aria-label="Background colour for transparent areas">
+              <span>JPG has no transparency — transparent areas become this colour.</span>
+            </div>
+            <div class="savings-line is-hidden" id="savingsLine"><span id="savingsText">—</span><strong id="savingsPercent">—</strong></div>
+          </div>
+          <div class="step-card">
+            <div class="step-card-heading"><span>3</span><div><h2>Download</h2><p>Save the converted image</p></div></div>
+            <button class="primary-button" id="processButton" type="button" disabled><span>Convert image</span><b>→</b></button>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN &nbsp; · &nbsp; Sign In</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle" data-i18n="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" data-i18n-placeholder="search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+      </div>
+      <div class="language-divider"></div>
+    </section>
+  </div>
+
+  <script type="module" src="/tool-shell.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/tools/convert-image/app.js"></script>
+</body>
+</html>

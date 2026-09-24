@@ -8,9 +8,18 @@
   <title>MediaPilot — Remove Logo from Video</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
   <style>#frameCanvas { touch-action: none; user-select: none; }</style>
+  <script>
+    // Applied before first paint so a dark-mode visitor never sees a white flash.
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch { /* private mode: fall through to the system preference */ }
+  </script>
 </head>
-<body>
+<body class="tool-body">
   <header class="global-header">
     <div class="header-inner">
       <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
@@ -104,6 +113,7 @@
     </section>
   </div>
 
+  <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/app.js"></script>
 </body>
