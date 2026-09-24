@@ -4,6 +4,8 @@
   "outputDirectory": "dist",
   "framework": null,
   "trailingSlash": false,
+  "_comment_cleanUrls": "Redirects /index.html to / so the same page cannot be indexed at two URLs. The canonical tag asks Google to merge them; this makes it structural.",
+  "cleanUrls": true,
   "headers": [
     {
       "source": "/(.*)",
