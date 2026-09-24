@@ -71,8 +71,8 @@ function showToast(message, isError = false) {
 }
 
 const ENGLISH_TRANSLATIONS = {
-  navVideo: 'Video Tools', signIn: 'Sign In', homeTagline: 'Simple online tools for video, images, and file conversion', videoTools: 'Video Tools', removeLogo: 'Remove Logo from Video',
-  toolTitle: 'Remove Logo from Video', toolSubtitle: 'Easily remove logos and watermarks from video files online', chooseFile: 'Choose File', dropFile: 'or drop a file here',
+  navVideo: 'Video Tools', signIn: 'Sign In', homeTagline: 'Simple online tools for video, images, and file conversion', videoTools: 'Video Tools', removeLogo: 'Remove Watermark from Video',
+  toolTitle: 'Remove Watermark from Video', toolSubtitle: 'Easily remove watermarks and logos from video files online', chooseFile: 'Choose File', dropFile: 'or drop a file here',
   stepUpload: 'Upload video', stepMark: 'Mark watermark', stepDownload: 'Download result', stepTwo: 'Step 2', selectArea: 'Select the watermark area', readyToMark: 'Ready to mark', uploadToPreview: 'Upload a video to see its preview', dragToMark: 'Click and drag on the frame to mark an area',
   markWatermark: 'Mark the watermark', drawEveryPosition: 'Draw a box around every position', lowerCorners: 'Lower corners', topCorners: 'Top corners', clearAll: 'Clear all', selectionsHere: 'Selections will appear here', fixedSelections: 'Selections stay fixed across the full video.',
   chooseFinish: 'Choose a finish', leastAggressive: 'Use the least aggressive option', reconstruct: 'Reconstruct', cleanBackgrounds: 'Best for clean backgrounds', soften: 'Soften', subtleBlur: 'Subtle blur over the mark', pixelate: 'Pixelate', unreadable: 'Make the area unreadable', maskExpansion: 'Mask expansion', precise: 'Precise', moreCoverage: 'More coverage', cleanVideo: 'Clean this video',

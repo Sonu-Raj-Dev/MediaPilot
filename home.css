@@ -91,6 +91,8 @@ html.reveal-armed .reveal:not(.is-visible){opacity:0;transform:translateY(14px)}
   html:not([data-theme="light"]) .icon-sun{display:none}
   html:not([data-theme="light"]) .icon-moon{display:block}
 }
+/* Sign In is hidden for now: the markup is removed from index.html and tool-shell.js.
+   These rules are kept so restoring the button is a one-line change. */
 .nav-signin{display:inline-flex;align-items:center;height:34px;padding:0 15px;color:var(--bg);border-radius:9px;background:var(--text);font-size:13px;font-weight:600;transition:opacity .16s,transform .16s}
 .nav-signin:hover{opacity:.86}
 .nav-signin:active{transform:scale(.97)}

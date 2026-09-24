@@ -1,5 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { TOOLS } from '../tools-data.js';
+
+// Search engines are told about the site from the same catalogue the pages are built from, so
+// adding a tool cannot leave the sitemap behind.
+const SITE = 'https://mediapilottools.com';
 
 const root = process.cwd();
 const srcDir = root;
@@ -50,4 +55,27 @@ if (fs.existsSync(toolRoot)) {
   copyDirectory(toolRoot, path.join(outDir, 'tools'));
 }
 
-console.log(`Built frontend bundle in ${outDir}`);
+const today = new Date().toISOString().slice(0, 10);
+const urls = [
+  { loc: `${SITE}/`, priority: '1.0' },
+  ...TOOLS.map((tool) => ({ loc: `${SITE}${tool.href}`, priority: '0.8' })),
+];
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(({ loc, priority }) => `  <url>
+    <loc>${loc}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>${priority}</priority>
+  </url>
+`).join('')}</urlset>
+`;
+fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap);
+
+fs.writeFileSync(path.join(outDir, 'robots.txt'), `User-agent: *
+Allow: /
+
+Sitemap: ${SITE}/sitemap.xml
+`);
+
+console.log(`Built frontend bundle in ${outDir} (${urls.length} urls in sitemap.xml)`);

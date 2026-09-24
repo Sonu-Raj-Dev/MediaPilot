@@ -21,13 +21,13 @@ const icon = {
 export const TOOLS = [
   {
     id: 'remove-watermark-video',
-    name: 'Remove Logo from Video',
-    short: 'Remove Logo',
-    description: 'Erase logos and watermarks from any clip.',
+    name: 'Remove Watermark from Video',
+    short: 'Video Watermark',
+    description: 'Erase watermarks and logos from any clip.',
     href: '/tools/remove-watermark-video',
     category: 'video',
     icon: icon.video,
-    keywords: ['logo', 'watermark', 'video', 'erase', 'delogo'],
+    keywords: ['watermark', 'logo', 'video', 'remove', 'erase', 'delogo'],
   },
   {
     id: 'remove-watermark-image',
