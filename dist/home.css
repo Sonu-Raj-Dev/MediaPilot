@@ -265,7 +265,10 @@ html.reveal-armed .reveal:not(.is-visible){opacity:0;transform:translateY(14px)}
   .hero-buttons{flex-direction:column;align-items:stretch}
   .btn{width:100%}
   .search-row{flex-direction:column;align-items:stretch}
-  .search-field{max-width:none}
+  /* The row stacks here, and in a column flex-basis sizes the HEIGHT: the desktop
+     `flex:1 1 340px` made the field 340px tall around a 46px input, dropping the icon and
+     the / hint (both at top:50%) far below it. Let the field be as tall as its input. */
+  .search-field{flex:0 0 auto;max-width:none}
   .filter-row{overflow-x:auto;padding-bottom:2px}
   .nav-icon-button span{display:none}
 }
