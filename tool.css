@@ -131,6 +131,34 @@
 .tool-body .download-button:hover{opacity:.9}
 .tool-body .download-button:active{transform:scale(.98)}
 
+/* Video tool control panel. These classes only exist on that page, so the re-skin missed them
+   and they kept the legacy sheet's hardcoded #fff cards — which put light text on a white card
+   in dark mode and made the mode names unreadable (1.02:1). Themed here against the tokens. */
+.tool-body .mode-option{min-height:52px;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg-alt);transition:border-color .16s,background .16s}
+.tool-body .mode-option:hover{border-color:var(--line-strong)}
+.tool-body .mode-option.active,.tool-body .mode-option:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.tool-body .mode-option strong{color:var(--text);font-size:13px;font-weight:650}
+.tool-body .mode-option small{color:var(--text-faint);font-size:11.5px}
+.tool-body .mode-option.active strong,.tool-body .mode-option:has(input:checked) strong{color:var(--accent-text)}
+/* the tinted selected card lifts the floor, so the subtitle needs a stronger grey than --text-faint */
+.tool-body .mode-option.active small,.tool-body .mode-option:has(input:checked) small{color:var(--text-soft)}
+.tool-body .mode-symbol{color:var(--text-faint);font-size:18px}
+.tool-body .mode-option.active .mode-symbol,.tool-body .mode-option:has(input:checked) .mode-symbol{color:var(--accent)}
+.tool-body .radio-dot{border:1px solid var(--line-strong);background:transparent}
+.tool-body .mode-option.active .radio-dot,.tool-body .mode-option:has(input:checked) .radio-dot{border:3px solid var(--accent);background:var(--surface)}
+
+.tool-body .zones-empty,.tool-body .zone-item{border:1px solid var(--line);border-radius:9px;background:var(--bg-alt);color:var(--text-faint);font-size:11.5px}
+.tool-body .zones-empty span:first-child,.tool-body .zone-item strong{color:var(--accent)}
+.tool-body .zone-item{color:var(--text-soft)}
+.tool-body .zone-note{color:var(--text-faint);font-size:11px}
+.tool-body .zone-method{margin-left:auto;height:26px;padding:0 9px;color:var(--text-soft);border:1px solid var(--line-strong);border-radius:7px;background:var(--surface);font:inherit;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:color .16s,background .16s,border-color .16s}
+.tool-body .zone-method:hover{color:var(--text);border-color:var(--accent)}
+.tool-body .zone-method[aria-pressed="true"]{color:var(--accent-text);border-color:var(--accent);background:var(--accent-soft)}
+
+.tool-body .slider-label{color:var(--text-soft);font-size:12px}
+.tool-body .slider-label output{color:var(--accent-text);font-weight:600}
+.tool-body .slider-hints{color:var(--text-faint);font-size:11px}
+
 /* footer reuses the home page markup, so only the legacy one needs hiding */
 .tool-body .site-footer{display:none}
 

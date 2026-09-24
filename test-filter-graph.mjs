@@ -24,7 +24,7 @@ const H = 1080;
 
 // A box in the middle of the frame keeps its pixel geometry.
 const [middle] = toPixelBoxes([{ x: 0.5, y: 0.5, w: 0.1, h: 0.1 }], 'blur', 6, W, H);
-assert.deepEqual(middle, { x: 960, y: 540, w: 192, h: 108 });
+assert.deepEqual(middle, { x: 960, y: 540, w: 192, h: 108, crop: false });
 
 // delogo cannot read from outside the frame, so edge boxes are pulled inside it.
 for (const region of [

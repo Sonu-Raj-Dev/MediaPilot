@@ -70,7 +70,7 @@ const ENGLISH_TRANSLATIONS = {
   toolTitle: 'Remove Watermark from Video', toolSubtitle: 'Easily remove watermarks and logos from video files online', chooseFile: 'Choose File', dropFile: 'or drop a file here',
   stepUpload: 'Upload video', stepMark: 'Mark watermark', stepDownload: 'Download result', stepTwo: 'Step 2', selectArea: 'Select the watermark area', readyToMark: 'Ready to mark', uploadToPreview: 'Upload a video to see its preview', dragToMark: 'Click and drag on the frame to mark an area',
   markWatermark: 'Mark the watermark', drawEveryPosition: 'Draw a box around every position', lowerCorners: 'Lower corners', topCorners: 'Top corners', clearAll: 'Clear all', selectionsHere: 'Selections will appear here', fixedSelections: 'Selections stay fixed across the full video.',
-  chooseFinish: 'Choose a finish', leastAggressive: 'Use the least aggressive option', reconstruct: 'Reconstruct', cleanBackgrounds: 'Best for clean backgrounds', soften: 'Soften', subtleBlur: 'Subtle blur over the mark', pixelate: 'Pixelate', unreadable: 'Make the area unreadable', maskExpansion: 'Mask expansion', precise: 'Precise', moreCoverage: 'More coverage', cleanVideo: 'Clean this video',
+  chooseFinish: 'Choose a finish', leastAggressive: 'Use the least aggressive option', reconstruct: 'Reconstruct', cleanBackgrounds: 'Best for clean backgrounds', soften: 'Soften', subtleBlur: 'Subtle blur over the mark', pixelate: 'Pixelate', unreadable: 'Make the area unreadable', cropAway: 'Crop away', edgeMarksOnly: 'Cuts it off. No artifacts.', maskExpansion: 'Mask expansion', precise: 'Precise', moreCoverage: 'More coverage', cleanVideo: 'Clean this video',
   legalNote: 'Use this only on videos you own or have permission to edit. Original audio is restored when available.', cleaningVideo: 'Cleaning your video', preparingFrames: 'Preparing frames…', cleanedReady: 'Cleaned video ready', exportReady: 'Your export is ready to review.', downloadMp4: 'Download MP4', languageTitle: 'Language', search: 'Search', noLanguages: 'No languages found', translationError: 'Found a translation error?', letUsKnow: 'Let us know', footerTagline: 'Online tools for video, images, and file conversion'
 };
 
@@ -289,11 +289,17 @@ function readVideoMetadata(file) {
       URL.revokeObjectURL(url);
       action();
     };
+    // HAVE_CURRENT_DATA: below this there is no decoded frame and drawImage paints nothing.
+    const HAVE_CURRENT_DATA = 2;
     const capture = () => {
       if (!video.videoWidth || !video.videoHeight) {
         finish(() => reject(new Error('This video cannot be decoded by the browser.')));
         return;
       }
+      // `seeked` fires when the seek lands, which is not the same as having a frame ready:
+      // metadata alone satisfies videoWidth, so drawing here produced a black preview. Wait for
+      // a later event instead — the timeout below is the backstop.
+      if (video.readyState < HAVE_CURRENT_DATA) return;
       const canvas = document.createElement('canvas');
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
@@ -302,17 +308,29 @@ function readVideoMetadata(file) {
       const duration = Number.isFinite(video.duration) ? video.duration : 0;
       finish(() => resolve({ width: video.videoWidth, height: video.videoHeight, duration, preview }));
     };
-    // Screen and camera recordings report an infinite duration and may never fire `seeked`,
-    // so fall back to whichever frame has decoded by then.
-    const timer = window.setTimeout(capture, 4000);
-    video.preload = 'metadata';
+    // Screen and camera recordings report an infinite duration and may never fire `seeked`.
+    // If nothing has decoded by now, reject rather than hand back a blank frame — the caller
+    // falls back to ffmpeg.wasm, which always produces a real one.
+    const timer = window.setTimeout(() => {
+      if (video.readyState >= HAVE_CURRENT_DATA) capture();
+      else finish(() => reject(new Error('The browser could not decode a frame from this video.')));
+    }, 4000);
+    // 'metadata' fetches only enough to read the header, so a seek often lands with no frame
+    // data behind it. 'auto' costs nothing here because the source is a local blob URL.
+    video.preload = 'auto';
     video.muted = true;
     video.onloadeddata = () => {
       // The very first frame is often black, so sample a little way in when that is possible.
       if (Number.isFinite(video.duration) && video.duration > 1) video.currentTime = Math.min(0.5, video.duration / 3);
       else capture();
     };
+    // requestVideoFrameCallback runs only once a frame has actually been presented for
+    // compositing, which is the guarantee `seeked` does not give. Events stay as the fallback.
+    if (typeof video.requestVideoFrameCallback === 'function') {
+      video.requestVideoFrameCallback(() => capture());
+    }
     video.onseeked = capture;
+    video.oncanplay = capture;
     video.onerror = () => finish(() => reject(new Error('This video cannot be decoded by the browser.')));
     video.src = url;
   });
@@ -352,26 +370,108 @@ function clampInt(value, min, max) {
 // Turns the normalised selection boxes into pixel rectangles that sit strictly inside
 // the frame, which delogo and overlay both require.
 function toPixelBoxes(regions, mode, strength, width, height) {
-  const pad = mode === 'inpaint' ? Math.round(strength / 2) : 0;
+  // Mask expansion gives delogo a wider border to interpolate from. A mark that is being cropped
+  // away is not interpolated at all, so padding it only eats more of the frame — which made
+  // "everything cropped" trim more than the Crop away mode did for the same marks.
+  const maskPad = mode === 'inpaint' ? Math.round(strength / 2) : 0;
   const boxes = [];
   for (const region of regions) {
+    const pad = region.crop === true ? 0 : maskPad;
     // Drop empty selections here; clamping below would otherwise inflate them to 2px.
     if (!(region.w * width >= 2) || !(region.h * height >= 2)) continue;
     const x = clampInt(region.x * width - pad, 1, width - 3);
     const y = clampInt(region.y * height - pad, 1, height - 3);
     const w = clampInt(region.w * width + pad * 2, 2, width - x - 1);
     const h = clampInt(region.h * height + pad * 2, 2, height - y - 1);
-    boxes.push({ x, y, w, h });
+    boxes.push({ x, y, w, h, crop: region.crop === true });
   }
   if (!boxes.length) throw new Error('Those selection zones fall outside the video frame.');
   return boxes;
 }
 
-function buildFilterGraph(boxes, mode, strength) {
+// Trims each marked box away from whichever frame edge is nearest, then shrinks the result to
+// the source aspect ratio so scaling back cannot stretch the picture. Nothing is invented here,
+// which is why it beats every reconstruction method when the mark touches an edge.
+// Returns null when the marks are too central to remove without gutting the frame.
+const CROP_MARGIN = 2;
+const CROP_MIN_KEEP = 0.5;
+
+function cropRectFor(boxes, width, height) {
+  let left = 0;
+  let right = width;
+  let top = 0;
+  let bottom = height;
+
+  for (const b of boxes) {
+    // What each edge would cost, measured as the pixels that edge would have to give up.
+    const fromLeft = b.x + b.w;
+    const fromRight = width - b.x;
+    const fromTop = b.y + b.h;
+    const fromBottom = height - b.y;
+    const cheapest = Math.min(fromLeft, fromRight, fromTop, fromBottom);
+    if (cheapest === fromLeft) left = Math.max(left, b.x + b.w + CROP_MARGIN);
+    else if (cheapest === fromRight) right = Math.min(right, b.x - CROP_MARGIN);
+    else if (cheapest === fromTop) top = Math.max(top, b.y + b.h + CROP_MARGIN);
+    else bottom = Math.min(bottom, b.y - CROP_MARGIN);
+  }
+
+  let w = right - left;
+  let h = bottom - top;
+  if (w <= 0 || h <= 0) return null;
+
+  // Every mark now sits outside this rectangle, so taking more from the middle can never bring
+  // one back — centring the extra trim is safe.
+  const sourceAspect = width / height;
+  if (w / h > sourceAspect) {
+    const narrowed = h * sourceAspect;
+    left += (w - narrowed) / 2;
+    w = narrowed;
+  } else {
+    const shortened = w / sourceAspect;
+    top += (h - shortened) / 2;
+    h = shortened;
+  }
+
+  // H.264 with yuv420p needs even dimensions, and an odd offset shifts the chroma plane against
+  // the luma. An offset of 0 is fine; a size of 0 is not.
+  const evenOffset = (value) => Math.max(0, Math.floor(value / 2) * 2);
+  const evenSize = (value) => Math.max(2, Math.floor(value / 2) * 2);
+  const x = evenOffset(left);
+  const y = evenOffset(top);
+  w = evenSize(Math.min(w, width - x));
+  h = evenSize(Math.min(h, height - y));
+
+  if (w < width * CROP_MIN_KEEP || h < height * CROP_MIN_KEEP) return null;
+  return { x, y, w, h };
+}
+
+function buildFilterGraph(boxes, mode, strength, width, height) {
+  if (mode === 'crop') {
+    const rect = cropRectFor(boxes, width, height);
+    if (!rect) {
+      throw new Error('Those marks are too far from the edges to crop away without losing most of the picture. Try Reconstruct instead.');
+    }
+    return `[0:v]crop=${rect.w}:${rect.h}:${rect.x}:${rect.y},scale=${width}:${height}[v]`;
+  }
+
   if (mode === 'inpaint') {
-    // delogo interpolates each box from the pixels around it, the closest match to the
-    // OpenCV inpaint the old backend used.
-    return `[0:v]${boxes.map((b) => `delogo=x=${b.x}:y=${b.y}:w=${b.w}:h=${b.h}`).join(',')}[v]`;
+    // delogo interpolates each box from the pixels around it. That works on flat backgrounds and
+    // smears badly over detail, so each mark can opt out and be cropped away instead. delogo runs
+    // FIRST because its coordinates are in the original frame, before any crop moves them.
+    const fill = boxes.filter((b) => !b.crop);
+    const cut = boxes.filter((b) => b.crop);
+    const steps = [];
+    if (fill.length) {
+      steps.push(fill.map((b) => `delogo=x=${b.x}:y=${b.y}:w=${b.w}:h=${b.h}`).join(','));
+    }
+    if (cut.length) {
+      const rect = cropRectFor(cut, width, height);
+      if (!rect) {
+        throw new Error('The marks set to crop are too far from the edges to cut away. Switch some of them back to fill.');
+      }
+      steps.push(`crop=${rect.w}:${rect.h}:${rect.x}:${rect.y},scale=${width}:${height}`);
+    }
+    return `[0:v]${steps.join(',')}[v]`;
   }
   // blur and pixelate operate on a crop of each box that is composited back over the frame.
   const block = Math.max(4, Math.min(32, 52 - strength));
@@ -392,7 +492,7 @@ function buildFilterGraph(boxes, mode, strength) {
 
 async function cleanVideo(file, { regions, mode, strength, width, height, onMessage, onProgress }) {
   const boxes = toPixelBoxes(regions, mode, strength, width, height);
-  const graph = buildFilterGraph(boxes, mode, strength);
+  const graph = buildFilterGraph(boxes, mode, strength, width, height);
   const engine = await getEngine(onMessage);
   const input = `source${extensionOf(file.name)}`;
   onMessage?.('Reading your video…');
@@ -497,6 +597,7 @@ function renderZones() {
     item.innerHTML = `
       <span class="zone-index">${String(index + 1).padStart(2, '0')}</span>
       <span class="zone-coords">x ${left}% · y ${top}% · ${width}% × ${height}%</span>
+      <button type="button" class="zone-method" data-zone-method="${index}" aria-pressed="${region.crop === true}" title="Fill reconstructs from the surrounding pixels. Crop cuts this area off the frame instead — no smear, but the picture gets tighter.">${region.crop === true ? '✂ crop' : '✎ fill'}</button>
       <button type="button" class="zone-remove" aria-label="Remove zone ${index + 1}" data-zone-index="${index}">×</button>
     `;
     zonesList.appendChild(item);
@@ -760,6 +861,16 @@ presetButton.addEventListener('click', addPresetZones);
 topPresetButton.addEventListener('click', addTopPresetZones);
 clearButton.addEventListener('click', clearZones);
 zonesList.addEventListener('click', (event) => {
+  const method = event.target.closest('.zone-method');
+  if (method) {
+    const index = Number(method.dataset.zoneMethod);
+    const region = state.regions[index];
+    if (region) {
+      region.crop = !region.crop;
+      renderZones();
+    }
+    return;
+  }
   const button = event.target.closest('.zone-remove');
   if (!button) return;
   const index = Number(button.dataset.zoneIndex);
