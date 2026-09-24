@@ -27,6 +27,11 @@ is the parent folder rather than this one, set the project's **Root Directory** 
 
 `wrangler.jsonc` is the previous Cloudflare Workers config. It is unused and not uploaded.
 
+`cleanUrls` redirects `/index.html` to `/` so the same page cannot be indexed at two URLs;
+`trailingSlash: false` matches that and keeps it consistent with the `<link rel="canonical">`
+tags. Note that `vercel.json` is validated against a closed schema — an unrecognised key fails
+the deploy, and JSON has no comments, so notes about it belong here.
+
 ### Headers, and one that must not be added
 
 `vercel.json` deliberately does **not** set `Cross-Origin-Embedder-Policy` or
