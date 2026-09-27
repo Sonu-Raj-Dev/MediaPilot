@@ -337,6 +337,8 @@ def run_processing(process_id: str, asset_id: str, regions: list[dict[str, Any]]
 # previous hand-maintained list silently 404'd every file someone forgot to add.
 ROOT_ASSETS = {
     "vendor/opencv.js": "text/javascript; charset=utf-8",
+    "vendor/tesseract.min.js": "text/javascript; charset=utf-8",
+    "vendor/worker.min.js": "text/javascript; charset=utf-8",
 }
 
 ROOT_FILE_TYPES = {

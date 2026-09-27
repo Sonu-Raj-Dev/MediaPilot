@@ -16,6 +16,7 @@ const icon = {
   compress: '<path d="M4 9V5a1 1 0 0 1 1-1h4"/><path d="M20 15v4a1 1 0 0 1-1 1h-4"/><path d="m9 15-5 5"/><path d="m15 9 5-5"/><path d="M15 9h5V4"/><path d="M9 15H4v5"/>',
   convert: '<path d="M4 8h14l-3-3"/><path d="M20 16H6l3 3"/>',
   rotate: '<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/><path d="M12 8v8"/>',
+  text: '<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
 };
 
 export const TOOLS = [
@@ -92,6 +93,17 @@ export const TOOLS = [
     category: 'image',
     icon: icon.rotate,
     keywords: ['rotate', 'flip', 'mirror', 'turn', 'sideways', 'upright', 'orientation', '90'],
+  },
+  {
+    id: 'image-to-text',
+    name: 'Image to Text (OCR)',
+    short: 'Image to Text',
+    description: 'Extract text from images, screenshots and scanned documents.',
+    href: '/tools/image-to-text',
+    category: 'image',
+    icon: icon.text,
+    keywords: ['ocr', 'text', 'extract', 'scan', 'screenshot', 'copy', 'recognize', 'image to text'],
+    popular: true,
   },
 ];
 
