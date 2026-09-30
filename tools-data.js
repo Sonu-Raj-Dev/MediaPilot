@@ -5,6 +5,7 @@
 export const CATEGORIES = [
   { id: 'video', label: 'Video', blurb: 'Tools for editing and processing videos' },
   { id: 'image', label: 'Image', blurb: 'Tools for editing and optimizing images' },
+  { id: 'document', label: 'Converters', blurb: 'Tools for converting documents' },
 ];
 
 // Icons are inline SVG bodies (24x24, currentColor strokes) so the page ships no icon library.
@@ -17,6 +18,7 @@ const icon = {
   convert: '<path d="M4 8h14l-3-3"/><path d="M20 16H6l3 3"/>',
   rotate: '<path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/><path d="M12 8v8"/>',
   text: '<path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>',
+  pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h1a1 1 0 1 0 0-2H9v4"/><path d="M13 17v-4h1.5"/><path d="M13 15h1"/><path d="M17 13v4h1"/>',
 };
 
 export const TOOLS = [
@@ -103,6 +105,17 @@ export const TOOLS = [
     category: 'image',
     icon: icon.text,
     keywords: ['ocr', 'text', 'extract', 'scan', 'screenshot', 'copy', 'recognize', 'image to text'],
+    popular: true,
+  },
+  {
+    id: 'word-to-pdf',
+    name: 'Word to PDF',
+    short: 'Word to PDF',
+    description: 'Convert a .docx file to a downloadable PDF.',
+    href: '/tools/word-to-pdf',
+    category: 'document',
+    icon: icon.pdf,
+    keywords: ['word', 'docx', 'pdf', 'convert', 'document'],
     popular: true,
   },
 ];

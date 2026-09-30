@@ -85,6 +85,7 @@ function renderFooter() {
   };
   list('#footVideo', 'video');
   list('#footImage', 'image');
+  list('#footDocument', 'document');
 }
 
 /* ---------- search + filtering ---------- */

@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C41MLW8JMY');
+  </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f1115">
@@ -75,6 +82,10 @@
         <div class="nav-item">
           <button class="nav-trigger" type="button" data-menu="image" aria-expanded="false" aria-controls="menuImage">Image<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
           <div class="nav-panel" id="menuImage" data-menu-panel="image" hidden></div>
+        </div>
+        <div class="nav-item">
+          <button class="nav-trigger" type="button" data-menu="document" aria-expanded="false" aria-controls="menuDocument">Converters<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+          <div class="nav-panel" id="menuDocument" data-menu-panel="document" hidden></div>
         </div>
         <a class="nav-link" href="#all-tools">Tools</a>
       </nav>
@@ -155,6 +166,7 @@
             <button class="chip is-active" type="button" role="tab" aria-selected="true" data-filter="all">All</button>
             <button class="chip" type="button" role="tab" aria-selected="false" data-filter="video">Video</button>
             <button class="chip" type="button" role="tab" aria-selected="false" data-filter="image">Image</button>
+            <button class="chip" type="button" role="tab" aria-selected="false" data-filter="document">Converters</button>
           </div>
         </div>
         <p class="search-count" id="searchCount" role="status" aria-live="polite"></p>
@@ -246,6 +258,7 @@
       </div>
       <nav class="foot-col" aria-label="Video tools"><h3>Video Tools</h3><ul id="footVideo"></ul></nav>
       <nav class="foot-col" aria-label="Image tools"><h3>Image Tools</h3><ul id="footImage"></ul></nav>
+      <nav class="foot-col" aria-label="Converters"><h3>Converters</h3><ul id="footDocument"></ul></nav>
       <nav class="foot-col" aria-label="Resources">
         <h3>Resources</h3>
         <ul>
