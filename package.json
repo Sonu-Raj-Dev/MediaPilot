@@ -6,9 +6,10 @@
   },
   "dependencies": {
     "@techstark/opencv-js": "^5.0.0-release.1",
+    "docx-preview": "^0.4.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
-    "mammoth": "^1.13.0",
+    "jszip": "^3.10.2",
     "tesseract.js": "^5.0.0"
   }
 }

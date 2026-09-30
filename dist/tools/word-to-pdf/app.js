@@ -64,19 +64,31 @@ function setProgress(label, detail, percent) {
 }
 
 // Only the modern zip-based format is readable in the browser without a server: legacy .doc
-// is a binary OLE format mammoth.js cannot parse.
+// is a binary OLE format docx-preview cannot parse.
 function isDocx(file) {
   if (file.name.toLowerCase().endsWith('.docx')) return true;
   return file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 }
 
-function readArrayBuffer(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error('Could not read that file.'));
-    reader.readAsArrayBuffer(file);
-  });
+// Word only records a break where it last paginated; where a document pushes text to the next
+// page with blank lines instead, docx-preview leaves one over-tall page. Move trailing blocks to
+// a new page until it fits. Pages only slightly too tall are browser font-metric drift from a
+// page Word did fit, so those are left whole and shrunk at export instead.
+// ponytail: 25% threshold is a heuristic; a doc that overflows by less without a Word break stays shrunk.
+function splitOverflowingPages() {
+  for (let page = docPreview.querySelector('section.docx'); page; page = page.nextElementSibling) {
+    // +2px: offsetHeight is rounded, so a page exactly at min-height can read a fraction over.
+    const limit = page.offsetWidth * (parseFloat(page.style.minHeight) / parseFloat(page.style.width)) + 2;
+    const article = page.querySelector(':scope > article');
+    if (!article || page.offsetHeight <= limit * 1.25) continue;
+    const next = page.cloneNode(false);
+    const nextArticle = article.cloneNode(false);
+    for (const part of page.children) next.appendChild(part === article ? nextArticle : part.cloneNode(true));
+    page.after(next);
+    while (page.offsetHeight > limit && article.children.length > 1) {
+      nextArticle.prepend(article.lastElementChild);
+    }
+  }
 }
 
 async function loadFile(file) {
@@ -109,10 +121,17 @@ async function loadFile(file) {
   previewStatus.className = 'preview-status working';
   docPreview.innerHTML = '<p>Reading document…</p>';
   try {
-    const arrayBuffer = await readArrayBuffer(file);
-    const { value: html } = await mammoth.convertToHtml({ arrayBuffer });
-    docPreview.innerHTML = html || '<p><em>This document has no readable text.</em></p>';
-    processButton.disabled = false;
+    docPreview.innerHTML = '';
+    // lastRenderedPageBreak markers are where Word itself broke the pages when the file was
+    // last saved, so honouring them makes each rendered <section> one Word page.
+    await docx.renderAsync(file, docPreview, null, {
+      breakPages: true,
+      ignoreLastRenderedPageBreak: false,
+      experimental: true,
+      useBase64URL: true, // data: URLs so html2canvas can draw the images
+    });
+    splitOverflowingPages();
+    processButton.disabled = !docPreview.querySelector('section.docx');
   } catch (err) {
     docPreview.innerHTML = '';
     showInlineMessage('Could not read this document: ' + (err.message || 'unknown error'), true);
@@ -132,24 +151,27 @@ async function convertToPdf() {
   setProgress('Rendering…', 'Laying out pages', 0.2);
 
   try {
-    const pdf = new jspdf.jsPDF('p', 'pt', 'a4');
-    await new Promise((resolve, reject) => {
-      pdf.html(docPreview, {
-        callback: () => resolve(),
-        margin: [40, 40, 40, 40],
-        // 'text' mode reflows around page breaks by walking the DOM, which corrupts row
-        // heights on tables (rows render overlapping each other). This document is
-        // table-heavy (spec/property tables throughout), so 'slice' — a literal image
-        // cut at each page boundary — is used instead. It can cut a table row across a
-        // page break, but never produces overlapping/unreadable text.
-        autoPaging: 'slice',
-        // jsPDF derives its own html2canvas scale from width/windowWidth (515/750) to fit
-        // the page exactly — passing an html2canvas.scale here would silently overwrite
-        // that and push content past the right edge, so it's left unset.
-        width: 515,
-        windowWidth: 750,
-      }).catch(reject);
-    });
+    const pages = [...docPreview.querySelectorAll('section.docx')];
+    let pdf;
+    for (const [i, page] of pages.entries()) {
+      setProgress('Rendering…', `Page ${i + 1} of ${pages.length}`, 0.05 + 0.85 * (i / pages.length));
+      // The section's CSS size is the Word page size, so px * 0.75 gives the page in points.
+      const w = page.offsetWidth * 0.75;
+      const h = parseFloat(page.style.minHeight) * (page.style.minHeight.endsWith('pt') ? 1 : 0.75) || page.offsetHeight * 0.75;
+      const canvas = await html2canvas(page, {
+        scale: 2,
+        backgroundColor: '#ffffff',
+        useCORS: true,
+        // html2canvas paints the preview's page shadow as a grey fill over the whole page.
+        onclone: (doc) => doc.querySelectorAll('section.docx').forEach((s) => { s.style.boxShadow = 'none'; }),
+      });
+      const orientation = w > h ? 'l' : 'p';
+      if (!pdf) pdf = new jspdf.jsPDF({ orientation, unit: 'pt', format: [w, h] });
+      else pdf.addPage([w, h], orientation);
+      // A page whose content ran past Word's break is shrunk to fit rather than split.
+      const fit = Math.min(w / canvas.width, h / canvas.height);
+      pdf.addImage(canvas, 'JPEG', 0, 0, canvas.width * fit, canvas.height * fit, undefined, 'FAST');
+    }
 
     setProgress('Finishing…', 'Building PDF', 0.9);
     const blob = pdf.output('blob');

@@ -16,7 +16,10 @@ const vendorFiles = [
   ['node_modules/@techstark/opencv-js/dist/opencv.js', 'dist/vendor/opencv.js'],
   ['node_modules/tesseract.js/dist/tesseract.min.js', 'dist/vendor/tesseract.min.js'],
   ['node_modules/tesseract.js/dist/worker.min.js', 'dist/vendor/worker.min.js'],
-  ['node_modules/mammoth/mammoth.browser.min.js', 'dist/vendor/mammoth.min.js'],
+  ['node_modules/jszip/dist/jszip.min.js', 'vendor/jszip.min.js'],
+  ['node_modules/jszip/dist/jszip.min.js', 'dist/vendor/jszip.min.js'],
+  ['node_modules/docx-preview/dist/docx-preview.min.js', 'vendor/docx-preview.min.js'],
+  ['node_modules/docx-preview/dist/docx-preview.min.js', 'dist/vendor/docx-preview.min.js'],
   ['node_modules/jspdf/dist/jspdf.umd.min.js', 'dist/vendor/jspdf.min.js'],
   ['node_modules/html2canvas/dist/html2canvas.min.js', 'dist/vendor/html2canvas.min.js'],
 ];

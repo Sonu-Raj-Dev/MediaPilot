@@ -339,7 +339,8 @@ ROOT_ASSETS = {
     "vendor/opencv.js": "text/javascript; charset=utf-8",
     "vendor/tesseract.min.js": "text/javascript; charset=utf-8",
     "vendor/worker.min.js": "text/javascript; charset=utf-8",
-    "vendor/mammoth.min.js": "text/javascript; charset=utf-8",
+    "vendor/jszip.min.js": "text/javascript; charset=utf-8",
+    "vendor/docx-preview.min.js": "text/javascript; charset=utf-8",
     "vendor/jspdf.min.js": "text/javascript; charset=utf-8",
     "vendor/html2canvas.min.js": "text/javascript; charset=utf-8",
 }
