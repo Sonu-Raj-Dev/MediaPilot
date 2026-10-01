@@ -398,6 +398,8 @@ class AppHandler(BaseHTTPRequestHandler):
             return self._serve_static("index.html", "text/html; charset=utf-8")
         if path in {"/remove-logo", "/watermark-remover", "/tools/remove-watermark-video", "/tools/remove-watermark-video/index.html"}:
             return self._serve_static("tools/remove-watermark-video/index.html", "text/html; charset=utf-8")
+        if path.rstrip("/") in {"/privacy", "/terms"}:
+            return self._serve_static(path.strip("/") + "/index.html", "text/html; charset=utf-8")
         if path.startswith("/tools/"):
             relative = path.lstrip("/")
             candidate = ROOT / relative

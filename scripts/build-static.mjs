@@ -73,10 +73,17 @@ if (fs.existsSync(toolRoot)) {
   copyDirectory(toolRoot, path.join(outDir, 'tools'));
 }
 
+// Standalone pages served at /<name> (each is a folder with an index.html).
+const pageDirs = ['privacy', 'terms'];
+for (const dir of pageDirs) {
+  copyDirectory(path.join(srcDir, dir), path.join(outDir, dir));
+}
+
 const today = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: `${SITE}/`, priority: '1.0' },
   ...TOOLS.map((tool) => ({ loc: `${SITE}${tool.href}`, priority: '0.8' })),
+  ...pageDirs.map((dir) => ({ loc: `${SITE}/${dir}`, priority: '0.3' })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
