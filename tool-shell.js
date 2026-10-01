@@ -1,7 +1,7 @@
 // Shared chrome for every tool page: the same navbar, theme toggle and language dialog the home
 // page uses. It only touches the header and footer it renders itself — the tool's own markup and
 // element ids are never read or modified here, so no tool logic depends on this file loading.
-import { CATEGORIES, toolsIn } from './tools-data.js';
+import { CATEGORIES, menuMarkup } from './tools-data.js';
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -12,13 +12,7 @@ function navMarkup() {
   const groups = CATEGORIES.map((category) => `
     <div class="nav-item">
       <button class="nav-trigger" type="button" data-menu="${category.id}" aria-expanded="false" aria-controls="menu-${category.id}">${category.label}<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-      <div class="nav-panel" id="menu-${category.id}" data-menu-panel="${category.id}" hidden>
-        ${toolsIn(category.id).map((tool) => `
-          <a href="${tool.href}"${tool.href === here ? ' aria-current="page"' : ''}>
-            <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${tool.icon}</svg></span>
-            <span><strong>${tool.name}</strong><small>${tool.description}</small></span>
-          </a>`).join('')}
-      </div>
+      <div class="nav-panel" id="menu-${category.id}" data-menu-panel="${category.id}" hidden>${menuMarkup(category.id, here)}</div>
     </div>`).join('');
 
   return `
@@ -48,12 +42,6 @@ function navMarkup() {
 }
 
 function footerMarkup() {
-  const column = (category) => `
-    <nav class="foot-col" aria-label="${category.label} tools">
-      <h3>${category.label} Tools</h3>
-      <ul>${toolsIn(category.id).map((tool) => `<li><a href="${tool.href}">${tool.name}</a></li>`).join('')}</ul>
-    </nav>`;
-
   return `
     <div class="shell foot-grid">
       <div class="foot-brand">
@@ -63,10 +51,9 @@ function footerMarkup() {
         </a>
         <p>Simple media tools that run on your device.</p>
       </div>
-      ${CATEGORIES.map(column).join('')}
       <nav class="foot-col" aria-label="Resources">
         <h3>Resources</h3>
-        <ul><li><a href="/#how-it-works">How it works</a></li><li><a href="/#why">Why MediaPilot</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul>
+        <ul><li><a href="/#all-tools">All tools</a></li><li><a href="/#how-it-works">How it works</a></li><li><a href="/#why">Why MediaPilot</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul>
       </nav>
     </div>
     <div class="shell foot-base"><span>© 2026 MediaPilot</span><span>Processed locally. Never uploaded.</span></div>`;
@@ -104,10 +91,16 @@ function initNav() {
       panel.hidden = !wasClosed;
       trigger.setAttribute('aria-expanded', String(wasClosed));
     });
+    // Leaving the menu closes it only after a short grace period, cancelled if the pointer comes
+    // back, so a slightly off-course move on the way to an item does not snap it shut.
+    let closeTimer;
     trigger.parentElement.addEventListener('mouseleave', () => {
-      panel.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
+      closeTimer = setTimeout(() => {
+        panel.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      }, 400);
     });
+    trigger.parentElement.addEventListener('mouseenter', () => clearTimeout(closeTimer));
   });
   document.addEventListener('click', closeMenus);
 

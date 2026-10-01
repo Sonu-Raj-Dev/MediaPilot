@@ -1,4 +1,4 @@
-import { CATEGORIES, TOOLS, toolsIn, popularTools, searchTools } from './tools-data.js';
+import { CATEGORIES, TOOLS, menuMarkup, popularTools, searchTools } from './tools-data.js';
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
@@ -64,29 +64,8 @@ function renderNavMenus() {
   for (const category of CATEGORIES) {
     const panel = document.querySelector(`[data-menu-panel="${category.id}"]`);
     if (!panel) continue;
-    panel.innerHTML = toolsIn(category.id)
-      .map((tool) => `
-        <a href="${tool.href}">
-          <span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${tool.icon}</svg></span>
-          <span><strong>${tool.name}</strong><small>${tool.description}</small></span>
-        </a>`)
-      .join('');
+    panel.innerHTML = menuMarkup(category.id);
   }
-}
-
-function renderFooter() {
-  const list = (id, category) => {
-    const host = $(id);
-    if (host) {
-      host.innerHTML = toolsIn(category)
-        .map((tool) => `<li><a href="${tool.href}">${tool.name}</a></li>`)
-        .join('');
-    }
-  };
-  list('#footVideo', 'video');
-  list('#footImage', 'image');
-  list('#footDocument', 'document');
-  list('#footPdf', 'pdf');
 }
 
 /* ---------- search + filtering ---------- */
@@ -145,10 +124,16 @@ function initNav() {
       panel.hidden = !wasClosed;
       trigger.setAttribute('aria-expanded', String(wasClosed));
     });
+    // Leaving the menu closes it only after a short grace period, cancelled if the pointer comes
+    // back, so a slightly off-course move on the way to an item does not snap it shut.
+    let closeTimer;
     trigger.parentElement.addEventListener('mouseleave', () => {
-      panel.hidden = true;
-      trigger.setAttribute('aria-expanded', 'false');
+      closeTimer = setTimeout(() => {
+        panel.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+      }, 400);
     });
+    trigger.parentElement.addEventListener('mouseenter', () => clearTimeout(closeTimer));
   });
   document.addEventListener('click', closeMenus);
 
@@ -218,7 +203,6 @@ function initLanguage() {
 
 renderNavMenus();
 renderPopular();
-renderFooter();
 renderSections(TOOLS);
 initNav();
 initTheme();

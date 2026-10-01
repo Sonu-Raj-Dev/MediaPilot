@@ -27,6 +27,7 @@ const icon = {
   rotatePdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M15 15a3.5 3.5 0 1 1-1-2.5"/><path d="M15 11.5v1.5h-1.5"/>',
   lockPdf: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/>',
   unlockPdf: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/><path d="M12 15v2"/>',
+  numberPdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M10 15.5l1.5-1v4.5"/><path d="M10 19h3"/>',
   pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h1a1 1 0 1 0 0-2H9v4"/><path d="M13 17v-4h1.5"/><path d="M13 15h1"/><path d="M17 13v4h1"/>',
 };
 
@@ -135,6 +136,8 @@ export const TOOLS = [
     href: '/tools/jpg-to-pdf',
     category: 'document',
     icon: icon.imagePdf,
+    menuGroup: 'image-to-pdf',
+    menuLabel: 'JPG',
     keywords: ['jpg', 'jpeg', 'photo', 'image', 'pdf', 'convert', 'combine', 'jpg to pdf', 'image to pdf'],
     popular: true,
   },
@@ -146,6 +149,8 @@ export const TOOLS = [
     href: '/tools/png-to-pdf',
     category: 'document',
     icon: icon.imagePdf,
+    menuGroup: 'image-to-pdf',
+    menuLabel: 'PNG',
     keywords: ['png', 'image', 'screenshot', 'pdf', 'convert', 'combine', 'png to pdf', 'image to pdf'],
   },
   {
@@ -188,6 +193,8 @@ export const TOOLS = [
     href: '/tools/pdf-to-jpg',
     category: 'pdf',
     icon: icon.pdfImage,
+    menuGroup: 'pdf-to-image',
+    menuLabel: 'JPG',
     keywords: ['pdf to jpg', 'pdf to jpeg', 'pdf to image', 'convert pdf', 'pdf', 'jpg', 'jpeg', 'image', 'pages'],
     popular: true,
   },
@@ -199,6 +206,8 @@ export const TOOLS = [
     href: '/tools/pdf-to-png',
     category: 'pdf',
     icon: icon.pdfImage,
+    menuGroup: 'pdf-to-image',
+    menuLabel: 'PNG',
     keywords: ['pdf to png', 'pdf to image', 'convert pdf', 'pdf', 'png', 'image', 'pages'],
   },
   {
@@ -219,6 +228,8 @@ export const TOOLS = [
     href: '/tools/protect-pdf',
     category: 'pdf',
     icon: icon.lockPdf,
+    menuGroup: 'pdf-password',
+    menuLabel: 'Protect',
     keywords: ['protect', 'password', 'encrypt', 'lock', 'secure', 'pdf', 'protect pdf', 'password protect pdf', 'encrypt pdf'],
   },
   {
@@ -229,11 +240,66 @@ export const TOOLS = [
     href: '/tools/unlock-pdf',
     category: 'pdf',
     icon: icon.unlockPdf,
+    menuGroup: 'pdf-password',
+    menuLabel: 'Unlock',
     keywords: ['unlock', 'remove password', 'decrypt', 'password', 'pdf', 'unlock pdf', 'remove pdf password', 'unprotect'],
+  },
+  {
+    id: 'add-page-numbers',
+    name: 'Add Page Numbers',
+    short: 'Page Numbers',
+    description: 'Number the pages of a PDF, with a live preview.',
+    href: '/tools/add-page-numbers',
+    category: 'pdf',
+    icon: icon.numberPdf,
+    keywords: ['page numbers', 'number pages', 'pagination', 'paginate', 'pdf', 'add page numbers', 'footer', 'numbering'],
   },
 ];
 
+// Tools that share one row in the navigation menus, each reached by a short label ("PDF to Image:
+// JPG · PNG"), so the menus stay short as formats are added. Tool grids, search and footers still
+// list every tool on its own.
+export const MENU_GROUPS = {
+  'image-to-pdf': { name: 'Image to PDF', description: 'Turn JPG or PNG images into a PDF.', icon: icon.imagePdf },
+  'pdf-to-image': { name: 'PDF to Image', description: 'Turn PDF pages into JPG or PNG images.', icon: icon.pdfImage },
+  'pdf-password': { name: 'PDF Password', description: 'Add a password to a PDF, or remove one.', icon: icon.lockPdf },
+};
+
 export const toolsIn = (category) => TOOLS.filter((tool) => tool.category === category);
+
+// The navigation menu for one category, shared by the home page and the tool pages. A group takes
+// the place of its first tool, so menu order follows TOOLS. `current` marks the page being viewed.
+export function menuMarkup(category, current = '') {
+  const rows = [];
+  const groups = new Map();
+  for (const tool of toolsIn(category)) {
+    if (!tool.menuGroup) {
+      rows.push(tool);
+      continue;
+    }
+    if (!groups.has(tool.menuGroup)) {
+      const group = { ...MENU_GROUPS[tool.menuGroup], items: [] };
+      groups.set(tool.menuGroup, group);
+      rows.push(group);
+    }
+    groups.get(tool.menuGroup).items.push(tool);
+  }
+  const iconMarkup = (svg) => `<span class="menu-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${svg}</svg></span>`;
+  const currentAttr = (href) => (href === current ? ' aria-current="page"' : '');
+  return rows.map((row) => (row.items
+    ? `
+      <div class="menu-group">
+        ${iconMarkup(row.icon)}
+        <span><strong>${row.name}</strong><small>${row.description}</small>
+          <span class="menu-formats">${row.items.map((tool) => `<a href="${tool.href}" title="${tool.name}" aria-label="${tool.name}"${currentAttr(tool.href)}>${tool.menuLabel}</a>`).join('')}</span>
+        </span>
+      </div>`
+    : `
+      <a href="${row.href}"${currentAttr(row.href)}>
+        ${iconMarkup(row.icon)}
+        <span><strong>${row.name}</strong><small>${row.description}</small></span>
+      </a>`)).join('');
+}
 
 export const popularTools = () => TOOLS.filter((tool) => tool.popular);
 
