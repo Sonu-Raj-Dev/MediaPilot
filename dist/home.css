@@ -59,12 +59,21 @@ html.reveal-armed .reveal:not(.is-visible){opacity:0;transform:translateY(14px)}
 .site-nav.is-scrolled{border-bottom-color:var(--line);box-shadow:var(--shadow-sm)}
 .nav-inner{width:min(var(--shell),calc(100% - 48px));margin:0 auto;height:62px;display:flex;align-items:center;gap:14px}
 .nav-brand{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:16px;letter-spacing:-.01em}
-.brand-mark{position:relative;width:26px;height:26px;flex:none;border-radius:8px;background:linear-gradient(135deg,var(--accent-soft),transparent)}
-.brand-mark i{position:absolute;width:8px;height:8px;border-radius:50%}
-.brand-mark i:nth-child(1){left:3px;top:11px;background:#ffd200}
-.brand-mark i:nth-child(2){left:12px;top:3px;background:#038cf4}
-.brand-mark i:nth-child(3){left:12px;top:13px;background:#ff5b29}
-.brand-mark i:nth-child(4){left:3px;top:3px;background:#2bc36f}
+/* Logo: four dots in a 2x2 grid. On load they pop out from the centre (brandIn), then a gentle
+   wave runs through them every 6s (brandWave); hovering the logo gives a quarter-turn and spreads
+   the dots. Each effect uses its own transform property (translate / scale / rotate), so they
+   combine instead of overriding each other. --cx/--cy is the offset from a dot to the centre. */
+.brand-mark{position:relative;width:26px;height:26px;flex:none;border-radius:8px;background:linear-gradient(135deg,var(--accent-soft),transparent);transition:rotate .6s cubic-bezier(.34,1.56,.64,1)}
+.brand-mark i{position:absolute;width:8px;height:8px;border-radius:50%;animation:brandIn .7s cubic-bezier(.34,1.56,.64,1) backwards,brandWave 6s ease-in-out 1.4s infinite;transition:translate .45s cubic-bezier(.34,1.56,.64,1)}
+.brand-mark i:nth-child(4){left:3px;top:3px;background:#2bc36f;--cx:6px;--cy:6px;animation-delay:0s,1.4s}
+.brand-mark i:nth-child(2){left:15px;top:3px;background:#038cf4;--cx:-6px;--cy:6px;animation-delay:.08s,1.55s}
+.brand-mark i:nth-child(3){left:15px;top:15px;background:#ff5b29;--cx:-6px;--cy:-6px;animation-delay:.16s,1.7s}
+.brand-mark i:nth-child(1){left:3px;top:15px;background:#ffd200;--cx:6px;--cy:-6px;animation-delay:.24s,1.85s}
+.nav-brand:hover .brand-mark,.nav-brand:focus-visible .brand-mark{rotate:90deg}
+.nav-brand:hover .brand-mark i,.nav-brand:focus-visible .brand-mark i{translate:calc(var(--cx) * -.25) calc(var(--cy) * -.25)}
+@keyframes brandIn{from{translate:var(--cx) var(--cy);opacity:0}to{translate:0 0;opacity:1}}
+@keyframes brandWave{0%,14%,100%{scale:1}5%{scale:1.35}}
+@media (prefers-reduced-motion:reduce){.brand-mark,.brand-mark i{animation:none!important;transition:none!important}}
 .nav-links{display:flex;align-items:center;gap:4px;margin-left:26px}
 .nav-item{position:relative}
 .nav-trigger,.nav-link{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 12px;color:var(--text-soft);border:0;border-radius:9px;background:none;font:inherit;font-size:14px;font-weight:500;cursor:pointer;transition:color .16s,background .16s}
