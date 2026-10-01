@@ -427,6 +427,9 @@ class AppHandler(BaseHTTPRequestHandler):
                 return self._send_bytes(candidate.read_bytes(), content_type)
             return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
         name = path.lstrip("/")
+        hero_name = name.removeprefix("assets/hero/")
+        if hero_name != name and hero_name.endswith(".webp") and SAFE_ROOT_NAME.match(hero_name) and (ROOT / name).is_file():
+            return self._serve_static(name, "image/webp")
         vendor_name = name.removeprefix("vendor/")
         vendor_type = VENDOR_TYPES.get(Path(vendor_name).suffix.lower())
         vendor_parts = vendor_name.split("/")

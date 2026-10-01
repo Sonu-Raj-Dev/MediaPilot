@@ -130,29 +130,78 @@
           </div>
         </div>
 
-        <!-- Mock panel: a still, honest illustration of what the tools do. No autoplay. -->
-        <div class="hero-panel reveal" style="--i:3" aria-hidden="true">
-          <div class="panel-chrome"><span></span><span></span><span></span><em>MediaPilot</em></div>
-          <div class="panel-body">
-            <div class="panel-row">
-              <div class="panel-icon panel-icon-video"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg></div>
-              <div class="panel-text"><strong>Video processing</strong><span>Watermark removal, frame by frame</span></div>
-              <div class="panel-bar"><i style="width:82%"></i></div>
+        <!-- Animated illustration: layered cut-outs, CSS keyframes, pointer parallax (home.js). -->
+        <div class="hero-art reveal" style="--i:3" aria-hidden="true">
+          <div class="hero-stage">
+            <div class="hero-scene">
+              <div class="hs-depth" style="--d:5"><i class="hs-blob hs-blob-a"></i><i class="hs-blob hs-blob-b"></i></div>
+              <svg class="hs-depth hs-paths" style="--d:7" viewBox="600 40 1395 720" preserveAspectRatio="none">
+                <path d="M878 392C895 425 940 450 995 462"/>
+                <path d="M868 292C875 240 920 200 965 182"/>
+                <path d="M1068 172C1140 160 1200 175 1250 215"/>
+                <path d="M1530 245C1580 215 1620 205 1655 208"/>
+                <path d="M1745 207C1800 210 1845 225 1862 255"/>
+                <path d="M1860 358C1840 390 1790 410 1722 432"/>
+                <g transform="translate(950 412)"><path class="hs-spark" fill="#8b7bff" d="M0-15C2-4 4-2 15 0 4 2 2 4 0 15-2 4-4 2-15 0-4-2-2-4 0-15Z"/></g>
+                <g transform="translate(1602 140)"><path class="hs-spark hs-spark-b" fill="#8b7bff" d="M0-15C2-4 4-2 15 0 4 2 2 4 0 15-2 4-4 2-15 0-4-2-2-4 0-15Z"/></g>
+                <g transform="translate(1765 388)"><path class="hs-spark hs-spark-c" fill="#5b86ff" d="M0-15C2-4 4-2 15 0 4 2 2 4 0 15-2 4-4 2-15 0-4-2-2-4 0-15Z"/></g>
+              </svg>
+              <div class="hs-depth hs-icons" style="--d:14">
+                <img class="hs-l hs-play" src="/assets/hero/icon-play.webp" width="99" height="93" alt="" decoding="async" style="--x:368;--y:90;--w:99">
+                <img class="hs-l hs-image" src="/assets/hero/icon-image.webp" width="98" height="92" alt="" decoding="async" style="--x:223;--y:254;--w:98">
+                <img class="hs-l hs-pdf" src="/assets/hero/icon-pdf.webp" width="89" height="85" alt="" decoding="async" style="--x:1055;--y:126;--w:89">
+                <img class="hs-l hs-convert" src="/assets/hero/icon-convert.webp" width="97" height="90" alt="" decoding="async" style="--x:1227;--y:223;--w:97">
+              </div>
+              <div class="hs-depth" style="--d:10">
+                <div class="hs-group hs-person hs-person-left">
+                  <img class="hs-l" src="/assets/hero/person-left.webp" width="318" height="259" alt="" decoding="async" style="--x:61;--y:382;--w:318">
+                  <img class="hs-l hs-hand-left" src="/assets/hero/hand-left.webp" width="47" height="52" alt="" decoding="async" style="--x:344;--y:436;--w:47;transform-origin:17.0% 57.7%">
+                </div>
+                <div class="hs-group hs-person hs-person-right">
+                  <img class="hs-l" src="/assets/hero/person-right.webp" width="293" height="250" alt="" decoding="async" style="--x:1102;--y:381;--w:293">
+                  <img class="hs-l hs-hand-right" src="/assets/hero/hand-right.webp" width="62" height="52" alt="" decoding="async" style="--x:1080;--y:484;--w:62;transform-origin:93.5% 69.2%">
+                </div>
+                <div class="hs-group hs-robot">
+                  <img class="hs-l hs-antenna" src="/assets/hero/robot-antenna.webp" width="45" height="43" alt="" decoding="async" style="--x:805;--y:18;--w:45;transform-origin:57.8% 97.7%">
+                  <img class="hs-l" src="/assets/hero/robot.webp" width="277" height="173" alt="" decoding="async" style="--x:655;--y:58;--w:277">
+                  <img class="hs-l hs-robot-hand" src="/assets/hero/robot-hand.webp" width="84" height="88" alt="" decoding="async" style="--x:618;--y:77;--w:84;transform-origin:85.7% 89.8%">
+                </div>
+              </div>
+              <div class="hs-depth hs-wave" style="--d:6">
+                <svg viewBox="0 0 2790 170" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="hsWaveFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7f9cff" stop-opacity=".3"/><stop offset=".75" stop-color="#b9a6ff" stop-opacity="0"/></linearGradient>
+                    <linearGradient id="hsWaveLine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1395" y2="0" spreadMethod="repeat"><stop offset="0" stop-color="#5b86ff"/><stop offset=".5" stop-color="#9b7bff"/><stop offset="1" stop-color="#5b86ff"/></linearGradient>
+                  </defs>
+                  <path fill="url(#hsWaveFill)" d="M0 70Q349 20 698 70T1395 70T2093 70T2790 70V170H0Z"/>
+                  <path fill="none" stroke="url(#hsWaveLine)" stroke-width="9" stroke-linecap="round" stroke-opacity=".75" d="M0 70Q349 20 698 70T1395 70T2093 70T2790 70"/>
+                </svg>
+              </div>
             </div>
-            <div class="panel-row">
-              <div class="panel-icon panel-icon-image"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
-              <div class="panel-text"><strong>Image processing</strong><span>Crop, resize, compress, convert</span></div>
-              <div class="panel-bar"><i style="width:96%"></i></div>
-            </div>
-            <div class="panel-row">
-              <div class="panel-icon panel-icon-local"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-              <div class="panel-text"><strong>Local processing</strong><span>Runs on your own device</span></div>
-              <div class="panel-chip">On device</div>
-            </div>
-            <div class="panel-row">
-              <div class="panel-icon panel-icon-privacy"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 8.3-7 9-4-0.7-7-4.6-7-9V6Z"/><path d="m9 12 2 2 4-4"/></svg></div>
-              <div class="panel-text"><strong>Privacy</strong><span>Nothing is uploaded</span></div>
-              <div class="panel-chip panel-chip-good">Private</div>
+            <div class="hero-panel hs-depth" style="--d:4">
+              <div class="panel-chrome"><span></span><span></span><span></span><em>MediaPilot</em></div>
+              <div class="panel-body">
+                <div class="panel-row">
+                  <div class="panel-icon panel-icon-video"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg></div>
+                  <div class="panel-text"><strong>Video processing</strong><span>Watermark removal, frame by frame</span></div>
+                  <div class="panel-bar"><i style="width:82%"></i></div>
+                </div>
+                <div class="panel-row">
+                  <div class="panel-icon panel-icon-image"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>
+                  <div class="panel-text"><strong>Image processing</strong><span>Crop, resize, compress, convert</span></div>
+                  <div class="panel-bar"><i style="width:96%"></i></div>
+                </div>
+                <div class="panel-row">
+                  <div class="panel-icon panel-icon-local"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+                  <div class="panel-text"><strong>Local processing</strong><span>Runs on your own device</span></div>
+                  <div class="panel-chip">On device</div>
+                </div>
+                <div class="panel-row">
+                  <div class="panel-icon panel-icon-privacy"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.4-3 8.3-7 9-4-0.7-7-4.6-7-9V6Z"/><path d="m9 12 2 2 4-4"/></svg></div>
+                  <div class="panel-text"><strong>Privacy</strong><span>Nothing is uploaded</span></div>
+                  <div class="panel-chip panel-chip-good">Private</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

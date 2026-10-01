@@ -97,6 +97,9 @@ for (const dir of pageDirs) {
   copyDirectory(path.join(srcDir, dir), path.join(outDir, dir));
 }
 
+// Hero artwork layers.
+copyDirectory(path.join(srcDir, 'assets'), path.join(outDir, 'assets'));
+
 const today = new Date().toISOString().slice(0, 10);
 const urls = [
   { loc: `${SITE}/`, priority: '1.0' },

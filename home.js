@@ -243,4 +243,26 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
+// Hero art: pause its animations off screen; parallax only for a mouse and without reduced motion.
+const heroArt = $('.hero-art');
+if (heroArt) {
+  new IntersectionObserver(([entry]) => heroArt.classList.toggle('hs-paused', !entry.isIntersecting)).observe(heroArt);
+  if (matchMedia('(pointer: fine) and (prefers-reduced-motion: no-preference)').matches) {
+    const hero = $('.hero');
+    let frame = 0;
+    hero.addEventListener('pointermove', (event) => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        heroArt.style.setProperty('--px', (event.clientX / innerWidth * 2 - 1).toFixed(3));
+        heroArt.style.setProperty('--py', (event.clientY / innerHeight * 2 - 1).toFixed(3));
+      });
+    });
+    hero.addEventListener('pointerleave', () => {
+      heroArt.style.setProperty('--px', 0);
+      heroArt.style.setProperty('--py', 0);
+    });
+  }
+}
+
 revealAll();
