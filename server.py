@@ -332,19 +332,9 @@ def run_processing(process_id: str, asset_id: str, regions: list[dict[str, Any]]
             preview_writer.release()
 
 
-# Nested assets still need naming explicitly. Plain root-level files are matched by extension
-# below instead, so adding a new stylesheet or module does not mean editing this file — the
-# previous hand-maintained list silently 404'd every file someone forgot to add.
-ROOT_ASSETS = {
-    "vendor/opencv.js": "text/javascript; charset=utf-8",
-    "vendor/tesseract.min.js": "text/javascript; charset=utf-8",
-    "vendor/worker.min.js": "text/javascript; charset=utf-8",
-    "vendor/jszip.min.js": "text/javascript; charset=utf-8",
-    "vendor/docx-preview.min.js": "text/javascript; charset=utf-8",
-    "vendor/jspdf.min.js": "text/javascript; charset=utf-8",
-    "vendor/html2canvas.min.js": "text/javascript; charset=utf-8",
-}
-
+# Plain root-level files, and scripts and fonts directly inside vendor/, are matched by extension below, so
+# adding a stylesheet, module or vendored library does not mean editing this file — the previous
+# hand-maintained list silently 404'd every file someone forgot to add.
 ROOT_FILE_TYPES = {
     ".js": "text/javascript; charset=utf-8",
     ".css": "text/css; charset=utf-8",
@@ -427,8 +417,11 @@ class AppHandler(BaseHTTPRequestHandler):
                 return self._send_bytes(candidate.read_bytes(), content_type)
             return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
         name = path.lstrip("/")
-        if name in ROOT_ASSETS:
-            return self._serve_static(name, ROOT_ASSETS[name])
+        vendor_name = name.removeprefix("vendor/")
+        vendor_type = {".js": "text/javascript; charset=utf-8", ".ttf": "font/ttf"}.get(Path(vendor_name).suffix.lower())
+        if vendor_name != name and vendor_type and SAFE_ROOT_NAME.match(vendor_name) and ".." not in vendor_name:
+            if (ROOT / "vendor" / vendor_name).is_file():
+                return self._serve_static(name, vendor_type)
         content_type = root_file_type(name)
         if content_type:
             return self._serve_static(name, content_type)

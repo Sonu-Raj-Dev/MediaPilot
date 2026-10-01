@@ -49,6 +49,17 @@ function clearInlineMessage() {
   wordMessage.textContent = '';
 }
 
+// Users see a plain message, never the raw technical error, which goes to the console instead.
+function friendlyError(err, fallback) {
+  console.error(err);
+  if (!navigator.onLine) return 'You appear to be offline. Check your internet connection and try again.';
+  // A ReferenceError here means a converter library never loaded (e.g. "docx is not defined").
+  if (err instanceof ReferenceError || /fetch|network/i.test(err?.message || '')) {
+    return 'Part of the converter did not load. Check your internet connection and refresh the page.';
+  }
+  return fallback;
+}
+
 function formatSize(bytes) {
   if (bytes < 1024) return bytes + ' B';
   if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
@@ -134,7 +145,7 @@ async function loadFile(file) {
     processButton.disabled = !docPreview.querySelector('section.docx');
   } catch (err) {
     docPreview.innerHTML = '';
-    showInlineMessage('Could not read this document: ' + (err.message || 'unknown error'), true);
+    showInlineMessage(friendlyError(err, 'This file could not be opened. Make sure it is a valid Word (.docx) file and not password-protected.'), true);
     processButton.disabled = true;
   } finally {
     previewStatus.className = 'preview-status ready';
@@ -187,8 +198,8 @@ async function convertToPdf() {
     showInlineMessage('Converted successfully.', false);
     setTimeout(() => processingCard.classList.add('is-hidden'), 700);
   } catch (err) {
-    showInlineMessage('Conversion failed: ' + (err.message || 'unknown error'), true);
-    setProgress('Error', err.message || 'Conversion failed', 0);
+    showInlineMessage(friendlyError(err, 'Something went wrong while creating the PDF. Please try again.'), true);
+    setProgress('Error', 'Conversion failed', 0);
     setTimeout(() => processingCard.classList.add('is-hidden'), 3000);
   } finally {
     state.converting = false;

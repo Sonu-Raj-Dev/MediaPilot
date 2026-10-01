@@ -21,7 +21,9 @@ const SHELL = '/tool-shell.js';
 
 function scriptSrcs(htmlPath) {
   const html = fs.readFileSync(new URL(htmlPath, import.meta.url), 'utf8');
-  return [...html.matchAll(/<script[^>]*\bsrc="([^"]+)"/g)].map((m) => m[1]);
+  return [...html.matchAll(/<script[^>]*\bsrc="([^"]+)"/g)]
+    .map((m) => m[1])
+    .filter((src) => src.startsWith('/'));
 }
 
 // Scripts a page loads for its own behaviour, ignoring the shared shell.

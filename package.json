@@ -5,11 +5,15 @@
     "build": "node ./scripts/build-static.mjs"
   },
   "dependencies": {
+    "@expo-google-fonts/carlito": "^0.4.1",
     "@techstark/opencv-js": "^5.0.0-release.1",
     "docx-preview": "^0.4.1",
+    "exceljs": "^4.4.0",
     "html2canvas": "^1.4.1",
     "jspdf": "^4.2.1",
     "jszip": "^3.10.2",
+    "pdf-lib": "^1.17.1",
+    "ssf": "^0.11.2",
     "tesseract.js": "^5.0.0"
   }
 }
