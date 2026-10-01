@@ -16,17 +16,19 @@ function loadAdSenseScript() {
     return;
   }
 
+  // Every page already loads adsbygoogle.js in its <head> (the site-wide AdSense snippet); a second
+  // copy would load the library twice.
+  if (document.querySelector('script[src*="adsbygoogle.js"]')) {
+    adScriptLoaded = true;
+    return;
+  }
+
   const script = document.createElement('script');
   script.async = true;
   script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CONFIG.publisherId}`;
   script.crossOrigin = 'anonymous';
-  script.onload = () => {
-    adScriptLoaded = true;
-    // Push any pending ads
-    if (window.adsbygoogle) {
-      window.adsbygoogle.push({});
-    }
-  };
+  // No push on load: each slot already queued its own push in insertAd, and AdSense works through
+  // that queue when the script arrives. An extra push here has no empty slot to fill and errors.
   script.onerror = () => {
     console.error('Failed to load AdSense script');
     adScriptLoaded = true;
@@ -71,15 +73,8 @@ export function createAdSlot(location) {
   container.appendChild(adSlot);
   loadedAds.add(location);
 
-  // Push the ad to AdSense
-  if (window.adsbygoogle) {
-    try {
-      window.adsbygoogle.push({});
-    } catch (e) {
-      console.error('Error pushing ad to AdSense:', e);
-    }
-  }
-
+  // Not pushed here: AdSense fills only <ins> elements already in the page, so the push happens
+  // in insertAd after the container is attached.
   return container;
 }
 
@@ -111,6 +106,14 @@ export function insertAd(location, targetElement) {
   if (!adContainer) return false;
 
   targetElement.appendChild(adContainer);
+
+  // One push per slot, after it is in the page. The array is a queue: if the AdSense script has
+  // not loaded yet, it processes these pushes when it arrives.
+  try {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  } catch (e) {
+    console.error('Error pushing ad to AdSense:', e);
+  }
   return true;
 }
 
