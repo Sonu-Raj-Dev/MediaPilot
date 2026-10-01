@@ -30,6 +30,14 @@ const vendorFiles = [
   ['node_modules/@expo-google-fonts/carlito/700Bold/Carlito_700Bold.ttf', 'dist/vendor/carlito-bold.ttf'],
   ['node_modules/pdf-lib/dist/pdf-lib.min.js', 'vendor/pdf-lib.min.js'],
   ['node_modules/pdf-lib/dist/pdf-lib.min.js', 'dist/vendor/pdf-lib.min.js'],
+  ['node_modules/pdfjs-dist/build/pdf.min.mjs', 'vendor/pdfjs/pdf.min.js'],
+  ['node_modules/pdfjs-dist/build/pdf.min.mjs', 'dist/vendor/pdfjs/pdf.min.js'],
+  ['node_modules/pdfjs-dist/build/pdf.worker.min.mjs', 'vendor/pdfjs/pdf.worker.min.js'],
+  ['node_modules/pdfjs-dist/build/pdf.worker.min.mjs', 'dist/vendor/pdfjs/pdf.worker.min.js'],
+  ['node_modules/@neslinesli93/qpdf-wasm/dist/qpdf.js', 'vendor/qpdf/qpdf.js'],
+  ['node_modules/@neslinesli93/qpdf-wasm/dist/qpdf.js', 'dist/vendor/qpdf/qpdf.js'],
+  ['node_modules/@neslinesli93/qpdf-wasm/dist/qpdf.wasm', 'vendor/qpdf/qpdf.wasm'],
+  ['node_modules/@neslinesli93/qpdf-wasm/dist/qpdf.wasm', 'dist/vendor/qpdf/qpdf.wasm'],
   ['node_modules/jspdf/dist/jspdf.umd.min.js', 'dist/vendor/jspdf.min.js'],
   ['node_modules/html2canvas/dist/html2canvas.min.js', 'dist/vendor/html2canvas.min.js'],
 ];
@@ -56,6 +64,16 @@ for (const file of sourceFiles) {
     throw new Error(`Required frontend file not found: ${file}`);
   }
   fs.copyFileSync(sourcePath, path.join(outDir, file));
+}
+
+// Whole vendor folders: pdf.js fetches individual character maps and standard fonts on demand.
+const vendorDirs = [
+  ['node_modules/pdfjs-dist/cmaps', 'pdfjs/cmaps'],
+  ['node_modules/pdfjs-dist/standard_fonts', 'pdfjs/standard_fonts'],
+];
+
+for (const [sourceRel, targetRel] of vendorDirs) {
+  for (const base of ['vendor', 'dist/vendor']) copyDirectory(path.join(srcDir, sourceRel), path.resolve(root, base, targetRel));
 }
 
 for (const [sourceRel, targetRel] of vendorFiles) {

@@ -6,6 +6,7 @@ export const CATEGORIES = [
   { id: 'video', label: 'Video', blurb: 'Tools for editing and processing videos' },
   { id: 'image', label: 'Image', blurb: 'Tools for editing and optimizing images' },
   { id: 'document', label: 'Converters', blurb: 'Tools for converting documents' },
+  { id: 'pdf', label: 'PDF', blurb: 'Tools for merging, splitting and converting PDF files' },
 ];
 
 // Icons are inline SVG bodies (24x24, currentColor strokes) so the page ships no icon library.
@@ -22,6 +23,9 @@ const icon = {
   sheetPdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 12h8M8 16h8M12 12v6"/>',
   mergePdf: '<rect x="3" y="3" width="11" height="14" rx="1.5"/><rect x="10" y="7" width="11" height="14" rx="1.5"/><path d="M13 14h5M15.5 11.5v5"/>',
   splitPdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M4 13h16" stroke-dasharray="2 2"/>',
+  pdfImage: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><path d="M14 3v4h4"/>',
+  rotatePdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M15 15a3.5 3.5 0 1 1-1-2.5"/><path d="M15 11.5v1.5h-1.5"/>',
+  lockPdf: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/>',
   pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h1a1 1 0 1 0 0-2H9v4"/><path d="M13 17v-4h1.5"/><path d="M13 15h1"/><path d="M17 13v4h1"/>',
 };
 
@@ -160,7 +164,7 @@ export const TOOLS = [
     short: 'Merge PDF',
     description: 'Combine several PDF files into one, in any order.',
     href: '/tools/merge-pdf',
-    category: 'document',
+    category: 'pdf',
     icon: icon.mergePdf,
     keywords: ['merge', 'combine', 'join', 'pdf', 'merge pdf', 'combine pdf', 'join pdf'],
     popular: true,
@@ -171,9 +175,50 @@ export const TOOLS = [
     short: 'Split PDF',
     description: 'Separate a PDF into parts or extract the pages you need.',
     href: '/tools/split-pdf',
-    category: 'document',
+    category: 'pdf',
     icon: icon.splitPdf,
     keywords: ['split', 'separate', 'extract', 'pages', 'pdf', 'split pdf', 'extract pages', 'divide'],
+  },
+  {
+    id: 'pdf-to-jpg',
+    name: 'PDF to JPG',
+    short: 'PDF to JPG',
+    description: 'Turn PDF pages into high-quality JPG images.',
+    href: '/tools/pdf-to-jpg',
+    category: 'pdf',
+    icon: icon.pdfImage,
+    keywords: ['pdf to jpg', 'pdf to jpeg', 'pdf to image', 'convert pdf', 'pdf', 'jpg', 'jpeg', 'image', 'pages'],
+    popular: true,
+  },
+  {
+    id: 'pdf-to-png',
+    name: 'PDF to PNG',
+    short: 'PDF to PNG',
+    description: 'Turn PDF pages into crisp, lossless PNG images.',
+    href: '/tools/pdf-to-png',
+    category: 'pdf',
+    icon: icon.pdfImage,
+    keywords: ['pdf to png', 'pdf to image', 'convert pdf', 'pdf', 'png', 'image', 'pages'],
+  },
+  {
+    id: 'rotate-pdf',
+    name: 'Rotate PDF',
+    short: 'Rotate PDF',
+    description: 'Turn sideways or upside-down PDF pages the right way.',
+    href: '/tools/rotate-pdf',
+    category: 'pdf',
+    icon: icon.rotatePdf,
+    keywords: ['rotate', 'turn', 'sideways', 'upside down', 'orientation', 'pdf', 'rotate pdf', 'landscape', 'portrait'],
+  },
+  {
+    id: 'protect-pdf',
+    name: 'Protect PDF',
+    short: 'Protect PDF',
+    description: 'Add a password to a PDF with AES-256 encryption.',
+    href: '/tools/protect-pdf',
+    category: 'pdf',
+    icon: icon.lockPdf,
+    keywords: ['protect', 'password', 'encrypt', 'lock', 'secure', 'pdf', 'protect pdf', 'password protect pdf', 'encrypt pdf'],
   },
 ];
 

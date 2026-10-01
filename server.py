@@ -335,6 +335,14 @@ def run_processing(process_id: str, asset_id: str, regions: list[dict[str, Any]]
 # Plain root-level files, and scripts and fonts directly inside vendor/, are matched by extension below, so
 # adding a stylesheet, module or vendored library does not mean editing this file — the previous
 # hand-maintained list silently 404'd every file someone forgot to add.
+VENDOR_TYPES = {
+    ".js": "text/javascript; charset=utf-8",
+    ".ttf": "font/ttf",
+    ".wasm": "application/wasm",
+    ".bcmap": "application/octet-stream",
+    ".pfb": "application/octet-stream",
+}
+
 ROOT_FILE_TYPES = {
     ".js": "text/javascript; charset=utf-8",
     ".css": "text/css; charset=utf-8",
@@ -420,8 +428,11 @@ class AppHandler(BaseHTTPRequestHandler):
             return self._send_json({"error": "Tool asset not found"}, HTTPStatus.NOT_FOUND)
         name = path.lstrip("/")
         vendor_name = name.removeprefix("vendor/")
-        vendor_type = {".js": "text/javascript; charset=utf-8", ".ttf": "font/ttf"}.get(Path(vendor_name).suffix.lower())
-        if vendor_name != name and vendor_type and SAFE_ROOT_NAME.match(vendor_name) and ".." not in vendor_name:
+        vendor_type = VENDOR_TYPES.get(Path(vendor_name).suffix.lower())
+        vendor_parts = vendor_name.split("/")
+        # Up to two folders deep (vendor/pdfjs/cmaps/x.bcmap); every segment must be a plain name,
+        # so nothing outside vendor/ is reachable.
+        if vendor_name != name and vendor_type and len(vendor_parts) <= 3 and all(SAFE_ROOT_NAME.match(part) for part in vendor_parts):
             if (ROOT / "vendor" / vendor_name).is_file():
                 return self._serve_static(name, vendor_type)
         content_type = root_file_type(name)

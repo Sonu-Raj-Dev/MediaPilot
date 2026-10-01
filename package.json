@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/carlito": "^0.4.1",
+    "@neslinesli93/qpdf-wasm": "^0.3.0",
     "@techstark/opencv-js": "^5.0.0-release.1",
     "docx-preview": "^0.4.1",
     "exceljs": "^4.4.0",
@@ -13,6 +14,7 @@
     "jspdf": "^4.2.1",
     "jszip": "^3.10.2",
     "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.3.289",
     "ssf": "^0.11.2",
     "tesseract.js": "^5.0.0"
   }

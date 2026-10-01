@@ -86,6 +86,7 @@ function renderFooter() {
   list('#footVideo', 'video');
   list('#footImage', 'image');
   list('#footDocument', 'document');
+  list('#footPdf', 'pdf');
 }
 
 /* ---------- search + filtering ---------- */
