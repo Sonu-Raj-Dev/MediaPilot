@@ -673,7 +673,7 @@ async function processImage() {
   } catch (error) {
     console.error(error);
     // An engine-load failure is not a bad selection; saying so sends users hunting the wrong thing.
-    showError(String(error && error.message || '').startsWith('OpenCV') ? error.message : 'Processing failed. Please choose a different selection and try again.');
+    showError(String(error && error.message || '').startsWith('OpenCV') ? 'The editing engine did not load. Check your internet connection and refresh the page.' : 'Processing failed. Please choose a different selection and try again.');
   } finally {
     setProcessing(false, 'Processing…');
   }

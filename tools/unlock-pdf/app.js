@@ -13,10 +13,8 @@ const assetCard = $('#assetCard');
 const assetName = $('#assetName');
 const assetMeta = $('#assetMeta');
 const replaceButton = $('#replaceButton');
-const docSummary = $('#docSummary');
 const passwordInput = $('#password');
-const confirmInput = $('#confirmPassword');
-const showPasswords = $('#showPasswords');
+const showPassword = $('#showPassword');
 const passwordHint = $('#passwordHint');
 const processButton = $('#processButton');
 const processingCard = $('#processingCard');
@@ -31,7 +29,7 @@ const editingModule = $('#editingModule');
 const toast = $('#toast');
 const inlineMessage = $('#inlineMessage');
 
-// qpdf copies the PDF into its own memory and writes a second, encrypted copy; phones
+// qpdf copies the PDF into its own memory and writes a second, decrypted copy; phones
 // (navigator.deviceMemory <= 4 GB, Chromium only) get a lower limit.
 const MAX_FILE_MB = navigator.deviceMemory && navigator.deviceMemory <= 4 ? 100 : 300;
 
@@ -82,29 +80,8 @@ function setProgress(label, detail, percent) {
   progressBar.style.width = pct + '%';
 }
 
-// ---- Page logic -----------------------------------------------------------------------------
-
-// Live check under the password fields; the button only enables for a usable pair.
-function validate() {
-  clearResult();
-  const password = passwordInput.value;
-  const confirm = confirmInput.value;
-  let message = 'Anyone who opens the PDF will need this password.';
-  let ok = false;
-  if (!password) {
-    message = 'Choose a password to protect the PDF.';
-  } else if (password.length < 4) {
-    message = 'Use at least 4 characters.';
-  } else if (!confirm) {
-    message = 'Type the password again to confirm it.';
-  } else if (password !== confirm) {
-    message = 'The two passwords do not match.';
-  } else {
-    ok = true;
-  }
-  passwordHint.textContent = message;
-  passwordHint.classList.toggle('is-error', !ok && confirm.length > 0);
-  processButton.disabled = !ok || !state.bytes || state.working;
+function syncButton() {
+  processButton.disabled = !state.bytes || !passwordInput.value || state.working;
 }
 
 async function loadFile(file) {
@@ -119,24 +96,21 @@ async function loadFile(file) {
   }
   clearResult();
   let bytes;
-  let pages;
   try {
     bytes = new Uint8Array(await file.arrayBuffer());
     const info = await QpdfRunner.inspect(bytes);
-    if (info.status === 'password') {
-      showToast('This PDF already has a password. Remove it first if you want to set a new one.', true);
-      return;
-    }
     if (info.status === 'damaged') {
       showToast('This file could not be opened. It may be damaged.', true);
       return;
     }
-    // Opens freely but has permission restrictions from its author: re-encrypting would drop them.
-    if (info.encrypted) {
-      showToast('This PDF already has security settings from its author, so a new password cannot be added.', true);
+    if (info.status === 'open') {
+      // ponytail: restriction-only PDFs (open freely, no print/copy) are deliberately not
+      // unlocked — removing an author's restrictions without their password is circumvention.
+      showToast(info.encrypted
+        ? 'This PDF opens without a password. Its print and copy limits were set by its author and can only be removed with their software.'
+        : 'This PDF has no password — there is nothing to unlock.', info.encrypted);
       return;
     }
-    pages = info.pages;
   } catch (err) {
     showToast(friendlyError(err, 'This file could not be opened. It may be damaged.'), true);
     return;
@@ -147,45 +121,51 @@ async function loadFile(file) {
   assetCard.classList.remove('is-hidden');
   dropzone.classList.add('is-hidden');
   assetName.textContent = file.name;
-  const pageText = pages ? `${pages} page${pages === 1 ? '' : 's'}` : 'PDF';
-  assetMeta.textContent = `${formatSize(file.size)} · ${pageText}`;
-  docSummary.textContent = pageText;
-  validate();
+  assetMeta.textContent = `${formatSize(file.size)} · password-protected`;
+  passwordInput.value = '';
+  passwordHint.textContent = 'Enter the password used to open this PDF.';
+  passwordHint.classList.remove('is-error');
+  syncButton();
   passwordInput.focus();
 }
 
-async function protect() {
+async function unlock() {
   if (!state.bytes || state.working || processButton.disabled) return;
   state.working = true;
   processButton.disabled = true;
   clearResult();
   processingCard.classList.remove('is-hidden');
   try {
-    setProgress('Protecting…', 'Encrypting', 0.3);
-    const password = passwordInput.value;
-    // The same password as user and owner password: whoever can open the PDF can also print and
-    // copy from it, which is what people expect from "add a password".
-    const result = await QpdfRunner.run(['--encrypt', password, password, '256', '--', '/in.pdf', '/out.pdf'], state.bytes);
-    if (result.code !== 0 && result.code !== 3) throw new Error('qpdf: ' + result.err.join(' '));
-    if (!result.output) throw new Error('qpdf produced no output');
+    setProgress('Unlocking…', 'Checking password', 0.3);
+    const result = await QpdfRunner.run(['--password=' + passwordInput.value, '--decrypt', '/in.pdf', '/out.pdf'], state.bytes);
+    if (result.err.some((line) => /invalid password/i.test(line))) {
+      processingCard.classList.add('is-hidden');
+      passwordHint.textContent = 'That password is not correct. Check it and try again.';
+      passwordHint.classList.add('is-error');
+      passwordInput.select();
+      return;
+    }
     // qpdf exits 3 for warnings (e.g. minor damage it repaired); the output is still valid.
+    if ((result.code !== 0 && result.code !== 3) || !result.output) throw new Error('qpdf: ' + result.err.join(' '));
     if (result.code === 3) console.warn('qpdf warnings:', result.err.join(' '));
     const blob = new Blob([result.output], { type: 'application/pdf' });
     state.resultUrl = URL.createObjectURL(blob);
     downloadButton.href = state.resultUrl;
-    downloadButton.download = state.file.name.replace(/\.pdf$/i, '') + '-protected.pdf';
-    resultMeta.textContent = `${formatSize(blob.size)} · password-protected`;
+    downloadButton.download = state.file.name.replace(/\.pdf$/i, '') + '-unlocked.pdf';
+    resultMeta.textContent = `${formatSize(blob.size)} · no password`;
     resultCard.classList.remove('is-hidden');
+    passwordHint.textContent = 'Password accepted.';
+    passwordHint.classList.remove('is-error');
     setProgress('Done', 'PDF ready', 1);
-    showInlineMessage('Protected successfully. Keep your password safe — it cannot be recovered.', false);
+    showInlineMessage('Unlocked successfully. The new copy opens without a password.', false);
     setTimeout(() => processingCard.classList.add('is-hidden'), 700);
   } catch (err) {
-    showInlineMessage(friendlyError(err, 'Something went wrong while protecting the PDF. Please try again.'), true);
-    setProgress('Error', 'Protection failed', 0);
+    showInlineMessage(friendlyError(err, 'Something went wrong while unlocking the PDF. Please try again.'), true);
+    setProgress('Error', 'Unlock failed', 0);
     setTimeout(() => processingCard.classList.add('is-hidden'), 3000);
   } finally {
     state.working = false;
-    processButton.disabled = false; // the passwords were valid when protection started
+    syncButton();
   }
 }
 
@@ -194,19 +174,19 @@ fileInput.addEventListener('change', (event) => {
   fileInput.value = '';
 });
 replaceButton.addEventListener('click', () => fileInput.click());
-processButton.addEventListener('click', protect);
-passwordInput.addEventListener('input', validate);
-confirmInput.addEventListener('input', validate);
-showPasswords.addEventListener('change', () => {
-  const type = showPasswords.checked ? 'text' : 'password';
-  passwordInput.type = type;
-  confirmInput.type = type;
+processButton.addEventListener('click', unlock);
+passwordInput.addEventListener('input', () => {
+  clearResult();
+  passwordHint.textContent = 'Enter the password used to open this PDF.';
+  passwordHint.classList.remove('is-error');
+  syncButton();
 });
-for (const input of [passwordInput, confirmInput]) {
-  input.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') protect();
-  });
-}
+passwordInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') unlock();
+});
+showPassword.addEventListener('change', () => {
+  passwordInput.type = showPassword.checked ? 'text' : 'password';
+});
 
 dropzone.addEventListener('dragover', (event) => {
   event.preventDefault();

@@ -95,7 +95,7 @@ function updateControls() {
   qualityLabel.textContent = applies ? qualityRange.value : '—';
   qualityHint.textContent = applies ? qualityDescription(Number(qualityRange.value)) : 'PNG is lossless';
   formatNote.textContent = applies
-    ? 'Auto keeps JPG and WebP as they are, and switches PNG to WebP — canvas cannot compress a PNG, and JPG would drop transparency.'
+    ? 'Auto keeps JPG and WebP as they are, and switches PNG to WebP, which makes much smaller files while keeping transparency.'
     : 'PNG is lossless, so quality has no effect. Choose WebP to actually shrink this image.';
 }
 

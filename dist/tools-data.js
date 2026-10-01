@@ -26,6 +26,7 @@ const icon = {
   pdfImage: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/><path d="M14 3v4h4"/>',
   rotatePdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M15 15a3.5 3.5 0 1 1-1-2.5"/><path d="M15 11.5v1.5h-1.5"/>',
   lockPdf: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/><path d="M12 15v2"/>',
+  unlockPdf: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/><path d="M12 15v2"/>',
   pdf: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h1a1 1 0 1 0 0-2H9v4"/><path d="M13 17v-4h1.5"/><path d="M13 15h1"/><path d="M17 13v4h1"/>',
 };
 
@@ -214,11 +215,21 @@ export const TOOLS = [
     id: 'protect-pdf',
     name: 'Protect PDF',
     short: 'Protect PDF',
-    description: 'Add a password to a PDF with AES-256 encryption.',
+    description: 'Lock a PDF with a password and strong encryption.',
     href: '/tools/protect-pdf',
     category: 'pdf',
     icon: icon.lockPdf,
     keywords: ['protect', 'password', 'encrypt', 'lock', 'secure', 'pdf', 'protect pdf', 'password protect pdf', 'encrypt pdf'],
+  },
+  {
+    id: 'unlock-pdf',
+    name: 'Unlock PDF',
+    short: 'Unlock PDF',
+    description: 'Remove the password from a PDF you can open.',
+    href: '/tools/unlock-pdf',
+    category: 'pdf',
+    icon: icon.unlockPdf,
+    keywords: ['unlock', 'remove password', 'decrypt', 'password', 'pdf', 'unlock pdf', 'remove pdf password', 'unprotect'],
   },
 ];
 

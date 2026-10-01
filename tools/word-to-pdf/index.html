@@ -53,7 +53,6 @@
   <link rel="stylesheet" href="/tool.css">
   <style>
     .doc-preview-wrap { width:100%; max-height:70vh; overflow:auto; background:#e9e9ec; padding:20px; border-radius:var(--radius); }
-    /* docx-preview draws each Word page itself (size, margins, fonts), so no page styling here. */
     .doc-preview .docx-wrapper { padding:0; background:transparent; }
     .doc-preview .docx-wrapper > section.docx { margin:0 auto 20px; box-shadow:0 1px 4px rgba(0,0,0,.15); }
     .word-inline-message { margin-top:12px; padding:10px 12px; border-radius:var(--radius); font-size:12.5px; line-height:1.5; }
@@ -138,7 +137,7 @@
                 <a class="download-button" id="downloadButton" href="#" download><span>Download PDF</span><b>⇩</b></a>
               </div>
             </div>
-            <p class="legal-note">Documents are converted entirely in your browser using docx-preview and jsPDF. Nothing is uploaded to any server. Only .docx files are supported — legacy .doc files must be saved as .docx first. Pages break where Word last broke them; text in the PDF is an image, so it is not selectable.</p>
+            <p class="legal-note">Documents are converted entirely in your browser. Nothing is uploaded to any server. Only .docx files are supported — legacy .doc files must be saved as .docx first. Pages break where Word last broke them; text in the PDF is an image, so it is not selectable.</p>
           </div>
         </aside>
       </div>
@@ -173,7 +172,7 @@
         <div style="max-width:740px">
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
             <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is my document uploaded to a server?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. MediaPilot converts your document entirely in your browser using docx-preview and jsPDF. Your file never leaves your device.</p>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. MediaPilot converts your document entirely in your browser. Your file never leaves your device.</p>
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
             <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Does this support .doc files?</summary>

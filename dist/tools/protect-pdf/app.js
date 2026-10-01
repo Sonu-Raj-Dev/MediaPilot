@@ -82,57 +82,6 @@ function setProgress(label, detail, percent) {
   progressBar.style.width = pct + '%';
 }
 
-// ---- qpdf (the standard open-source PDF tool, compiled to WebAssembly) -----------------------
-
-let qpdfScript = null;
-
-// The 1.3 MB engine loads only when a file is chosen, not with the page.
-function loadQpdf() {
-  qpdfScript ||= new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = '/vendor/qpdf/qpdf.js';
-    script.onload = () => resolve(window.Module);
-    script.onerror = () => {
-      qpdfScript = null; // let the next attempt retry
-      reject(Object.assign(new Error('qpdf failed to load'), { qpdfLoad: true }));
-    };
-    document.head.append(script);
-  });
-  return qpdfScript;
-}
-
-// Runs one qpdf command on `input` and returns its exit code, output lines and /out.pdf if made.
-// This build ignores emscripten's print hooks and binds console.log / console.error when an
-// instance is created, so the console is swapped for collectors before creating it and restored
-// after the command. A fresh instance per command keeps runs independent; the browser caches the
-// compiled WebAssembly, so this costs only a few ms.
-async function runQpdf(args, input) {
-  const factory = await loadQpdf();
-  const out = [];
-  const err = [];
-  const { log, error, warn } = console;
-  console.log = (...parts) => out.push(parts.join(' '));
-  console.error = (...parts) => err.push(parts.join(' '));
-  console.warn = (...parts) => err.push(parts.join(' '));
-  let qpdf;
-  let code;
-  try {
-    qpdf = await factory({ locateFile: () => '/vendor/qpdf/qpdf.wasm' });
-    qpdf.FS.writeFile('/in.pdf', input);
-    code = qpdf.callMain(args);
-  } catch (exit) {
-    if (!qpdf) throw exit; // the engine itself failed to start
-    code = typeof exit?.status === 'number' ? exit.status : 2;
-  } finally {
-    Object.assign(console, { log, error, warn });
-  }
-  let output = null;
-  try {
-    output = qpdf.FS.readFile('/out.pdf');
-  } catch { /* no output for this command */ }
-  return { code, out, err, output };
-}
-
 // ---- Page logic -----------------------------------------------------------------------------
 
 // Live check under the password fields; the button only enables for a usable pair.
@@ -173,15 +122,21 @@ async function loadFile(file) {
   let pages;
   try {
     bytes = new Uint8Array(await file.arrayBuffer());
-    const check = await runQpdf(['--show-npages', '/in.pdf'], bytes);
-    if (check.code !== 0) {
-      console.error('qpdf:', check.err.join(' '));
-      showToast(check.err.some((line) => /invalid password/i.test(line))
-        ? 'This PDF already has a password. Remove it first if you want to set a new one.'
-        : 'This file could not be opened. It may be damaged.', true);
+    const info = await QpdfRunner.inspect(bytes);
+    if (info.status === 'password') {
+      showToast('This PDF already has a password. Remove it first if you want to set a new one.', true);
       return;
     }
-    pages = Number(check.out.find((line) => /^\d+$/.test(line.trim()))) || 0;
+    if (info.status === 'damaged') {
+      showToast('This file could not be opened. It may be damaged.', true);
+      return;
+    }
+    // Opens freely but has permission restrictions from its author: re-encrypting would drop them.
+    if (info.encrypted) {
+      showToast('This PDF already has security settings from its author, so a new password cannot be added.', true);
+      return;
+    }
+    pages = info.pages;
   } catch (err) {
     showToast(friendlyError(err, 'This file could not be opened. It may be damaged.'), true);
     return;
@@ -206,11 +161,11 @@ async function protect() {
   clearResult();
   processingCard.classList.remove('is-hidden');
   try {
-    setProgress('Protecting…', 'Encrypting with AES-256', 0.3);
+    setProgress('Protecting…', 'Encrypting', 0.3);
     const password = passwordInput.value;
     // The same password as user and owner password: whoever can open the PDF can also print and
     // copy from it, which is what people expect from "add a password".
-    const result = await runQpdf(['--encrypt', password, password, '256', '--', '/in.pdf', '/out.pdf'], state.bytes);
+    const result = await QpdfRunner.run(['--encrypt', password, password, '256', '--', '/in.pdf', '/out.pdf'], state.bytes);
     if (result.code !== 0 && result.code !== 3) throw new Error('qpdf: ' + result.err.join(' '));
     if (!result.output) throw new Error('qpdf produced no output');
     // qpdf exits 3 for warnings (e.g. minor damage it repaired); the output is still valid.
@@ -219,7 +174,7 @@ async function protect() {
     state.resultUrl = URL.createObjectURL(blob);
     downloadButton.href = state.resultUrl;
     downloadButton.download = state.file.name.replace(/\.pdf$/i, '') + '-protected.pdf';
-    resultMeta.textContent = `${formatSize(blob.size)} · AES-256 encrypted`;
+    resultMeta.textContent = `${formatSize(blob.size)} · password-protected`;
     resultCard.classList.remove('is-hidden');
     setProgress('Done', 'PDF ready', 1);
     showInlineMessage('Protected successfully. Keep your password safe — it cannot be recovered.', false);

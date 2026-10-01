@@ -13,12 +13,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f1115">
-  <meta name="description" content="Protect a PDF with a password online for free. Strong AES-256 encryption, done in your browser — your PDF and password are never uploaded.">
+  <meta name="description" content="Protect a PDF with a password online for free. Strong encryption, done in your browser — your PDF and password are never uploaded.">
   <link rel="canonical" href="https://mediapilottools.com/tools/protect-pdf">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MediaPilot">
-  <meta property="og:title" content="Protect PDF with Password Online — Free AES-256, No Upload | MediaPilot">
-  <meta property="og:description" content="Protect a PDF with a password online for free. Strong AES-256 encryption, done in your browser — your PDF and password are never uploaded.">
+  <meta property="og:title" content="Protect PDF with Password Online — Free, No Upload | MediaPilot">
+  <meta property="og:description" content="Protect a PDF with a password online for free. Strong encryption, done in your browser — your PDF and password are never uploaded.">
   <meta property="og:url" content="https://mediapilottools.com/tools/protect-pdf">
   <meta property="og:image" content="https://mediapilottools.com/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -31,7 +31,7 @@
   "@type": "WebApplication",
   "name": "Protect PDF",
   "url": "https://mediapilottools.com/tools/protect-pdf",
-  "description": "Protect a PDF with a password online for free. Strong AES-256 encryption, done in your browser — your PDF and password are never uploaded.",
+  "description": "Protect a PDF with a password online for free. Strong encryption, done in your browser — your PDF and password are never uploaded.",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any browser",
   "offers": {
@@ -46,7 +46,7 @@
   }
 }
   </script>
-  <title>Protect PDF with Password Online — Free AES-256, No Upload | MediaPilot</title>
+  <title>Protect PDF with Password Online — Free, No Upload | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
@@ -123,7 +123,7 @@
           <div class="doc-panel">
             <span class="doc-icon">PDF</span>
             <strong id="docSummary">—</strong>
-            <p>Set a password on the right. The PDF is encrypted with AES-256, the strongest standard PDF encryption, which every PDF reader supports.</p>
+            <p>Set a password on the right. The PDF is locked with the strongest encryption the PDF format offers, which every PDF reader supports.</p>
           </div>
         </section>
 
@@ -154,7 +154,7 @@
                 <a class="download-button" id="downloadButton" href="#" download><span>Download</span><b>⇩</b></a>
               </div>
             </div>
-            <p class="legal-note">Your PDF is encrypted entirely in your browser using qpdf. Neither the file nor the password is uploaded to any server. Your original file is not changed.</p>
+            <p class="legal-note">Your PDF is encrypted entirely in your browser. Neither the file nor the password is uploaded to any server. Your original file is not changed.</p>
           </div>
         </aside>
       </div>
@@ -193,7 +193,7 @@
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
             <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">How secure is it?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">The PDF is encrypted with AES-256, the strongest encryption in the PDF standard. Its security depends on your password: a long password that is hard to guess is much safer than a short or common one.</p>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">The PDF is locked with the strongest encryption the PDF format offers. Its security depends on your password: a long password that is hard to guess is much safer than a short or common one.</p>
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
             <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">What if I forget the password?</summary>
@@ -201,7 +201,7 @@
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
             <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Will the protected PDF open everywhere?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Yes. Adobe Acrobat, browsers, phone PDF viewers and other readers all support AES-256 protected PDFs and will ask for the password.</p>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Yes. Adobe Acrobat, browsers, phone PDF viewers and other readers all support password-protected PDFs and will ask for the password.</p>
           </details>
         </div>
       </div>
@@ -229,6 +229,7 @@
 
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/tools/qpdf-runner.js"></script>
   <script src="/tools/protect-pdf/app.js"></script>
 </body>
 </html>
