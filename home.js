@@ -1,4 +1,5 @@
 import { CATEGORIES, TOOLS, menuMarkup, popularTools, searchTools } from './tools-data.js';
+import './hero-canvas.js';
 
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => Array.from(document.querySelectorAll(selector));
