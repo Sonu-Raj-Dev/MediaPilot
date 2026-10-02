@@ -13,6 +13,42 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://mediapilottools.com/tools/compress-video</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mediapilottools.com/tools/trim-video</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mediapilottools.com/tools/video-to-mp3</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mediapilottools.com/tools/video-to-gif</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mediapilottools.com/tools/mute-video</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mediapilottools.com/tools/rotate-video</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://mediapilottools.com/tools/remove-watermark-image</loc>
     <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>

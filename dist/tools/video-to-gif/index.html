@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
+      crossorigin="anonymous"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C41MLW8JMY');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f1115">
+  <meta name="description" content="Convert video to GIF online for free. Pick the part you want, the size and the smoothness, and make an animated GIF. Runs in your browser; your video is never uploaded.">
+  <link rel="canonical" href="https://mediapilottools.com/tools/video-to-gif">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MediaPilot">
+  <meta property="og:title" content="Video to GIF Converter — Make GIFs from Video Free, No Upload | MediaPilot">
+  <meta property="og:description" content="Convert video to GIF online for free. Pick the part you want, the size and the smoothness, and make an animated GIF. Runs in your browser; your video is never uploaded.">
+  <meta property="og:url" content="https://mediapilottools.com/tools/video-to-gif">
+  <meta property="og:image" content="https://mediapilottools.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Video to GIF",
+  "url": "https://mediapilottools.com/tools/video-to-gif",
+  "description": "Convert video to GIF online for free. Pick the part you want, the size and the smoothness, and make an animated GIF. Runs in your browser; your video is never uploaded.",
+  "applicationCategory": "MultimediaApplication",
+  "operatingSystem": "Any browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MediaPilot",
+    "url": "https://mediapilottools.com/"
+  }
+}
+  </script>
+  <title>Video to GIF Converter — Make GIFs from Video Free, No Upload | MediaPilot</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
+  <style>
+    .player-wrap { width:100%; background:#0d0f14; border-radius:var(--radius); overflow:hidden; display:flex; align-items:center; justify-content:center; min-height:240px; }
+    .player-wrap video { display:block; width:100%; max-height:62vh; transition:transform .3s ease; }
+    .result-preview:empty { display:none; }
+    .result-preview { margin-top:12px; }
+    .result-preview video, .result-preview img, .result-preview audio { display:block; width:100%; max-height:46vh; object-fit:contain; border-radius:var(--radius); background:#0d0f14; }
+    .result-preview audio { background:none; }
+    .time-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .time-buttons { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0 6px; }
+    .time-buttons button { min-height:36px; padding:4px 8px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--text); font:inherit; font-size:12px; font-weight:600; cursor:pointer; }
+    .time-buttons button:hover { background:var(--bg-alt); }
+    .turn-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:6px; }
+    .turn-options label { position:relative; }
+    .turn-options input { position:absolute; opacity:0; }
+    .turn-options span { display:flex; align-items:center; justify-content:center; min-height:40px; padding:4px 8px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--text); font-size:13px; font-weight:600; cursor:pointer; }
+    .turn-options input:checked + span { border-color:var(--accent); background:var(--accent-soft); color:var(--accent-text); }
+    .turn-options input:focus-visible + span { outline:2px solid var(--accent); outline-offset:1px; }
+    .inline-message { margin-top:12px; padding:10px 12px; border-radius:var(--radius); font-size:12.5px; line-height:1.5; }
+    .inline-message.is-error { color:#d83b2e; background:color-mix(in srgb,#d83b2e 10%,transparent); border:1px solid color-mix(in srgb,#d83b2e 25%,transparent); }
+    .inline-message.is-success { color:var(--good); background:var(--good-soft); border:1px solid color-mix(in srgb,var(--good) 25%,transparent); }
+  </style>
+  <script>
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch {}
+  </script>
+</head>
+<body class="tool-body">
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span>Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span>Image Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button></div>
+    </div>
+  </header>
+
+  <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span>Back to all tools</span></a>
+    </div>
+
+    <section class="tool-page-hero">
+      <h1>Video to GIF</h1>
+      <p>Turn a moment from any video into an animated GIF</p>
+      <div class="tool-upload" id="toolUploadHero">
+        <label class="dropzone" id="dropzone" for="fileInput" tabindex="0">
+          <input id="fileInput" type="file" accept="video/*,.mkv,.avi,.wmv,.flv,.ts">
+          <span class="choose-file-button"><span>Choose video</span><b>⌄</b></span>
+          <span class="drop-hint"><span class="download-arrow">⇩</span> <span>or drop a video file here</span></span>
+        </label>
+        <div class="asset-card is-hidden" id="assetCard">
+          <div class="asset-thumb"><span>▶</span></div>
+          <div class="asset-copy"><strong id="assetName">video.mp4</strong><span id="assetMeta">—</span></div>
+          <button class="icon-button" id="replaceButton" type="button" aria-label="Replace file" title="Replace file">↻</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="editingModule" class="editing-module is-hidden" aria-label="Video to GIF">
+      <div class="steps-bar">
+        <div class="step-item active"><span>1</span><strong>Upload video</strong></div><i></i>
+        <div class="step-item"><span>2</span><strong>Make GIF</strong></div>
+      </div>
+      <div class="editing-grid">
+        <section class="preview-panel">
+          <div class="preview-topline">
+            <div><p class="panel-eyebrow">Preview</p><h2>Your video</h2></div>
+            <div class="preview-status ready"><span class="status-dot"></span><span>Ready</span></div>
+          </div>
+          <div class="player-wrap"><video id="sourcePlayer" controls playsinline preload="metadata"></video></div>
+        </section>
+
+        <aside class="control-panel">
+          <div class="step-card">
+            <div class="step-card-heading"><span>2</span><div><h2>Make GIF</h2><p>Pick the part, size and smoothness</p></div></div>
+            <div class="time-row">
+              <label class="size-field"><span>Start</span><input id="startTime" type="text" inputmode="decimal" value="0:00.0" aria-describedby="rangeNote"></label>
+              <label class="size-field"><span>End</span><input id="endTime" type="text" inputmode="decimal" value="0:00.0" aria-describedby="rangeNote"></label>
+            </div>
+            <div class="time-buttons">
+              <button type="button" id="setStart">Set start to current frame</button>
+              <button type="button" id="setEnd">Set end to current frame</button>
+            </div>
+            <p class="resolution-note" id="rangeNote">Play or scrub the video on the left, then set the start and end. Times are minutes:seconds.</p>
+            <label class="size-field full"><span>Width</span>
+              <select id="widthSelect">
+                <option value="320">320 px — small file</option>
+                <option value="480" selected>480 px — recommended</option>
+                <option value="640">640 px — sharper</option>
+              </select>
+            </label>
+            <label class="size-field full"><span>Smoothness</span>
+              <select id="fpsSelect">
+                <option value="10">10 frames per second</option>
+                <option value="15" selected>15 frames per second</option>
+                <option value="20">20 frames per second</option>
+              </select>
+            </label>
+            <button class="primary-button" id="processButton" type="button" disabled><span>Make GIF</span><b>→</b></button>
+            <div class="processing-card is-hidden" id="processingCard">
+              <div class="processing-head">
+                <div class="processing-spinner" role="status"><span>Processing</span></div>
+                <div><strong id="processingLabel">Making GIF…</strong><span id="processingDetail">Starting</span></div>
+                <output id="processingPercent">0%</output>
+              </div>
+              <div class="progress-track"><span id="progressBar" style="width:0"></span></div>
+            </div>
+            <p class="inline-message is-hidden" id="inlineMessage" role="alert"></p>
+            <div class="result-card is-hidden" id="resultCard">
+              <div class="result-head">
+                <div class="result-check">✓</div>
+                <div><strong>Ready</strong><span id="resultMeta">Your file is ready to download.</span></div>
+                <a class="download-button" id="downloadButton" href="#" download><span>Download</span><b>⇩</b></a>
+              </div>
+              <div class="result-preview" id="resultPreview"></div>
+            </div>
+            <p class="legal-note">Your video is processed entirely in your browser and is never uploaded to any server. The video engine downloads once, the first time you use a video tool. Keep this tab open until it finishes.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" style="padding-bottom:40px">
+      <div class="shell">
+        <h2 class="section-title">How Video to GIF works</h2>
+        <div class="feature-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="5" width="14" height="14" rx="2"/><path d="m22 8-6 4 6 4V8Z"/></svg></span>
+            <h3>Upload</h3>
+            <p>Drop a video file — it never leaves your device.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h14l-3-3"/><path d="M20 16H6l3 3"/></svg></span>
+            <h3>Choose</h3>
+            <p>Pick the part, width and smoothness.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <h3>Download</h3>
+            <p>Save the animated GIF.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="shell">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div style="max-width:740px">
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is my video uploaded to a server?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. The GIF is made entirely in your browser and your video never leaves your device.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">How long can the GIF be?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Up to 30 seconds. GIFs grow large quickly, so short clips of a few seconds work best for sharing.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Why are GIF files so large?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">GIF is an old format that stores every frame as a picture. A smaller width or fewer frames per second makes the file much smaller.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Does the GIF have sound?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. The GIF format cannot hold sound.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div>Online tools for video, images, and file conversion</div><div>EN</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+      </div>
+      <div class="language-divider"></div>
+    </section>
+  </div>
+
+  <script type="module" src="/tool-shell.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/tools/video-kit.js"></script>
+  <script src="/tools/video-to-gif/app.js"></script>
+</body>
+</html>
