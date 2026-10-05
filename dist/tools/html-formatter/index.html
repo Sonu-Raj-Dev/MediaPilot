@@ -83,6 +83,8 @@
     .preview-stage.is-narrow iframe { box-shadow:0 0 0 1px var(--line), var(--shadow-md); }
     .head-tools { display:inline-flex; align-items:center; gap:10px; }
     .head-tools .fmt-btn { height:28px; padding:0 10px; font-size:12.5px; }
+    .edit-toggle { height:30px; padding:0 10px; font-size:12.5px; }
+    .preview-stage.is-editing { box-shadow:inset 0 0 0 2px var(--accent); }
     .fmt-check { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:500; color:var(--text-soft); }
     @media (max-width:860px) {
       .fmt-panes { grid-template-columns:1fr; height:auto; }
@@ -152,6 +154,7 @@
               <button class="fmt-btn" type="button" data-width="768" aria-pressed="false">Tablet</button>
               <button class="fmt-btn" type="button" data-width="375" aria-pressed="false">Phone</button>
             </div>
+            <button class="fmt-btn edit-toggle" type="button" id="editToggle" aria-pressed="false" title="Type directly in the preview; the HTML on the left updates to match">✎ Edit in preview</button>
           </div>
           <div class="preview-stage" id="stage">
             <iframe id="preview" title="Live preview of your HTML" sandbox="allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox"></iframe>
@@ -163,7 +166,7 @@
           </div>
         </section>
       </div>
-      <p class="fmt-help">The preview runs your page in a sealed-off frame: its scripts work, but they cannot reach this site, your other tabs or your data. Links open in a new tab. Escaped tags such as &amp;lt;p&amp;gt; can be turned back into real HTML with Decode. Plain text is shown with its line breaks and clickable links; press Format to turn it into HTML. Files on your own computer (like local images) cannot load here.</p>
+      <p class="fmt-help">Press <b>✎ Edit in preview</b> to type directly in the page; the HTML on the left updates as you go (press Format afterwards to tidy it). The preview runs your page in a sealed-off frame: its scripts work, but they cannot reach this site, your other tabs or your data. Links open in a new tab. Escaped tags such as &amp;lt;p&amp;gt; can be turned back into real HTML with Decode. Plain text is shown with its line breaks and clickable links; press Format to turn it into HTML. Files on your own computer (like local images) cannot load here.</p>
     </section>
 
     <section class="section" style="padding-bottom:40px">
@@ -236,7 +239,7 @@
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/vendor/beautifier.min.js"></script>
-  <script src="/tools/formatter-kit.js"></script>
-  <script src="/tools/html-formatter/app.js"></script>
+  <script src="/tools/formatter-kit.js?v=4"></script>
+  <script src="/tools/html-formatter/app.js?v=4"></script>
 </body>
 </html>

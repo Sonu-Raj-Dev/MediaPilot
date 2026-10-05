@@ -4,6 +4,9 @@ const frame = document.querySelector('#preview');
 const stage = document.querySelector('#stage');
 const status = document.querySelector('#status');
 const autoRun = document.querySelector('#autoRun');
+const editToggle = document.querySelector('#editToggle');
+let editing = false;     // the preview is editable and writes back into the HTML
+let fromPreview = false; // the editor text was just rewritten from a preview edit
 
 const SAMPLE = `<!doctype html>
 <html lang="en">
@@ -76,7 +79,14 @@ const kindOf = (text) => (!text.trim() ? 'empty'
     : ESCAPED_TAG.test(text) ? 'escaped' : 'text');
 
 function update(text) {
-  status.textContent = {
+  if (fromPreview) {
+    // The preview already shows this (it was typed there); reloading it would lose the cursor.
+    fromPreview = false;
+    status.textContent = 'Editing: the HTML on the left updates as you type in the preview.';
+    return;
+  }
+  if (editing && kindOf(text) !== 'html' && kindOf(text) !== 'html-with-escaped' && text.trim()) setEditing(false);
+  status.textContent = editing ? 'Editing: click into the preview and type. Scripts are paused while editing.' : {
     empty: 'Waiting for HTML',
     html: 'Preview is up to date',
     'html-with-escaped': 'Some tags are escaped (like &lt;p&gt;), so they show as text. Press Decode to turn them into real HTML.',
@@ -89,7 +99,7 @@ function update(text) {
 // Links in the preview open in a new tab rather than replacing the preview itself.
 function withNewTabLinks(html) {
   if (/<base\b/i.test(html)) return html;
-  const base = '<base target="_blank">';
+  const base = '<base data-mp target="_blank">';
   const head = /<head\b[^>]*>/i.exec(html);
   if (head) return html.slice(0, head.index + head[0].length) + base + html.slice(head.index + head[0].length);
   const doctype = /^\s*<!doctype[^>]*>/i.exec(html);
@@ -99,10 +109,80 @@ function withNewTabLinks(html) {
 function run() {
   const text = editor.input.value;
   const kind = kindOf(text);
+  if (editing) { frame.srcdoc = editableDocument(text); return; }
   frame.srcdoc = withNewTabLinks(kind === 'escaped' ? decodeEscaped(text)
     : kind === 'text' ? `<!doctype html><meta charset="utf-8"><style>body{margin:16px;font:15px/1.6 system-ui,sans-serif;color:#1b1f2a}a{color:#2e63ff}</style>${textToHtml(text)}`
       : text);
 }
+
+// ---- Editing in the preview -------------------------------------------------------------------
+// The preview frame is sealed off (no access to this page), so a small helper script inside it
+// makes the page editable and posts the edited HTML back. The page's own scripts are switched off
+// while editing: otherwise anything they draw would be saved into the source as if typed.
+function disableScripts(html) {
+  return html.replace(/<script\b([^>]*)>/gi, (tag, attrs) => {
+    const type = /\stype\s*=\s*("([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(attrs);
+    const original = type ? (type[2] ?? type[3] ?? type[4]) : '';
+    const rest = type ? attrs.replace(type[0], '') : attrs;
+    // The parser keeps the first type attribute, so this one wins; the original is restored on save.
+    return `<script type="text/x-mp-paused" data-mp-type="${escapeHtml(original)}"${rest}>`;
+  });
+}
+
+function editableDocument(source) {
+  // Whole documents are saved whole; fragments (no <html>/<body>) are saved as fragments again.
+  const options = JSON.stringify({ full: /<(html|body)[\s>]/i.test(source), doctype: (/^\s*<!doctype[^>]*>/i.exec(source) || [''])[0].trim() });
+  const helper = `<script data-mp>(${previewHelper})(${options})<\/script>`;
+  return withNewTabLinks(disableScripts(source)) + helper;
+}
+
+// Runs inside the preview frame (stringified above), so it may use only its own variables.
+function previewHelper(options) {
+  const body = document.body;
+  const hadEditable = body.hasAttribute('contenteditable');
+  body.contentEditable = 'true';
+  body.focus();
+  const serialize = () => {
+    const root = document.documentElement.cloneNode(true);
+    for (const el of root.querySelectorAll('[data-mp]')) el.remove();
+    const clonedBody = root.querySelector('body');
+    if (!hadEditable) clonedBody.removeAttribute('contenteditable');
+    for (const script of root.querySelectorAll('script[data-mp-type]')) {
+      const type = script.getAttribute('data-mp-type');
+      script.removeAttribute('data-mp-type');
+      if (type) script.setAttribute('type', type); else script.removeAttribute('type');
+    }
+    if (options.full) return (options.doctype ? options.doctype + '\n' : '') + root.outerHTML;
+    const node = (n) => (n.nodeType === 1 ? n.outerHTML : n.nodeType === 8 ? '<!--' + n.data + '-->' : n.textContent);
+    return [...root.querySelector('head').childNodes].map(node).join('') + clonedBody.innerHTML;
+  };
+  let timer;
+  const send = () => { clearTimeout(timer); timer = setTimeout(() => parent.postMessage({ mpEdit: serialize() }, '*'), 250); };
+  document.addEventListener('input', send);
+  // Links would navigate away while editing; let clicks place the cursor instead.
+  document.addEventListener('click', (event) => { if (event.target.closest('a')) event.preventDefault(); }, true);
+}
+
+window.addEventListener('message', (event) => {
+  if (!editing || event.source !== frame.contentWindow || typeof event.data?.mpEdit !== 'string') return;
+  fromPreview = true;
+  editor.setText(event.data.mpEdit, { keepFocus: true });
+});
+
+function setEditing(on) {
+  const kind = kindOf(editor.input.value);
+  if (on && kind !== 'html' && kind !== 'html-with-escaped') {
+    editor.notify(kind === 'empty' ? 'Paste or open some HTML first.' : 'Press Format first to turn this into HTML, then edit it in the preview.', true);
+    return;
+  }
+  editing = on;
+  editToggle.setAttribute('aria-pressed', String(on));
+  editToggle.textContent = on ? '✓ Done editing' : '✎ Edit in preview';
+  stage.classList.toggle('is-editing', on);
+  status.textContent = on ? 'Editing: click into the preview and type. Scripts are paused while editing.' : 'Preview is up to date';
+  run();
+}
+editToggle.addEventListener('click', () => setEditing(!editing));
 
 function beautifyOptions() {
   const unit = editor.indent();

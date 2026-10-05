@@ -39,7 +39,15 @@
 
     // Replaces the text as one undoable edit where the browser supports it, so Ctrl+Z still works.
     // Very large text skips that: the undoable insert gets slow at megabyte sizes.
-    const setText = (text) => {
+    // keepFocus: write the text without moving focus or the editor's scroll position (no undo step).
+    const setText = (text, { keepFocus = false } = {}) => {
+      if (keepFocus) {
+        const scroll = input.scrollTop;
+        input.value = text;
+        input.scrollTop = scroll;
+        changed(true);
+        return;
+      }
       input.focus();
       input.select();
       const undoable = text.length + input.value.length < 400000 && document.execCommand?.('insertText', false, text);

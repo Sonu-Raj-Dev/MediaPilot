@@ -91,6 +91,11 @@
     .code-spacer { position:relative; min-width:100%; }
     .code-lines { position:absolute; top:0; left:0; min-width:100%; margin:0; padding:12px 14px; font:13px/20px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; white-space:pre; tab-size:2; color:var(--text); will-change:transform; }
     .jg-more[hidden] { display:none; }
+    .jg-edit { cursor:text; border-radius:3px; }
+    td > .jg-edit { display:block; min-height:1.45em; }
+    .jg-hint { margin:0 0 10px; padding:7px 10px; border-radius:7px; background:var(--accent-soft); color:var(--accent-text); font:12.5px/1.4 system-ui, sans-serif; }
+    .jg-edit:hover, .jg-edit:focus-visible { outline:1px dashed var(--accent); outline-offset:1px; }
+    .jg-input { box-sizing:border-box; width:100%; min-width:12ch; padding:2px 5px; border:1px solid var(--accent); border-radius:4px; background:var(--surface); color:var(--text); font:inherit; resize:vertical; }
     .jg td { max-width:56ch; }
     .jg .tok-str { white-space:pre-wrap; overflow-wrap:anywhere; }
     @media (max-width:860px) {
@@ -163,7 +168,7 @@
           <div class="pane-body" id="viewer"><p class="fmt-empty">Your JSON appears here as a grid.</p></div>
         </section>
       </div>
-      <p class="fmt-help">Click any <b>{…}</b> or <b>[…]</b> in the grid to open or close it. Lists of objects are shown as tables with one row per item. Everything stays in your browser.</p>
+      <p class="fmt-help">Click any value or field name in the grid to edit it — the JSON on the left updates to match. Click any <b>{…}</b> or <b>[…]</b> to open or close it. Lists of objects are shown as tables with one row per item. Everything stays in your browser.</p>
     </section>
 
     <section class="section" style="padding-bottom:40px">
@@ -235,7 +240,7 @@
 
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="/tools/formatter-kit.js"></script>
-  <script src="/tools/json-formatter/app.js"></script>
+  <script src="/tools/formatter-kit.js?v=3"></script>
+  <script src="/tools/json-formatter/app.js?v=3"></script>
 </body>
 </html>

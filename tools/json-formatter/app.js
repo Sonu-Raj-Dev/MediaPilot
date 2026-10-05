@@ -105,8 +105,18 @@ function describeError(error, text) {
   return { text: `Line ${line}, column ${column}: ${what}`, line, column };
 }
 
+let fromGrid = false; // the editor text was just rewritten from a grid edit; keep the grid as is
+let editable = true;  // documents too big to rewrite in the editor quickly are view-only in the grid
+
 function update(text) {
   bigOutput = null; // the editor changed, so an earlier large result no longer matches it
+  if (fromGrid) {
+    // The grid already shows this data (it was edited in place), so redrawing would only close
+    // everything the user had opened.
+    fromGrid = false;
+    setStatus('✓ Valid JSON · updated from the grid', 'ok');
+    return;
+  }
   if (!text.trim()) {
     parsed = undefined;
     setStatus('Waiting for JSON');
@@ -114,6 +124,7 @@ function update(text) {
     return;
   }
   smallDoc = text.length < 60000;
+  editable = text.length <= EDITOR_MAX_CHARS && lineCount(text, EDITOR_MAX_LINES) <= EDITOR_MAX_LINES;
   try {
     parsed = { ok: true, value: JSON.parse(text) };
     setStatus('✓ Valid JSON', 'ok');
@@ -142,17 +153,108 @@ function showView(name) {
 // ---- Grid view -----------------------------------------------------------------------------
 const isObject = (value) => value !== null && typeof value === 'object' && !Array.isArray(value);
 
-function scalar(value) {
+// owner: { parent, ref: { key } } says where the value lives, so an edit can write it back. ref is
+// shared with the key cell, so a renamed field keeps working.
+function scalar(value, owner) {
   const span = document.createElement('span');
   if (value === null) { span.className = 'tok-null'; span.textContent = 'null'; }
   else if (typeof value === 'string') { span.className = 'tok-str'; span.textContent = value === '' ? '""' : value; }
   else if (typeof value === 'number') { span.className = 'tok-num'; span.textContent = String(value); }
   else { span.className = 'tok-bool'; span.textContent = String(value); }
+  if (owner && editable) makeEditable(span, () => editValue(span, owner));
   return span;
 }
 
-function cell(value, depth) {
-  return value !== null && typeof value === 'object' ? nested(value, depth) : scalar(value);
+function cell(value, depth, owner) {
+  return value !== null && typeof value === 'object' ? nested(value, depth) : scalar(value, owner);
+}
+
+// ---- Editing in the grid ---------------------------------------------------------------------
+function makeEditable(el, start) {
+  el.classList.add('jg-edit');
+  el.tabIndex = 0;
+  el.title = 'Click to edit';
+  // A field-name cell contains its own edit box while editing; clicks in that box are not a new
+  // edit. A click that ends a text selection (copying a value) is not one either.
+  el.addEventListener('click', (event) => {
+    if (event.target.closest('.jg-input') || String(getSelection())) return;
+    start();
+  });
+  el.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.target.closest('.jg-input')) { event.preventDefault(); start(); }
+  });
+}
+
+// Swaps el for a text box; resolves with the typed text, or null when cancelled (Esc).
+function inlineInput(el, initial) {
+  return new Promise((resolve) => {
+    const multiline = initial.includes('\n') || initial.length > 60;
+    const input = document.createElement(multiline ? 'textarea' : 'input');
+    input.className = 'jg-input';
+    input.value = initial;
+    if (multiline) input.rows = Math.min(8, initial.split('\n').length + 1);
+    el.replaceWith(input);
+    input.focus();
+    input.select();
+    let done = false;
+    const finish = (value) => {
+      if (done) return;
+      done = true;
+      input.replaceWith(el);
+      el.focus();
+      resolve(value);
+    };
+    input.addEventListener('keydown', (event) => {
+      event.stopPropagation();
+      if (event.key === 'Escape') { event.preventDefault(); finish(null); }
+      // Enter saves; Shift+Enter adds a line break in a long text.
+      if (event.key === 'Enter' && !(multiline && event.shiftKey)) { event.preventDefault(); finish(input.value); }
+    });
+    input.addEventListener('blur', () => finish(input.value));
+  });
+}
+
+async function editValue(span, owner) {
+  const { parent, ref } = owner;
+  const old = parent[ref.key];
+  const typed = await inlineInput(span, typeof old === 'string' ? old : JSON.stringify(old));
+  if (typed === null) return;
+  // Text stays text. Numbers, true/false and null keep their type when the new value still is
+  // one; anything else (including {…} or […] typed in) is read as JSON, or else kept as text.
+  let value = typed;
+  if (typeof old !== 'string') {
+    try { value = JSON.parse(typed); } catch { value = typed; }
+  }
+  if (Object.is(value, old)) return;
+  parent[ref.key] = value;
+  // A new object or list needs its own toggle, so draw the cell again rather than patching text.
+  const fresh = cell(value, 0, owner);
+  span.replaceWith(fresh);
+  if (fresh.tagName === 'SPAN') fresh.focus();
+  syncText();
+}
+
+async function editKey(th, object, ref) {
+  const typed = await inlineInput(th.firstChild || th, ref.key);
+  if (typed === null || typed === ref.key) return;
+  if (Object.prototype.hasOwnProperty.call(object, typed)) {
+    editor.notify(`There is already a field called "${typed}" here.`, true);
+    return;
+  }
+  // Rebuild the object so the renamed field keeps its place in the order.
+  const entries = Object.entries(object);
+  for (const key of Object.keys(object)) delete object[key];
+  for (const [key, value] of entries) object[key === ref.key ? typed : key] = value;
+  ref.key = typed;
+  th.firstChild.textContent = typed;
+  syncText();
+}
+
+// Writes the edited data back into the editor, keeping it minified if it was minified.
+function syncText() {
+  const minified = !editor.input.value.trim().includes('\n');
+  fromGrid = true;
+  editor.setText(JSON.stringify(parsed.value, null, minified ? 0 : editor.indent()), { keepFocus: true });
 }
 
 // A {…} / […] toggle whose table is built the first time it opens. Small documents open the first
@@ -199,7 +301,7 @@ function table(value, depth) {
       row.append(Object.assign(document.createElement('td'), { className: 'idx', textContent: index }));
       for (const column of columns) {
         const td = document.createElement('td');
-        if (column in item) td.append(cell(item[column], depth));
+        if (column in item) td.append(cell(item[column], depth, { parent: item, ref: { key: column } }));
         row.append(td);
       }
       return row;
@@ -208,9 +310,18 @@ function table(value, depth) {
     rowOf = (entry, index) => {
       const row = document.createElement('tr');
       const [key, item] = Array.isArray(value) ? [index, entry] : entry;
-      row.append(Object.assign(document.createElement(Array.isArray(value) ? 'td' : 'th'), { className: Array.isArray(value) ? 'idx' : '', textContent: key }));
+      const ref = { key };
+      if (Array.isArray(value)) {
+        row.append(Object.assign(document.createElement('td'), { className: 'idx', textContent: key }));
+      } else {
+        // The key text sits in its own span so the edit box can take its place.
+        const th = document.createElement('th');
+        th.append(Object.assign(document.createElement('span'), { textContent: key }));
+        if (editable) makeEditable(th, () => editKey(th, value, ref));
+        row.append(th);
+      }
       const td = document.createElement('td');
-      td.append(cell(item, depth));
+      td.append(cell(item, depth, { parent: value, ref }));
       row.append(td);
       return row;
     };
@@ -237,6 +348,13 @@ function table(value, depth) {
 function grid(value) {
   const root = document.createElement('div');
   root.className = 'jg';
+  if (value !== null && typeof value === 'object') {
+    root.append(Object.assign(document.createElement('p'), {
+      className: 'jg-hint',
+      textContent: editable ? '✎ Click any value or field name to edit it. The JSON on the left updates as you go.'
+        : 'This JSON is too large to edit in the grid. Edit it in the editor on the left.',
+    }));
+  }
   root.append(value !== null && typeof value === 'object' ? table(value, 0) : scalar(value));
   return root;
 }
@@ -284,6 +402,13 @@ function code(text) {
   return spacer;
 }
 
+// Line count, stopping early once past `max` (the exact number above it does not matter).
+function lineCount(text, max) {
+  let count = 1;
+  for (let i = text.indexOf('\n'); i !== -1 && count <= max; i = text.indexOf('\n', i + 1)) count++;
+  return count;
+}
+
 // ---- Toolbar -------------------------------------------------------------------------------
 function rewrite(spacing) {
   const source = editor.input.value;
@@ -302,9 +427,7 @@ function rewrite(spacing) {
     }
     return;
   }
-  let lineCount = 1;
-  for (let i = result.indexOf('\n'); i !== -1 && lineCount <= EDITOR_MAX_LINES; i = result.indexOf('\n', i + 1)) lineCount++;
-  if (lineCount <= EDITOR_MAX_LINES && result.length <= EDITOR_MAX_CHARS) {
+  if (lineCount(result, EDITOR_MAX_LINES) <= EDITOR_MAX_LINES && result.length <= EDITOR_MAX_CHARS) {
     editor.setText(result);
     return;
   }
