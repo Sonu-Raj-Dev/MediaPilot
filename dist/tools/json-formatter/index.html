@@ -4,12 +4,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
       crossorigin="anonymous"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C41MLW8JMY');
-  </script>
+  <script>(()=>{window.dataLayer=window.dataLayer||[];function a(){dataLayer.push(arguments)}a("js",new Date),a("config","G-C41MLW8JMY")})();</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0f1115">
@@ -25,90 +20,14 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "JSON Formatter",
-  "url": "https://mediapilottools.com/tools/json-formatter",
-  "description": "Format, validate and view JSON online for free. See JSON as an easy-to-read grid of tables, pretty print or minify it, and find errors by line and column. Runs in your browser; your data is never uploaded.",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Any browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "MediaPilot",
-    "url": "https://mediapilottools.com/"
-  }
-}
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"JSON Formatter","url":"https://mediapilottools.com/tools/json-formatter","description":"Format, validate and view JSON online for free. See JSON as an easy-to-read grid of tables, pretty print or minify it, and find errors by line and column. Runs in your browser; your data is never uploaded.","applicationCategory":"DeveloperApplication","operatingSystem":"Any browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MediaPilot","url":"https://mediapilottools.com/"}}</script>
   <title>JSON Formatter &amp; Grid Viewer — Format, Validate and View JSON Online Free | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
   <link rel="stylesheet" href="/tool.css">
-  <style>
-    .fmt-wrap { width:min(1440px, calc(100% - 32px)); margin:0 auto 40px; }
-    .fmt-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; }
-    .fmt-toolbar .spacer { flex:1; }
-    .fmt-btn { display:inline-flex; align-items:center; gap:6px; height:36px; padding:0 13px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--text); font:inherit; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
-    .fmt-btn:hover { background:var(--bg-alt); }
-    .fmt-btn:focus-visible, .fmt-select:focus-visible, .fmt-code:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
-    .fmt-btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
-    .fmt-btn.primary:hover { filter:brightness(1.08); }
-    .fmt-btn[aria-pressed="true"] { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); }
-    .fmt-select { height:36px; padding:0 8px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--text); font:inherit; font-size:13px; }
-    .fmt-panes { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; height:min(74vh, 820px); min-height:420px; }
-    .fmt-pane { display:flex; flex-direction:column; min-height:0; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden; }
-    .pane-head { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:6px 10px 6px 14px; border-bottom:1px solid var(--line); background:var(--surface-2); font-size:13px; font-weight:600; }
-    .pane-head .tabs { display:flex; gap:4px; }
-    .pane-head .tabs .fmt-btn { height:30px; padding:0 10px; font-size:12.5px; }
-    .fmt-code { flex:1; min-height:0; width:100%; margin:0; padding:12px 14px; border:0; resize:none; background:transparent; color:var(--text); font:13px/1.55 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; white-space:pre; overflow:auto; tab-size:2; }
-    .pane-body { flex:1; min-height:0; overflow:auto; }
-    .fmt-status { display:flex; align-items:center; gap:8px; min-height:34px; padding:6px 14px; border-top:1px solid var(--line); font-size:12.5px; color:var(--text-soft); }
-    .fmt-status.is-ok { color:var(--good); }
-    .fmt-status.is-error { color:#d83b2e; }
-    .fmt-empty { padding:28px 16px; color:var(--text-faint); font-size:13.5px; text-align:center; }
-    .fmt-help { margin:14px 0 0; color:var(--text-faint); font-size:12.5px; line-height:1.55; }
-    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
-    .tok-key { color:#a626a4; } .tok-str { color:#22863a; } .tok-num { color:#1f6feb; } .tok-bool { color:#b45309; } .tok-null { color:#8b8f98; }
-    [data-theme="dark"] .tok-key { color:#d2a8ff; } [data-theme="dark"] .tok-str { color:#7ee787; } [data-theme="dark"] .tok-num { color:#79c0ff; } [data-theme="dark"] .tok-bool { color:#f0b072; }
-    @media (prefers-color-scheme:dark) { html:not([data-theme="light"]) .tok-key { color:#d2a8ff; } html:not([data-theme="light"]) .tok-str { color:#7ee787; } html:not([data-theme="light"]) .tok-num { color:#79c0ff; } html:not([data-theme="light"]) .tok-bool { color:#f0b072; } }
-    .jg { padding:12px; font:12.5px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; }
-    .jg table { border-collapse:collapse; margin:2px 0; }
-    .jg th, .jg td { padding:4px 8px; border:1px solid var(--line); vertical-align:top; text-align:left; }
-    .jg th { background:var(--bg-alt); color:var(--text-soft); font-weight:600; white-space:nowrap; }
-    .jg thead th { background:color-mix(in srgb, var(--accent) 9%, var(--surface)); color:var(--text); }
-    .jg td.idx { color:var(--text-faint); background:var(--bg-alt); text-align:right; }
-    .jg-toggle { display:inline-flex; align-items:center; gap:5px; padding:1px 7px; border:1px solid var(--line); border-radius:6px; background:var(--surface); color:var(--accent-text); font:inherit; cursor:pointer; }
-    .jg-toggle::before { content:"▸"; transition:transform .15s; }
-    .jg-toggle[aria-expanded="true"]::before { transform:rotate(90deg); }
-    .jg-more { margin:6px 0; }
-    .code-spacer { position:relative; min-width:100%; }
-    .code-lines { position:absolute; top:0; left:0; min-width:100%; margin:0; padding:12px 14px; font:13px/20px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; white-space:pre; tab-size:2; color:var(--text); will-change:transform; }
-    .jg-more[hidden] { display:none; }
-    .jg-edit { cursor:text; border-radius:3px; }
-    td > .jg-edit { display:block; min-height:1.45em; }
-    .jg-hint { margin:0 0 10px; padding:7px 10px; border-radius:7px; background:var(--accent-soft); color:var(--accent-text); font:12.5px/1.4 system-ui, sans-serif; }
-    .jg-edit:hover, .jg-edit:focus-visible { outline:1px dashed var(--accent); outline-offset:1px; }
-    .jg-input { box-sizing:border-box; width:100%; min-width:12ch; padding:2px 5px; border:1px solid var(--accent); border-radius:4px; background:var(--surface); color:var(--text); font:inherit; resize:vertical; }
-    .jg td { max-width:56ch; }
-    .jg .tok-str { white-space:pre-wrap; overflow-wrap:anywhere; }
-    @media (max-width:860px) {
-      .fmt-panes { grid-template-columns:1fr; height:auto; }
-      .fmt-pane { height:60vh; min-height:340px; }
-    }
-  </style>
-  <script>
-    try {
-      const saved = localStorage.getItem('mediapilot-theme');
-      if (saved) document.documentElement.dataset.theme = saved;
-    } catch {}
-  </script>
+  <style>.fmt-wrap{width:min(1440px,calc(100% - 32px));margin:0 auto 40px}.fmt-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}.fmt-toolbar .spacer{flex:1}.fmt-btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}.fmt-btn:hover{background:var(--bg-alt)}.fmt-btn:focus-visible,.fmt-select:focus-visible,.fmt-code:focus-visible{outline:2px solid var(--accent);outline-offset:1px}.fmt-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}.fmt-btn.primary:hover{filter:brightness(1.08)}.fmt-btn[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-text)}.fmt-select{height:36px;padding:0 8px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:13px}.fmt-panes{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;height:min(74vh,820px);min-height:420px}.fmt-pane{display:flex;flex-direction:column;min-height:0;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}.pane-head{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:6px 10px 6px 14px;border-bottom:1px solid var(--line);background:var(--surface-2);font-size:13px;font-weight:600}.pane-head .tabs{display:flex;gap:4px}.pane-head .tabs .fmt-btn{height:30px;padding:0 10px;font-size:12.5px}.fmt-code{flex:1;min-height:0;width:100%;margin:0;padding:12px 14px;border:0;resize:none;background:transparent;color:var(--text);font:13px/1.55 ui-monospace,SFMono-Regular,Consolas,Liberation Mono,monospace;white-space:pre;overflow:auto;tab-size:2}.pane-body{flex:1;min-height:0;overflow:auto}.fmt-status{display:flex;align-items:center;gap:8px;min-height:34px;padding:6px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--text-soft)}.fmt-status.is-ok{color:var(--good)}.fmt-status.is-error{color:#d83b2e}.fmt-empty{padding:28px 16px;color:var(--text-faint);font-size:13.5px;text-align:center}.fmt-help{margin:14px 0 0;color:var(--text-faint);font-size:12.5px;line-height:1.55}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.tok-key{color:#a626a4}.tok-str{color:#22863a}.tok-num{color:#1f6feb}.tok-bool{color:#b45309}.tok-null{color:#8b8f98}[data-theme=dark] .tok-key{color:#d2a8ff}[data-theme=dark] .tok-str{color:#7ee787}[data-theme=dark] .tok-num{color:#79c0ff}[data-theme=dark] .tok-bool{color:#f0b072}@media(prefers-color-scheme:dark){html:not([data-theme=light]) .tok-key{color:#d2a8ff}html:not([data-theme=light]) .tok-str{color:#7ee787}html:not([data-theme=light]) .tok-num{color:#79c0ff}html:not([data-theme=light]) .tok-bool{color:#f0b072}}.jg{padding:12px;font:12.5px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}.jg table{border-collapse:collapse;margin:2px 0}.jg th,.jg td{padding:4px 8px;border:1px solid var(--line);vertical-align:top;text-align:left}.jg th{background:var(--bg-alt);color:var(--text-soft);font-weight:600;white-space:nowrap}.jg thead th{background:color-mix(in srgb,var(--accent) 9%,var(--surface));color:var(--text)}.jg td.idx{color:var(--text-faint);background:var(--bg-alt);text-align:right}.jg-toggle{display:inline-flex;align-items:center;gap:5px;padding:1px 7px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--accent-text);font:inherit;cursor:pointer}.jg-toggle:before{content:"\25b8";transition:transform .15s}.jg-toggle[aria-expanded=true]:before{transform:rotate(90deg)}.jg-more{margin:6px 0}.code-spacer{position:relative;min-width:100%}.code-lines{position:absolute;top:0;left:0;min-width:100%;margin:0;padding:12px 14px;font:13px/20px ui-monospace,SFMono-Regular,Consolas,Liberation Mono,monospace;white-space:pre;tab-size:2;color:var(--text);will-change:transform}.jg-more[hidden]{display:none}.jg-edit{cursor:text;border-radius:3px}td>.jg-edit{display:block;min-height:1.45em}.jg-hint{margin:0 0 10px;padding:7px 10px;border-radius:7px;background:var(--accent-soft);color:var(--accent-text);font:12.5px/1.4 system-ui,sans-serif}.jg-edit:hover,.jg-edit:focus-visible{outline:1px dashed var(--accent);outline-offset:1px}.jg-input{box-sizing:border-box;width:100%;min-width:12ch;padding:2px 5px;border:1px solid var(--accent);border-radius:4px;background:var(--surface);color:var(--text);font:inherit;resize:vertical}.jg td{max-width:56ch}.jg .tok-str{white-space:pre-wrap;overflow-wrap:anywhere}@media(max-width:860px){.fmt-panes{grid-template-columns:1fr;height:auto}.fmt-pane{height:60vh;min-height:340px}}</style>
+  <script>(()=>{try{const e=localStorage.getItem("mediapilot-theme");e&&(document.documentElement.dataset.theme=e)}catch{}})();</script>
 </head>
 <body class="tool-body">
   <header class="global-header">
@@ -121,17 +40,14 @@
       <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button></div>
     </div>
   </header>
-
   <main id="toolView" class="tool-view">
     <div class="tool-back-row">
       <a class="back-button" href="/"><span aria-hidden="true">←</span><span>Back to all tools</span></a>
     </div>
-
     <section class="tool-page-hero">
       <h1>JSON Formatter</h1>
       <p>Format, validate and explore JSON as an easy-to-read grid</p>
     </section>
-
     <section class="fmt-wrap" aria-label="JSON Formatter">
       <div class="fmt-toolbar" role="toolbar" aria-label="JSON actions">
         <button class="fmt-btn primary" type="button" id="formatBtn">Format</button>
@@ -170,7 +86,6 @@
       </div>
       <p class="fmt-help">Click any value or field name in the grid to edit it — the JSON on the left updates to match. Click any <b>{…}</b> or <b>[…]</b> to open or close it. Lists of objects are shown as tables with one row per item. Everything stays in your browser.</p>
     </section>
-
     <section class="section" style="padding-bottom:40px">
       <div class="shell">
         <h2 class="section-title">How JSON Formatter works</h2>
@@ -193,7 +108,6 @@
         </div>
       </div>
     </section>
-
     <section class="section section-alt">
       <div class="shell">
         <h2 class="section-title">Frequently Asked Questions</h2>
@@ -218,9 +132,7 @@
       </div>
     </section>
   </main>
-
   <footer class="site-footer"><div>MEDIAPILOT</div><div>Online tools for video, images, and file conversion</div><div>EN</div></footer>
-
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
     <div class="language-backdrop" data-language-close></div>
     <section class="language-dialog">
@@ -237,7 +149,6 @@
       <div class="language-divider"></div>
     </section>
   </div>
-
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/tools/formatter-kit.js?v=3"></script>

@@ -4,12 +4,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
       crossorigin="anonymous"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C41MLW8JMY');
-  </script>
+  <script>(()=>{window.dataLayer=window.dataLayer||[];function a(){dataLayer.push(arguments)}a("js",new Date),a("config","G-C41MLW8JMY")})();</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101114">
@@ -25,40 +20,14 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Remove Watermark from Video",
-  "url": "https://mediapilottools.com/tools/remove-watermark-video",
-  "description": "Remove watermarks and logos from video online. Mark the area and re-encode to MP4 in your browser. Free, and your video is never uploaded.",
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "Any browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "MediaPilot",
-    "url": "https://mediapilottools.com/"
-  }
-}
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Remove Watermark from Video","url":"https://mediapilottools.com/tools/remove-watermark-video","description":"Remove watermarks and logos from video online. Mark the area and re-encode to MP4 in your browser. Free, and your video is never uploaded.","applicationCategory":"MultimediaApplication","operatingSystem":"Any browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MediaPilot","url":"https://mediapilottools.com/"}}</script>
   <title>Remove Watermark from Video Online — Free | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
   <link rel="stylesheet" href="/tool.css">
-  <style>#frameCanvas { touch-action: none; user-select: none; }</style>
-  <script>
-    // Applied before first paint so a dark-mode visitor never sees a white flash.
-    try {
-      const saved = localStorage.getItem('mediapilot-theme');
-      if (saved) document.documentElement.dataset.theme = saved;
-    } catch { /* private mode: fall through to the system preference */ }
-  </script>
+  <style>#frameCanvas{touch-action:none;user-select:none}</style>
+  <script>(()=>{try{const e=localStorage.getItem("mediapilot-theme");e&&(document.documentElement.dataset.theme=e)}catch{}})();</script>
 </head>
 <body class="tool-body">
   <header class="global-header">
@@ -71,7 +40,6 @@
       <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button></div>
     </div>
   </header>
-
   <main id="toolView" class="tool-view">
     <div class="tool-back-row">
       <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
@@ -92,7 +60,6 @@
         </div>
       </div>
     </section>
-
     <section id="editingModule" class="editing-module is-hidden" aria-label="Watermark removal steps">
       <div class="steps-bar">
         <div class="step-item active"><span>1</span><strong data-i18n="stepUpload">Upload video</strong></div><i></i><div class="step-item active"><span>2</span><strong data-i18n="stepMark">Mark watermark</strong></div><i></i><div class="step-item"><span>3</span><strong data-i18n="stepDownload">Download result</strong></div>
@@ -109,7 +76,6 @@
           <div class="processing-card is-hidden" id="processingCard"><div class="processing-head"><div class="processing-spinner"><span></span></div><div><strong id="processingTitle" data-i18n="cleaningVideo">Cleaning your video</strong><span id="processingMessage" data-i18n="preparingFrames">Preparing frames…</span></div><output id="progressValue">0%</output></div><div class="progress-track"><span id="progressBar"></span></div></div>
           <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong data-i18n="cleanedReady">Cleaned video ready</strong><span id="resultMeta" data-i18n="exportReady">Your export is ready to review.</span></div><a class="download-button" id="downloadButton" href="#" download><span data-i18n="downloadMp4">Download MP4</span><b>⇩</b></a></div><video id="resultVideo" controls playsinline></video></div>
         </section>
-
         <aside class="control-panel">
           <div class="step-card"><div class="step-card-heading"><span>2</span><div><h2 data-i18n="markWatermark">Mark the watermark</h2><p data-i18n="drawEveryPosition">Draw a box around every position</p></div></div><div class="zone-actions"><button class="text-button" id="presetButton" type="button">＋ <span data-i18n="lowerCorners">Lower corners</span></button><button class="text-button" id="topPresetButton" type="button">＋ <span data-i18n="topCorners">Top corners</span></button><button class="text-button subtle" id="clearButton" type="button" data-i18n="clearAll">Clear all</button></div><div class="zones-list" id="zonesList"><div class="zones-empty" id="zonesEmpty"><span>＋</span><span data-i18n="selectionsHere">Selections will appear here</span></div></div><p class="zone-note" data-i18n="fixedSelections">Selections stay fixed across the full video.</p></div>
           <div class="step-card"><div class="step-card-heading"><span>3</span><div><h2 data-i18n="chooseFinish">Choose a finish</h2><p data-i18n="leastAggressive">Use the least aggressive option</p></div></div><div class="mode-grid" role="radiogroup" aria-label="Cleanup method"><label class="mode-option active"><input type="radio" name="mode" value="inpaint" checked><span class="mode-symbol">✎</span><span><strong data-i18n="reconstruct">Reconstruct</strong><small data-i18n="cleanBackgrounds">Best for clean backgrounds</small></span><span class="radio-dot"></span></label><label class="mode-option"><input type="radio" name="mode" value="blur"><span class="mode-symbol">≋</span><span><strong data-i18n="soften">Soften</strong><small data-i18n="subtleBlur">Subtle blur over the mark</small></span><span class="radio-dot"></span></label><label class="mode-option"><input type="radio" name="mode" value="pixelate"><span class="mode-symbol">▦</span><span><strong data-i18n="pixelate">Pixelate</strong><small data-i18n="unreadable">Make the area unreadable</small></span><span class="radio-dot"></span></label><label class="mode-option"><input type="radio" name="mode" value="crop"><span class="mode-symbol">⧉</span><span><strong data-i18n="cropAway">Crop away</strong><small data-i18n="edgeMarksOnly">Cuts it off. No artifacts.</small></span><span class="radio-dot"></span></label></div><div class="slider-row"><div class="slider-label"><span data-i18n="maskExpansion">Mask expansion</span><output id="strengthValue">6 px</output></div><input id="strengthSlider" type="range" min="1" max="20" value="6" step="1"><div class="slider-hints"><span data-i18n="precise">Precise</span><span data-i18n="moreCoverage">More coverage</span></div></div><button class="primary-button" id="processButton" type="button" disabled><span data-i18n="cleanVideo">Clean this video</span><b>→</b></button><p class="legal-note" data-i18n="legalNote">Use this only on videos you own or have permission to edit. Original audio is restored when available.</p></div>
@@ -117,9 +83,7 @@
       </div>
     </section>
   </main>
-
   <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN</div></footer>
-
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
     <div class="language-backdrop" data-language-close></div>
     <section class="language-dialog">
@@ -153,7 +117,6 @@
       <p class="translation-note"><span data-i18n="translationError">Found a translation error?</span> <a href="mailto:hello@mediapilot.local" data-i18n="letUsKnow">Let us know</a></p>
     </section>
   </div>
-
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/app.js"></script>

@@ -4,12 +4,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
       crossorigin="anonymous"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C41MLW8JMY');
-  </script>
+  <script>(()=>{window.dataLayer=window.dataLayer||[];function a(){dataLayer.push(arguments)}a("js",new Date),a("config","G-C41MLW8JMY")})();</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0f1115">
@@ -25,57 +20,21 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "MediaPilot",
-  "url": "https://mediapilottools.com/",
-  "description": "Free online image and video tools that run entirely in your browser. Crop, resize, compress, convert, rotate and remove watermarks. Nothing is uploaded.",
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "Any browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "MediaPilot",
-    "url": "https://mediapilottools.com/"
-  }
-}
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"MediaPilot","url":"https://mediapilottools.com/","description":"Free online image and video tools that run entirely in your browser. Crop, resize, compress, convert, rotate and remove watermarks. Nothing is uploaded.","applicationCategory":"MultimediaApplication","operatingSystem":"Any browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MediaPilot","url":"https://mediapilottools.com/"}}</script>
   <title>Free Online Media Tools — No Upload | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
-  <script>
-    // Applied before first paint so a dark-mode visitor never sees a white flash.
-    try {
-      const saved = localStorage.getItem('mediapilot-theme');
-      if (saved) document.documentElement.dataset.theme = saved;
-    } catch { /* private mode: fall through to the system preference */ }
-
-    // Entrance animations are opt-in: the page is readable with no JS at all, and this class is
-    // dropped unconditionally soon after load so a failed module or an observer that never fires
-    // can never leave the page blank.
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.classList.add('reveal-armed');
-      setTimeout(() => document.documentElement.classList.remove('reveal-armed'), 1600);
-    }
-  </script>
+  <script>(()=>{try{const e=localStorage.getItem("mediapilot-theme");e&&(document.documentElement.dataset.theme=e)}catch{}matchMedia("(prefers-reduced-motion: reduce)").matches||(document.documentElement.classList.add("reveal-armed"),setTimeout(()=>document.documentElement.classList.remove("reveal-armed"),1600))})();</script>
 </head>
 <body class="home-body">
   <a class="skip-link" href="#main">Skip to content</a>
-
   <header class="site-nav" id="siteNav">
     <div class="nav-inner">
       <a class="nav-brand" href="/" aria-label="MediaPilot home">
         <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span class="brand-word">MediaPilot</span>
       </a>
-
       <nav class="nav-links" id="navLinks" aria-label="Main">
         <div class="nav-item">
           <button class="nav-trigger" type="button" data-menu="video" aria-expanded="false" aria-controls="menuVideo">Video<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -99,7 +58,6 @@
         </div>
         <a class="nav-link" href="#all-tools">Tools</a>
       </nav>
-
       <div class="nav-actions">
         <button class="nav-icon-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false" aria-label="Change language">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8"/><path d="M12 3a15 15 0 0 1 0 18a15 15 0 0 1 0-18Z"/></svg>
@@ -115,11 +73,8 @@
       </div>
     </div>
   </header>
-
   <main id="main">
-    <!-- 2. HERO -->
     <section class="hero">
-      <!-- Generative background (hero-canvas.js); always behind the artwork and the copy. -->
       <canvas class="hero-canvas" aria-hidden="true"></canvas>
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="shell hero-grid">
@@ -135,8 +90,6 @@
             <a class="btn btn-ghost" href="#how-it-works">How it works</a>
           </div>
         </div>
-
-        <!-- Animated illustration: layered cut-outs, CSS keyframes, pointer parallax (home.js). -->
         <div class="hero-art reveal" style="--i:3" aria-hidden="true">
           <div class="hero-stage">
             <div class="hero-scene">
@@ -213,8 +166,6 @@
         </div>
       </div>
     </section>
-
-    <!-- 3. SEARCH + FILTERS / 4. TOOL CARDS -->
     <section class="section" id="all-tools">
       <div class="shell">
         <div class="search-row reveal">
@@ -233,9 +184,7 @@
           </div>
         </div>
         <p class="search-count" id="searchCount" role="status" aria-live="polite"></p>
-
         <div id="toolSections"></div>
-
         <div class="empty-state is-hidden" id="noResults">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
           <p>No tools match that search.</p>
@@ -243,8 +192,6 @@
         </div>
       </div>
     </section>
-
-    <!-- 6. WHY MEDIAPILOT -->
     <section class="section section-alt" id="why">
       <div class="shell">
         <h2 class="section-title reveal">Why MediaPilot</h2>
@@ -272,8 +219,6 @@
         </div>
       </div>
     </section>
-
-    <!-- 7. HOW IT WORKS -->
     <section class="section" id="how-it-works">
       <div class="shell">
         <h2 class="section-title reveal">How it works</h2>
@@ -284,8 +229,6 @@
         </ol>
       </div>
     </section>
-
-    <!-- 8. PRIVACY BANNER -->
     <section class="section">
       <div class="shell">
         <div class="privacy-banner reveal">
@@ -297,19 +240,14 @@
         </div>
       </div>
     </section>
-
-    <!-- 9. POPULAR TOOLS -->
     <section class="section section-alt" id="popular">
       <div class="shell">
         <h2 class="section-title reveal">Popular tools</h2>
         <div class="popular-grid" id="popularGrid"></div>
       </div>
     </section>
-
     <div id="adsense-top-content" class="adsense-container adsense-top"></div>
   </main>
-
-  <!-- 10. FOOTER -->
   <footer class="site-foot">
     <div class="shell foot-grid">
       <div class="foot-brand">
@@ -332,7 +270,6 @@
     </div>
     <div class="shell foot-base"><span>© 2026 MediaPilot</span><span>Processed locally. Never uploaded.</span></div>
   </footer>
-
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
     <div class="language-backdrop" data-language-close></div>
     <section class="language-dialog">
@@ -350,11 +287,7 @@
       <div class="language-divider"></div>
     </section>
   </div>
-
   <script type="module" src="/home.js"></script>
-  <script type="module">
-    import { initializeAds } from './adsense-component.js';
-    initializeAds();
-  </script>
+  <script type="module">import{initializeAds as i}from"./adsense-component.js";i();</script>
 </body>
 </html>

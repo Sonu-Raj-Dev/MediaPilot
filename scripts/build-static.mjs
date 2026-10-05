@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { transformSync } from 'esbuild';
 import { TOOLS } from '../tools-data.js';
 
 // Search engines are told about the site from the same catalogue the pages are built from, so
@@ -128,4 +129,43 @@ Allow: /
 Sitemap: ${SITE}/sitemap.xml
 `);
 
-console.log(`Built frontend bundle in ${outDir} (${urls.length} urls in sitemap.xml)`);
+// Ship our own code minified: no comments, short local names, no source maps. This does not stop
+// anyone saving the files (a browser has to download code to run it), but it makes them much
+// harder to read or reuse and keeps the explanatory comments out of public view.
+// Third-party files in vendor/ are left as published; they are already minified and their
+// license notices must stay.
+const skipDirs = new Set([path.join(outDir, 'vendor'), path.join(outDir, 'assets')]);
+// Plain (non-module) scripts get their own scope first, so their top-level names can be shortened
+// too. Nothing relies on those names across files: shared helpers are attached to window explicitly
+// (window.VideoKit, window.PdfPreview, ...), and pages use no inline onclick-style handlers.
+const isModule = (code) => /^\s*(import|export)\b/m.test(code);
+const minifyJs = (code) => transformSync(isModule(code) ? code : `(()=>{\n${code}\n})();`, { loader: 'js', minify: true, legalComments: 'none' }).code;
+const minifyCss = (code) => transformSync(code, { loader: 'css', minify: true, legalComments: 'none' }).code;
+function minifyHtml(html) {
+  return html
+    .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
+    .replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi, (m, open, css, close) => open + minifyCss(css).trim() + close)
+    .replace(/(<script\b([^>]*)>)([\s\S]*?)(<\/script>)/gi, (m, open, attrs, code, close) => {
+      if (!code.trim() || /\bsrc=/.test(attrs)) return m;
+      if (/application\/ld\+json/.test(attrs)) return open + JSON.stringify(JSON.parse(code)) + close;
+      return open + minifyJs(code).trim() + close;
+    })
+    .replace(/\n\s*\n+/g, '\n');
+}
+let minified = 0;
+let savedBytes = 0;
+(function walk(dir) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const file = path.join(dir, entry.name);
+    if (entry.isDirectory()) { if (!skipDirs.has(file)) walk(file); continue; }
+    const transform = { '.js': minifyJs, '.css': minifyCss, '.html': minifyHtml }[path.extname(entry.name)];
+    if (!transform) continue;
+    const source = fs.readFileSync(file, 'utf8');
+    const output = transform(source);
+    fs.writeFileSync(file, output);
+    minified++;
+    savedBytes += Buffer.byteLength(source) - Buffer.byteLength(output);
+  }
+})(outDir);
+
+console.log(`Built frontend bundle in ${outDir} (${urls.length} urls in sitemap.xml; ${minified} files minified, ${Math.round(savedBytes / 1024)} KB smaller)`);

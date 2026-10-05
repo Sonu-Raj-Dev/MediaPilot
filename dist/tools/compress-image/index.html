@@ -4,12 +4,7 @@
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
       crossorigin="anonymous"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-C41MLW8JMY');
-  </script>
+  <script>(()=>{window.dataLayer=window.dataLayer||[];function a(){dataLayer.push(arguments)}a("js",new Date),a("config","G-C41MLW8JMY")})();</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101114">
@@ -25,47 +20,14 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
   <meta name="twitter:card" content="summary_large_image">
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Compress Image",
-  "url": "https://mediapilottools.com/tools/compress-image",
-  "description": "Compress JPG, PNG and WebP images online to shrink file size while keeping quality. Free, runs in your browser, nothing is uploaded.",
-  "applicationCategory": "MultimediaApplication",
-  "operatingSystem": "Any browser",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "MediaPilot",
-    "url": "https://mediapilottools.com/"
-  }
-}
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Compress Image","url":"https://mediapilottools.com/tools/compress-image","description":"Compress JPG, PNG and WebP images online to shrink file size while keeping quality. Free, runs in your browser, nothing is uploaded.","applicationCategory":"MultimediaApplication","operatingSystem":"Any browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"MediaPilot","url":"https://mediapilottools.com/"}}</script>
   <title>Compress Image Online — Free, No Upload | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
   <link rel="stylesheet" href="/tool.css">
-  <style>
-    #compressCanvas { display:block; max-width:100%; max-height:100%; border:1px solid rgba(0,0,0,.18); background:#fff; }
-    #resultImage { display:block; max-width:100%; max-height:340px; width:auto; height:auto; margin:12px auto 0; }
-    .savings-line { display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:14px; padding:11px 12px; border:1px solid #e3e5e7; border-radius:3px; background:#fff; font-size:12px; }
-    .savings-line strong { font-size:15px; font-variant-numeric:tabular-nums; }
-    .savings-line.is-good strong { color:#1f9d57; }
-    .savings-line.is-bad strong { color:#c0392b; }
-  </style>
-  <script>
-    // Applied before first paint so a dark-mode visitor never sees a white flash.
-    try {
-      const saved = localStorage.getItem('mediapilot-theme');
-      if (saved) document.documentElement.dataset.theme = saved;
-    } catch { /* private mode: fall through to the system preference */ }
-  </script>
+  <style>#compressCanvas{display:block;max-width:100%;max-height:100%;border:1px solid rgba(0,0,0,.18);background:#fff}#resultImage{display:block;max-width:100%;max-height:340px;width:auto;height:auto;margin:12px auto 0}.savings-line{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:14px;padding:11px 12px;border:1px solid #e3e5e7;border-radius:3px;background:#fff;font-size:12px}.savings-line strong{font-size:15px;font-variant-numeric:tabular-nums}.savings-line.is-good strong{color:#1f9d57}.savings-line.is-bad strong{color:#c0392b}</style>
+  <script>(()=>{try{const e=localStorage.getItem("mediapilot-theme");e&&(document.documentElement.dataset.theme=e)}catch{}})();</script>
 </head>
 <body class="tool-body">
   <header class="global-header">
@@ -78,12 +40,10 @@
       <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button></div>
     </div>
   </header>
-
   <main id="toolView" class="tool-view">
     <div class="tool-back-row">
       <a class="back-button" href="/"><span aria-hidden="true">←</span><span data-i18n="backToTools">Back to all tools</span></a>
     </div>
-
     <section class="tool-page-hero">
       <h1>Compress Image</h1>
       <p>Make files smaller with a live quality preview</p>
@@ -100,7 +60,6 @@
         </div>
       </div>
     </section>
-
     <section id="editingModule" class="editing-module is-hidden" aria-label="Image compression">
       <div class="steps-bar">
         <div class="step-item active"><span>1</span><strong>Upload image</strong></div><i></i><div class="step-item active"><span>2</span><strong>Set quality</strong></div><i></i><div class="step-item"><span>3</span><strong>Download</strong></div>
@@ -116,7 +75,6 @@
           <div class="canvas-footer"><div class="instruction"><span class="mouse-icon"><i></i></span><span>The preview shows the compressed result</span></div><div class="frame-readout" id="frameReadout">—</div></div>
           <div class="result-card is-hidden" id="resultCard"><div class="result-head"><div class="result-check">✓</div><div><strong>Compressed image ready</strong><span id="resultMeta">—</span></div><a class="download-button" id="downloadButton" href="#" download><span>Download</span><b>⇩</b></a></div><img id="resultImage" alt="Compressed image preview"></div>
         </section>
-
         <aside class="control-panel">
           <div class="step-card">
             <div class="step-card-heading"><span>2</span><div><h2>Quality</h2><p>Lower means a smaller file</p></div></div>
@@ -143,9 +101,7 @@
       </div>
     </section>
   </main>
-
   <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN</div></footer>
-
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
     <div class="language-backdrop" data-language-close></div>
     <section class="language-dialog">
@@ -162,7 +118,6 @@
       <div class="language-divider"></div>
     </section>
   </div>
-
   <script type="module" src="/tool-shell.js"></script>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="/tools/compress-image/app.js"></script>

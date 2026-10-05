@@ -1,13 +1,1 @@
-// Mute Video: copies every stream except sound, untouched, so it is fast and lossless.
-VideoKit.mount({
-  busyLabel: 'Removing audio…',
-  build({ input, file, baseName, extensionOf }) {
-    const ext = extensionOf(file.name);
-    return {
-      args: ['-i', input, '-map', '0', '-map', '-0:a', '-c', 'copy'],
-      output: `out.${ext}`,
-      mime: file.type || 'video/mp4',
-      fileName: `${baseName(file.name)}-muted.${ext}`,
-    };
-  },
-});
+VideoKit.mount({busyLabel:"Removing audio\u2026",build({input:t,file:e,baseName:a,extensionOf:o}){const m=o(e.name);return{args:["-i",t,"-map","0","-map","-0:a","-c","copy"],output:`out.${m}`,mime:e.type||"video/mp4",fileName:`${a(e.name)}-muted.${m}`}}});

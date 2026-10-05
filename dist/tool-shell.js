@@ -1,28 +1,15 @@
-// Shared chrome for every tool page: the same navbar, theme toggle and language dialog the home
-// page uses. It only touches the header and footer it renders itself — the tool's own markup and
-// element ids are never read or modified here, so no tool logic depends on this file loading.
-import { CATEGORIES, menuMarkup } from './tools-data.js';
-
-const $ = (selector) => document.querySelector(selector);
-const $$ = (selector) => Array.from(document.querySelectorAll(selector));
-
-const here = location.pathname.replace(/\/+$/, '');
-
-function navMarkup() {
-  const groups = CATEGORIES.map((category) => `
-    <div class="nav-item">
-      <button class="nav-trigger" type="button" data-menu="${category.id}" aria-expanded="false" aria-controls="menu-${category.id}">${category.label}<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
-      <div class="nav-panel" id="menu-${category.id}" data-menu-panel="${category.id}" hidden>${menuMarkup(category.id, here)}</div>
-    </div>`).join('');
-
-  return `
+import{CATEGORIES as p,menuMarkup as v}from"./tools-data.js";const n=e=>document.querySelector(e),r=e=>Array.from(document.querySelectorAll(e)),h=location.pathname.replace(/\/+$/,"");function m(){return`
     <div class="nav-inner">
       <a class="nav-brand" href="/" aria-label="MediaPilot home">
         <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
         <span class="brand-word">MediaPilot</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Main">
-        ${groups}
+        ${p.map(a=>`
+    <div class="nav-item">
+      <button class="nav-trigger" type="button" data-menu="${a.id}" aria-expanded="false" aria-controls="menu-${a.id}">${a.label}<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+      <div class="nav-panel" id="menu-${a.id}" data-menu-panel="${a.id}" hidden>${v(a.id,h)}</div>
+    </div>`).join("")}
         <a class="nav-link" href="/#all-tools">Tools</a>
       </nav>
       <div class="nav-actions">
@@ -38,11 +25,7 @@ function navMarkup() {
           <span></span><span></span><span></span>
         </button>
       </div>
-    </div>`;
-}
-
-function footerMarkup() {
-  return `
+    </div>`}function g(){return`
     <div class="shell foot-grid">
       <div class="foot-brand">
         <a class="nav-brand" href="/" aria-label="MediaPilot home">
@@ -56,121 +39,4 @@ function footerMarkup() {
         <ul><li><a href="/#all-tools">All tools</a></li><li><a href="/#how-it-works">How it works</a></li><li><a href="/#why">Why MediaPilot</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul>
       </nav>
     </div>
-    <div class="shell foot-base"><span>© 2026 MediaPilot</span><span>Processed locally. Never uploaded.</span></div>`;
-}
-
-function mountChrome() {
-  const legacyHeader = $('.global-header');
-  const header = document.createElement('header');
-  header.className = 'site-nav';
-  header.id = 'siteNav';
-  header.innerHTML = navMarkup();
-  if (legacyHeader) legacyHeader.replaceWith(header);
-  else document.body.prepend(header);
-
-  const footer = document.createElement('footer');
-  footer.className = 'site-foot';
-  footer.innerHTML = footerMarkup();
-  const legacyFooter = $('.site-footer');
-  if (legacyFooter) legacyFooter.replaceWith(footer);
-  else document.body.append(footer);
-}
-
-function closeMenus() {
-  $$('.nav-panel').forEach((panel) => { panel.hidden = true; });
-  $$('.nav-trigger').forEach((trigger) => trigger.setAttribute('aria-expanded', 'false'));
-}
-
-function initNav() {
-  $$('.nav-trigger').forEach((trigger) => {
-    const panel = document.querySelector(`[data-menu-panel="${trigger.dataset.menu}"]`);
-    trigger.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const wasClosed = panel.hidden;
-      closeMenus();
-      panel.hidden = !wasClosed;
-      trigger.setAttribute('aria-expanded', String(wasClosed));
-    });
-    // Leaving the menu closes it only after a short grace period, cancelled if the pointer comes
-    // back, so a slightly off-course move on the way to an item does not snap it shut.
-    let closeTimer;
-    trigger.parentElement.addEventListener('mouseleave', () => {
-      closeTimer = setTimeout(() => {
-        panel.hidden = true;
-        trigger.setAttribute('aria-expanded', 'false');
-      }, 400);
-    });
-    trigger.parentElement.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-  });
-  document.addEventListener('click', closeMenus);
-
-  const burger = $('#navBurger');
-  const links = $('#navLinks');
-  burger.addEventListener('click', (event) => {
-    event.stopPropagation();
-    const open = links.classList.toggle('is-open');
-    burger.setAttribute('aria-expanded', String(open));
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-  });
-
-  const nav = $('#siteNav');
-  const onScroll = () => nav.classList.toggle('is-scrolled', window.scrollY > 8);
-  document.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-}
-
-function initTheme() {
-  const toggle = $('#themeToggle');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-  const isDark = () => (document.documentElement.dataset.theme || (prefersDark.matches ? 'dark' : 'light')) === 'dark';
-  const sync = () => {
-    toggle.setAttribute('aria-pressed', String(isDark()));
-    toggle.setAttribute('aria-label', isDark() ? 'Switch to light theme' : 'Switch to dark theme');
-  };
-  toggle.addEventListener('click', () => {
-    const next = isDark() ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem('mediapilot-theme', next);
-    } catch { /* private mode: the choice just will not persist */ }
-    sync();
-  });
-  prefersDark.addEventListener('change', sync);
-  sync();
-}
-
-function initLanguage() {
-  const modal = $('#languageModal');
-  if (!modal) return () => {};
-  const close = () => modal.classList.add('is-hidden');
-  $('#languageButton').addEventListener('click', () => {
-    modal.classList.remove('is-hidden');
-    $('#languageSearch')?.focus();
-  });
-  $('#languageClose')?.addEventListener('click', close);
-  modal.querySelector('[data-language-close]')?.addEventListener('click', close);
-  $('#languageSearch')?.addEventListener('input', (event) => {
-    const term = event.target.value.trim().toLowerCase();
-    let shown = 0;
-    modal.querySelectorAll('.language-option').forEach((option) => {
-      const match = option.textContent.toLowerCase().includes(term);
-      option.hidden = !match;
-      if (match) shown++;
-    });
-    $('#languageEmpty')?.classList.toggle('is-hidden', shown > 0);
-  });
-  return close;
-}
-
-mountChrome();
-initNav();
-initTheme();
-const closeLanguage = initLanguage();
-
-document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape') return;
-  closeMenus();
-  closeLanguage();
-  $('#navLinks')?.classList.remove('is-open');
-  $('#navBurger')?.setAttribute('aria-expanded', 'false');
-});
+    <div class="shell foot-base"><span>\xA9 2026 MediaPilot</span><span>Processed locally. Never uploaded.</span></div>`}function b(){const e=n(".global-header"),a=document.createElement("header");a.className="site-nav",a.id="siteNav",a.innerHTML=m(),e?e.replaceWith(a):document.body.prepend(a);const s=document.createElement("footer");s.className="site-foot",s.innerHTML=g();const i=n(".site-footer");i?i.replaceWith(s):document.body.append(s)}function d(){r(".nav-panel").forEach(e=>{e.hidden=!0}),r(".nav-trigger").forEach(e=>e.setAttribute("aria-expanded","false"))}function f(){r(".nav-trigger").forEach(t=>{const o=document.querySelector(`[data-menu-panel="${t.dataset.menu}"]`);t.addEventListener("click",u=>{u.stopPropagation();const c=o.hidden;d(),o.hidden=!c,t.setAttribute("aria-expanded",String(c))});let l;t.parentElement.addEventListener("mouseleave",()=>{l=setTimeout(()=>{o.hidden=!0,t.setAttribute("aria-expanded","false")},400)}),t.parentElement.addEventListener("mouseenter",()=>clearTimeout(l))}),document.addEventListener("click",d);const e=n("#navBurger"),a=n("#navLinks");e.addEventListener("click",t=>{t.stopPropagation();const o=a.classList.toggle("is-open");e.setAttribute("aria-expanded",String(o)),e.setAttribute("aria-label",o?"Close menu":"Open menu")});const s=n("#siteNav"),i=()=>s.classList.toggle("is-scrolled",window.scrollY>8);document.addEventListener("scroll",i,{passive:!0}),i()}function k(){const e=n("#themeToggle"),a=window.matchMedia("(prefers-color-scheme: dark)"),s=()=>(document.documentElement.dataset.theme||(a.matches?"dark":"light"))==="dark",i=()=>{e.setAttribute("aria-pressed",String(s())),e.setAttribute("aria-label",s()?"Switch to light theme":"Switch to dark theme")};e.addEventListener("click",()=>{const t=s()?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("mediapilot-theme",t)}catch{}i()}),a.addEventListener("change",i),i()}function L(){const e=n("#languageModal");if(!e)return()=>{};const a=()=>e.classList.add("is-hidden");return n("#languageButton").addEventListener("click",()=>{e.classList.remove("is-hidden"),n("#languageSearch")?.focus()}),n("#languageClose")?.addEventListener("click",a),e.querySelector("[data-language-close]")?.addEventListener("click",a),n("#languageSearch")?.addEventListener("input",s=>{const i=s.target.value.trim().toLowerCase();let t=0;e.querySelectorAll(".language-option").forEach(o=>{const l=o.textContent.toLowerCase().includes(i);o.hidden=!l,l&&t++}),n("#languageEmpty")?.classList.toggle("is-hidden",t>0)}),a}b(),f(),k();const E=L();document.addEventListener("keydown",e=>{e.key==="Escape"&&(d(),E(),n("#navLinks")?.classList.remove("is-open"),n("#navBurger")?.setAttribute("aria-expanded","false"))});

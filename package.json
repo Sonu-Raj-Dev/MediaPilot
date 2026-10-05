@@ -19,5 +19,8 @@
     "pdfjs-dist": "^6.3.289",
     "ssf": "^0.11.2",
     "tesseract.js": "^5.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
