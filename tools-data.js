@@ -7,7 +7,7 @@ export const CATEGORIES = [
   { id: 'image', label: 'Image', blurb: 'Tools for editing and optimizing images' },
   { id: 'document', label: 'Converters', blurb: 'Tools for converting documents' },
   { id: 'pdf', label: 'PDF', blurb: 'Tools for merging, splitting and converting PDF files' },
-  { id: 'formatter', label: 'Formatters', blurb: 'Format, validate and view JSON and HTML' },
+  { id: 'formatter', label: 'Formatters', blurb: 'Format, validate and compare code' },
 ];
 
 // Icons are inline SVG bodies (24x24, currentColor strokes) so the page ships no icon library.
@@ -36,6 +36,7 @@ const icon = {
   rotateVideo: '<rect x="2" y="7" width="13" height="11" rx="2"/><path d="M19 3a4 4 0 0 1 3 4v1"/><path d="m20 6 2 2 2-2"/>',
   json: '<path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>',
   code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+  diff: '<rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="18" rx="1.5"/><path d="M5 8h3M17.5 7v3M16 8.5h3M5 15h3"/>',
 };
 
 export const TOOLS = [
@@ -346,6 +347,17 @@ export const TOOLS = [
     category: 'formatter',
     icon: icon.code,
     keywords: ['html', 'formatter', 'beautify', 'pretty print', 'viewer', 'preview', 'live', 'editor', 'minify', 'html viewer', 'code'],
+  },
+  {
+    id: 'code-compare',
+    name: 'Code Compare',
+    short: 'Code Compare',
+    description: 'See what changed between two versions of code or text.',
+    href: '/tools/code-compare',
+    category: 'formatter',
+    icon: icon.diff,
+    keywords: ['compare', 'diff', 'difference', 'diff checker', 'code compare', 'text compare', 'compare files', 'changes', 'patch', 'git diff'],
+    popular: true,
   },
 ];
 

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C41MLW8JMY"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5308568581303754"
+      crossorigin="anonymous"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C41MLW8JMY');
+  </script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f1115">
+  <meta name="description" content="Compare two versions of code or text online for free. See every difference side by side or unified, with changed words highlighted in red and green, and export a .diff patch. Runs in your browser; nothing is uploaded.">
+  <link rel="canonical" href="https://mediapilottools.com/tools/code-compare">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MediaPilot">
+  <meta property="og:title" content="Code Compare — Diff Checker to Compare Code and Text Online Free | MediaPilot">
+  <meta property="og:description" content="Compare two versions of code or text online for free. See every difference side by side or unified, with changed words highlighted in red and green, and export a .diff patch. Runs in your browser; nothing is uploaded.">
+  <meta property="og:url" content="https://mediapilottools.com/tools/code-compare">
+  <meta property="og:image" content="https://mediapilottools.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="MediaPilot — media tools that never upload your files">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Code Compare",
+  "url": "https://mediapilottools.com/tools/code-compare",
+  "description": "Compare two versions of code or text online for free. See every difference side by side or unified, with changed words highlighted in red and green, and export a .diff patch. Runs in your browser; nothing is uploaded.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any browser",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "MediaPilot",
+    "url": "https://mediapilottools.com/"
+  }
+}
+  </script>
+  <title>Code Compare — Diff Checker to Compare Code and Text Online Free | MediaPilot</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/home.css">
+  <link rel="stylesheet" href="/tool.css">
+  <style>
+    .fmt-wrap { width:min(1440px, calc(100% - 32px)); margin:0 auto 40px; }
+    .fmt-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; }
+    .fmt-toolbar .spacer { flex:1; }
+    .fmt-btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; height:36px; padding:0 13px; border:1px solid var(--line); border-radius:9px; background:var(--surface); color:var(--text); font:inherit; font-size:13px; font-weight:600; cursor:pointer; white-space:nowrap; }
+    .fmt-btn:hover:not(:disabled) { background:var(--bg-alt); }
+    .fmt-btn:disabled { opacity:.45; cursor:default; }
+    .fmt-btn:focus-visible, .fmt-code:focus-visible, .fold:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+    .fmt-btn.primary { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .fmt-btn.primary:hover { filter:brightness(1.08); }
+    .fmt-btn[aria-pressed="true"] { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); }
+    .fmt-check { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--text-soft); cursor:pointer; }
+    .inputs { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:14px; }
+    .fmt-pane { display:flex; flex-direction:column; min-height:0; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); overflow:hidden; }
+    .pane-head { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:6px 10px 6px 14px; border-bottom:1px solid var(--line); background:var(--surface-2); font-size:13px; font-weight:600; }
+    .pane-head .tools { display:inline-flex; align-items:center; gap:8px; color:var(--text-faint); font-weight:500; font-size:12.5px; }
+    .pane-head .fmt-btn { height:30px; padding:0 10px; font-size:12.5px; }
+    .fmt-code { display:block; width:100%; height:260px; min-height:120px; margin:0; padding:12px 14px; border:0; resize:vertical; background:transparent; color:var(--text); font:13px/1.55 ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; white-space:pre; overflow:auto; tab-size:4; }
+    .fmt-code.is-dragging { background:var(--accent-soft); }
+    .result-pane { margin-top:14px; }
+    .result-pane .pane-head .tools { color:var(--text-soft); }
+    .stat-del { color:#d83b2e; font-weight:700; } .stat-add { color:#1f8a3b; font-weight:700; }
+    .same-badge { padding:2px 9px; border-radius:999px; background:var(--good-soft); color:var(--good); font-weight:700; }
+    .fmt-empty { padding:28px 16px; color:var(--text-faint); font-size:13.5px; text-align:center; }
+    .fmt-help { margin:14px 0 0; color:var(--text-faint); font-size:12.5px; line-height:1.55; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+
+    /* Diff colours: whole changed lines tinted, the exact changed words strong and underlined. */
+    .diff { --del-line:#ffebe9; --del-word:#ffb3ad; --del-text:#82071e; --add-line:#e6ffec; --add-word:#9be9a8; --add-text:#0a5d1e; --gutter:var(--bg-alt);
+      max-height:76vh; overflow:auto; font:12.5px/20px ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace; }
+    [data-theme="dark"] .diff { --del-line:rgba(248,81,73,.14); --del-word:rgba(248,81,73,.45); --del-text:#ffdcd7; --add-line:rgba(46,160,67,.15); --add-word:rgba(46,160,67,.45); --add-text:#aff5b4; }
+    @media (prefers-color-scheme:dark) { html:not([data-theme="light"]) .diff { --del-line:rgba(248,81,73,.14); --del-word:rgba(248,81,73,.45); --del-text:#ffdcd7; --add-line:rgba(46,160,67,.15); --add-word:rgba(46,160,67,.45); --add-text:#aff5b4; } }
+    .d-row { display:grid; }
+    .diff.split .d-row { grid-template-columns:3.6em minmax(0,1fr) 3.6em minmax(0,1fr); }
+    .diff.unified .d-row { grid-template-columns:3.6em 3.6em minmax(0,1fr); }
+    .ln { padding:0 8px; background:var(--gutter); color:var(--text-faint); text-align:right; user-select:none; border-right:1px solid var(--line); }
+    .code { padding:0 10px; white-space:pre-wrap; overflow-wrap:anywhere; color:var(--text); }
+    .diff.split .code + .ln { border-left:1px solid var(--line); }
+    .code.del { background:var(--del-line); }
+    .code.add { background:var(--add-line); }
+    .code.empty { background:repeating-linear-gradient(135deg, transparent 0 6px, var(--bg-alt) 6px 12px); }
+    .code del { background:var(--del-word); color:var(--del-text); text-decoration:underline 2px #d83b2e; text-underline-offset:3px; border-radius:2px; }
+    .code ins { background:var(--add-word); color:var(--add-text); text-decoration:underline 2px #1f8a3b; text-underline-offset:3px; border-radius:2px; }
+    .fold { display:block; width:100%; padding:3px 0; border:0; border-top:1px dashed var(--line); border-bottom:1px dashed var(--line); background:var(--accent-soft); color:var(--accent-text); font:inherit; font-size:12px; cursor:pointer; text-align:center; }
+    .fold:hover { filter:brightness(.97); }
+    .hunk.flash > .code { animation:flash 1s ease; }
+    @keyframes flash { 0%, 40% { box-shadow:inset 3px 0 0 var(--accent); } 100% { box-shadow:none; } }
+    @media (max-width:860px) {
+      .inputs { grid-template-columns:1fr; }
+      .fmt-code { height:200px; }
+      .result-pane .pane-head { flex-wrap:wrap; padding:8px 10px; }
+      .result-pane .pane-head .tools { flex-wrap:wrap; }
+    }
+    @media (prefers-reduced-motion:reduce) { .hunk.flash > .code { animation:none; } }
+  </style>
+  <script>
+    try {
+      const saved = localStorage.getItem('mediapilot-theme');
+      if (saved) document.documentElement.dataset.theme = saved;
+    } catch {}
+  </script>
+</head>
+<body class="tool-body">
+  <header class="global-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
+      <nav class="global-nav" aria-label="Tool categories">
+        <a href="/#video-tools"><span class="nav-icon">▹</span><span>Video Tools</span> <b>⌄</b></a>
+        <a href="/#image-tools"><span class="nav-icon">✦</span><span>Image Tools</span> <b>⌄</b></a>
+      </nav>
+      <div class="header-account"><button class="language-button" id="languageButton" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="globe">◎</span><span id="currentLanguage">EN</span></button></div>
+    </div>
+  </header>
+
+  <main id="toolView" class="tool-view">
+    <div class="tool-back-row">
+      <a class="back-button" href="/"><span aria-hidden="true">←</span><span>Back to all tools</span></a>
+    </div>
+
+    <section class="tool-page-hero">
+      <h1>Code Compare</h1>
+      <p>See exactly what changed between two versions of code or text</p>
+    </section>
+
+    <section class="fmt-wrap" aria-label="Code Compare">
+      <div class="fmt-toolbar" role="toolbar" aria-label="Compare actions">
+        <button class="fmt-btn primary" type="button" id="compareBtn">Compare</button>
+        <button class="fmt-btn" type="button" id="swapBtn" title="Swap the original and changed versions">⇄ Swap</button>
+        <label class="fmt-check"><input type="checkbox" id="ignoreSpace"> Ignore whitespace</label>
+        <label class="fmt-check"><input type="checkbox" id="ignoreCase"> Ignore case</label>
+        <span class="spacer"></span>
+        <button class="fmt-btn" type="button" id="sampleBtn">Sample</button>
+        <button class="fmt-btn" type="button" id="clearBtn">Clear</button>
+      </div>
+      <div class="inputs">
+        <section class="fmt-pane" aria-label="Original version">
+          <div class="pane-head"><label for="originalInput">Original</label><span class="tools"><span id="originalStats"></span><button class="fmt-btn" type="button" id="openOriginal">Open file</button></span></div>
+          <input id="originalFile" type="file" hidden>
+          <textarea class="fmt-code" id="originalInput" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste the original code or text here, or drop a file."></textarea>
+        </section>
+        <section class="fmt-pane" aria-label="Changed version">
+          <div class="pane-head"><label for="changedInput">Changed</label><span class="tools"><span id="changedStats"></span><button class="fmt-btn" type="button" id="openChanged">Open file</button></span></div>
+          <input id="changedFile" type="file" hidden>
+          <textarea class="fmt-code" id="changedInput" spellcheck="false" autocomplete="off" autocapitalize="off" placeholder="Paste the changed code or text here, or drop a file."></textarea>
+        </section>
+      </div>
+      <section class="fmt-pane result-pane" aria-label="Differences">
+        <div class="pane-head">
+          <span>Differences <span id="diffSummary" style="margin-left:8px;font-weight:500"></span></span>
+          <span class="tools">
+            <span id="changePosition" aria-live="polite"></span>
+            <button class="fmt-btn" type="button" id="prevChange" title="Previous change" aria-label="Previous change">↑</button>
+            <button class="fmt-btn" type="button" id="nextChange" title="Next change" aria-label="Next change">↓</button>
+            <span role="group" aria-label="Layout" style="display:inline-flex;gap:4px">
+              <button class="fmt-btn" type="button" data-view="split">Side by side</button>
+              <button class="fmt-btn" type="button" data-view="unified">Unified</button>
+            </span>
+            <button class="fmt-btn" type="button" id="copyPatch" title="Copy the changes as a .diff patch">Copy patch</button>
+            <button class="fmt-btn" type="button" id="downloadPatch" title="Download the changes as a .diff patch">Download .diff</button>
+          </span>
+        </div>
+        <div class="diff" id="diffResult"></div>
+      </section>
+      <p class="fmt-help">Removed lines are red and added lines green; the exact words that changed inside a line are highlighted and underlined. Long unchanged stretches are folded — click them to expand. Everything stays in your browser.</p>
+    </section>
+
+    <section class="section" style="padding-bottom:40px">
+      <div class="shell">
+        <h2 class="section-title">How Code Compare works</h2>
+        <div class="feature-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span>
+            <h3>Paste</h3>
+            <p>Paste or drop the original and the changed version, from any language or plain text.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M5 8h4M7 6v4"/><path d="M15 8h4"/></svg></span>
+            <h3>Compare</h3>
+            <p>See every change side by side or unified, with the changed words highlighted.</p>
+          </article>
+          <article class="feature-card">
+            <span class="feature-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg></span>
+            <h3>Share</h3>
+            <p>Jump between changes and copy or download the result as a .diff patch.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="shell">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div style="max-width:740px">
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is my code uploaded to a server?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. The comparison runs entirely in your browser, so private code, config files and keys never leave your device.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">What do the colours mean?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Red lines were removed and green lines were added. Inside a changed line, the exact words that differ are highlighted in a stronger colour and underlined, so small edits like a renamed variable are easy to spot.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">What do Ignore whitespace and Ignore case do?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Ignore whitespace treats lines as equal when they only differ in indentation, trailing spaces or the amount of spacing between words. A space added inside a word, such as @Customer InvoiceNumber, still counts as a change. Ignore case treats upper and lower case letters as equal. Both are useful when a formatter or editor changed the layout but not the logic.</p>
+          </details>
+          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">What is a .diff patch?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">It is the standard text format for changes used by Git and code review tools. You can share it, or apply it to the original file with tools like git apply or patch.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div>MEDIAPILOT</div><div>Online tools for video, images, and file conversion</div><div>EN</div></footer>
+
+  <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">
+    <div class="language-backdrop" data-language-close></div>
+    <section class="language-dialog">
+      <div class="language-dialog-head">
+        <h2 id="languageTitle">Language</h2>
+        <div class="language-dialog-actions">
+          <label class="language-search" for="languageSearch"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.8" cy="8.8" r="5.7" stroke="currentColor" stroke-width="1.4"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><input id="languageSearch" type="search" placeholder="Search" autocomplete="off"></label>
+          <button class="language-close" id="languageClose" type="button" aria-label="Close language selector">×</button>
+        </div>
+      </div>
+      <div class="language-grid" id="languageGrid">
+        <button class="language-option active" type="button" data-code="EN" data-name="English"><span class="language-code">en</span><span>English</span></button>
+      </div>
+      <div class="language-divider"></div>
+    </section>
+  </div>
+
+  <script type="module" src="/tool-shell.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/vendor/diff.min.js"></script>
+  <script src="/tools/code-compare/app.js"></script>
+</body>
+</html>

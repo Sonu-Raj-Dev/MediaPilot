@@ -8,6 +8,7 @@
     "@expo-google-fonts/carlito": "^0.4.1",
     "@neslinesli93/qpdf-wasm": "^0.3.0",
     "@techstark/opencv-js": "^5.0.0-release.1",
+    "diff": "^8.0.4",
     "docx-preview": "^0.4.1",
     "exceljs": "^4.4.0",
     "html2canvas": "^1.4.1",
