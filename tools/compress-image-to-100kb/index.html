@@ -13,13 +13,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101114">
-  <meta name="description" content="Reduce image file size online for free. Compress JPG, PNG and WebP photos with a live preview, or set an exact size like 100 KB or 50 KB. Runs in your browser — nothing is uploaded.">
-  <link rel="canonical" href="https://mediapilottools.com/tools/compress-image">
+  <meta name="description" content="Compress any image to under 100 KB online for free. JPG, PNG and WebP photos are shrunk to the best quality that fits under 100 KB. Runs in your browser — nothing is uploaded.">
+  <link rel="canonical" href="https://mediapilottools.com/tools/compress-image-to-100kb">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="MediaPilot">
-  <meta property="og:title" content="Reduce Image File Size Online – Free Image Compressor | MediaPilot">
-  <meta property="og:description" content="Reduce image file size online for free. Compress JPG, PNG and WebP photos with a live preview, or set an exact size like 100 KB or 50 KB. Runs in your browser — nothing is uploaded.">
-  <meta property="og:url" content="https://mediapilottools.com/tools/compress-image">
+  <meta property="og:title" content="Compress Image to 100KB Online – Free, Keep Quality | MediaPilot">
+  <meta property="og:description" content="Compress any image to under 100 KB online for free. JPG, PNG and WebP photos are shrunk to the best quality that fits under 100 KB. Runs in your browser — nothing is uploaded.">
+  <meta property="og:url" content="https://mediapilottools.com/tools/compress-image-to-100kb">
   <meta property="og:image" content="https://mediapilottools.com/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -29,9 +29,9 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Compress Image",
-  "url": "https://mediapilottools.com/tools/compress-image",
-  "description": "Reduce image file size online for free. Compress JPG, PNG and WebP photos with a live preview, or set an exact size like 100 KB or 50 KB. Runs in your browser — nothing is uploaded.",
+  "name": "Compress Image to 100KB",
+  "url": "https://mediapilottools.com/tools/compress-image-to-100kb",
+  "description": "Compress any image to under 100 KB online for free. JPG, PNG and WebP photos are shrunk to the best quality that fits under 100 KB. Runs in your browser — nothing is uploaded.",
   "applicationCategory": "MultimediaApplication",
   "operatingSystem": "Any browser",
   "offers": {
@@ -53,56 +53,40 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How do I reduce photo size to 100KB?",
+      "name": "How do I reduce photo size to 100KB without losing quality?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Open your photo above, choose Under 100 KB in Target size, and download. The tool finds the highest quality that stays under 100 KB, and only reduces the pixel size if it has to. You can also use the Compress image to 100KB page, which has this set already."
+        "text": "Some quality is always traded for size, but this tool keeps the highest quality that fits under 100 KB and reduces pixel size only when the picture would otherwise turn blocky. At 100 KB most photos look the same as the original on a phone or laptop screen."
       }
     },
     {
       "@type": "Question",
-      "name": "How do I compress a JPEG to 50KB?",
+      "name": "Does it work for PNG screenshots?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Choose Under 50 KB as the target and keep the format as JPG. See Compress JPEG to 50KB for a page with this preset."
+        "text": "Yes. In Auto they are saved as WebP, which is much smaller than PNG. Choose JPG if your site needs it."
       }
     },
     {
       "@type": "Question",
-      "name": "Is my image uploaded to a server?",
+      "name": "Is there a limit on how big the original can be?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The image is compressed inside your browser and never leaves your device."
+        "text": "No fixed limit. Very large images take a few seconds longer because the work happens on your device."
       }
     },
     {
       "@type": "Question",
-      "name": "Will compressing reduce the quality?",
+      "name": "Is my image uploaded?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A little, but at quality 70–80 most people cannot see the difference. The preview shows the actual compressed result, so you can check before you download."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why did my PNG get bigger?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "PNG is a lossless format, so saving it again cannot remove detail to save space. Choose Auto or WebP to make it much smaller while keeping transparency."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Is there a file size limit?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "There is no fixed limit. Very large images (over 50 megapixels) may be slow on phones because all the work happens on your device."
+        "text": "No. Everything happens in your browser."
       }
     }
   ]
 }
   </script>
-  <title>Reduce Image File Size Online – Free Image Compressor | MediaPilot</title>
+  <title>Compress Image to 100KB Online – Free, Keep Quality | MediaPilot</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <link rel="stylesheet" href="/home.css">
@@ -123,7 +107,7 @@
     } catch { /* private mode: fall through to the system preference */ }
   </script>
 </head>
-<body class="tool-body">
+<body class="tool-body" data-target-kb="100">
   <header class="global-header">
     <div class="header-inner">
       <a class="brand" href="/" aria-label="MediaPilot home"><span class="brand-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>MEDIAPILOT</span></a>
@@ -141,8 +125,8 @@
     </div>
 
     <section class="tool-page-hero">
-      <h1>Reduce Image File Size</h1>
-      <p>Compress JPG, PNG and WebP images — or pick an exact size like 100 KB</p>
+      <h1>Compress Image to 100KB</h1>
+      <p>Shrink any photo to under 100 KB while keeping it sharp</p>
       <div class="tool-upload" id="toolUploadHero">
         <label class="dropzone" id="dropzone" for="imageInput" tabindex="0">
           <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif">
@@ -215,46 +199,26 @@
     <section class="section" style="padding-bottom:30px">
       <div class="shell">
         <article class="guide">
-          <h2>How to reduce image file size</h2>
+          <h2>How to reduce an image to 100KB</h2>
           <ol>
-            <li><strong>Choose your image.</strong> Drop a JPG, PNG, WebP or GIF onto the box above, or click <em>Choose File</em>.</li>
-            <li><strong>Pick a quality or a target size.</strong> Move the quality slider and watch the preview, or choose a target such as <em>Under 100 KB</em> and let the tool find the best quality that fits.</li>
-            <li><strong>Download.</strong> The size before and after is shown, so you know exactly how much space you saved.</li>
+            <li>Drop a JPG, PNG, WebP or GIF onto the box above.</li>
+            <li>The target is already <strong>Under 100 KB</strong>. The compressor tries real encodings and keeps the best quality that fits.</li>
+            <li>Compare the preview with your original, then download.</li>
           </ol>
-          <p>Everything happens on your own device. Your photo is never uploaded, which makes it safe for ID scans, documents and private pictures.</p>
+          <p>100 KB is enough for a sharp picture on any screen. In our test a 1.5 MB, 3549 × 4730 phone photo came out at 97 KB and 832 × 1109 pixels — plenty for a profile photo, a product listing or a document upload.</p>
 
-          <h2>Compress to an exact size: 20 KB, 50 KB, 100 KB or more</h2>
-          <p>Many online forms only accept images under a set size, such as 50 KB for an exam application or 100 KB for a government portal. Choose a target in <em>Target size</em>, or enter your own under <em>Custom size</em>. The compressor tries real encodings until the file fits, keeping as much quality as possible. If a very small target cannot be reached at the original dimensions without the picture turning blocky, the image is also made slightly smaller in pixels, which looks better than heavy compression.</p>
+          <h2>JPG, PNG or WebP?</h2>
+          <p>With the format on <strong>Auto</strong>, JPG and WebP stay in their format, and PNG or GIF become WebP, which keeps transparency at a fraction of the size. If the site you are uploading to only accepts JPG, choose <strong>JPG</strong> under Format before downloading.</p>
 
-          <h3>A real example</h3>
-          <p>We tested a 1.5 MB phone photo of 3549 × 4730 pixels:</p>
-          <table class="guide-table">
-            <thead><tr><th>Target</th><th>Result</th><th>Pixel size</th></tr></thead>
-            <tbody>
-              <tr><td>Under 500 KB</td><td>481 KB</td><td>2840 × 3785</td></tr>
-              <tr><td>Under 200 KB</td><td>195 KB</td><td>1446 × 1928</td></tr>
-              <tr><td>Under 100 KB</td><td>97 KB</td><td>832 × 1109</td></tr>
-              <tr><td>Under 50 KB</td><td>49 KB</td><td>529 × 705</td></tr>
-            </tbody>
-          </table>
-          <p>Each result took between one and four seconds in the browser. Photos that were already saved with heavy compression shrink less with the quality slider alone, which is why the target size option is the quickest way to hit a limit.</p>
-
-          <h2>Supported formats</h2>
+          <h2>When 100KB is the right size</h2>
           <ul>
-            <li><strong>JPG / JPEG</strong> — best for photos. Stays a JPG unless you choose another format.</li>
-            <li><strong>WebP</strong> — usually 25–35% smaller than JPG at the same quality and keeps transparency.</li>
-            <li><strong>PNG</strong> — lossless, so it cannot get much smaller as PNG. In <em>Auto</em>, PNG and GIF are saved as WebP, which keeps transparency and is far smaller.</li>
+            <li>Online applications with a 100 KB photo or document limit.</li>
+            <li>Website images that should load quickly on mobile data.</li>
+            <li>Marketplace and classified listings with many photos.</li>
           </ul>
-
-          <h2>Tips for the smallest file that still looks good</h2>
-          <ul>
-            <li>For photos, quality 70–80 is hard to tell apart from the original and often halves the file size.</li>
-            <li>If the image will only be shown small (a profile picture or a thumbnail), <a href="/tools/resize-image">resize it</a> first. Fewer pixels shrink the file more than any quality setting.</li>
-            <li><a href="/tools/crop-image">Crop away</a> empty background before compressing.</li>
-            <li>Choose WebP when the website or app you are uploading to accepts it.</li>
-          </ul>
+          <p>Need something smaller? Try <a href="/tools/compress-jpeg-to-50kb">Compress JPEG to 50KB</a>, or enter any size under Custom size.</p>
           <h2>Related tools</h2>
-          <ul class="guide-links"><li><a href="/tools/compress-image" aria-current="page">Reduce image file size</a></li><li><a href="/tools/compress-jpeg-to-50kb">Compress JPEG to 50KB</a></li><li><a href="/tools/compress-image-to-100kb">Compress image to 100KB</a></li><li><a href="/tools/compress-image-for-whatsapp">Compress image for WhatsApp</a></li><li><a href="/tools/resize-image">Resize image</a></li><li><a href="/tools/crop-image">Crop image</a></li></ul>
+          <ul class="guide-links"><li><a href="/tools/compress-image">Reduce image file size</a></li><li><a href="/tools/compress-jpeg-to-50kb">Compress JPEG to 50KB</a></li><li><a href="/tools/compress-image-to-100kb" aria-current="page">Compress image to 100KB</a></li><li><a href="/tools/compress-image-for-whatsapp">Compress image for WhatsApp</a></li><li><a href="/tools/resize-image">Resize image</a></li><li><a href="/tools/crop-image">Crop image</a></li></ul>
         </article>
       </div>
     </section>
@@ -264,28 +228,20 @@
         <h2 class="section-title">Frequently asked questions</h2>
         <div style="max-width:760px">
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">How do I reduce photo size to 100KB?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Open your photo above, choose <strong>Under 100 KB</strong> in Target size, and download. The tool finds the highest quality that stays under 100 KB, and only reduces the pixel size if it has to. You can also use the <a href="/tools/compress-image-to-100kb">Compress image to 100KB</a> page, which has this set already.</p>
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">How do I reduce photo size to 100KB without losing quality?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Some quality is always traded for size, but this tool keeps the highest quality that fits under 100 KB and reduces pixel size only when the picture would otherwise turn blocky. At 100 KB most photos look the same as the original on a phone or laptop screen.</p>
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">How do I compress a JPEG to 50KB?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Choose <strong>Under 50 KB</strong> as the target and keep the format as JPG. See <a href="/tools/compress-jpeg-to-50kb">Compress JPEG to 50KB</a> for a page with this preset.</p>
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Does it work for PNG screenshots?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">Yes. In Auto they are saved as WebP, which is much smaller than PNG. Choose JPG if your site needs it.</p>
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is my image uploaded to a server?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. The image is compressed inside your browser and never leaves your device.</p>
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is there a limit on how big the original can be?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No fixed limit. Very large images take a few seconds longer because the work happens on your device.</p>
           </details>
           <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Will compressing reduce the quality?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">A little, but at quality 70–80 most people cannot see the difference. The preview shows the actual compressed result, so you can check before you download.</p>
-          </details>
-          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Why did my PNG get bigger?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">PNG is a lossless format, so saving it again cannot remove detail to save space. Choose Auto or WebP to make it much smaller while keeping transparency.</p>
-          </details>
-          <details style="margin-bottom:14px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)">
-            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is there a file size limit?</summary>
-            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">There is no fixed limit. Very large images (over 50 megapixels) may be slow on phones because all the work happens on your device.</p>
+            <summary style="cursor:pointer;font-weight:600;font-size:15px;color:var(--text)">Is my image uploaded?</summary>
+            <p style="margin:10px 0 0;color:var(--text-soft);font-size:14px;line-height:1.6">No. Everything happens in your browser.</p>
           </details>
         </div>
       </div>

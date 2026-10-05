@@ -110,6 +110,8 @@ const urls = [
   { loc: `${SITE}/`, priority: '1.0' },
   ...TOOLS.map((tool) => ({ loc: `${SITE}${tool.href}`, priority: '0.8' })),
   ...pageDirs.map((dir) => ({ loc: `${SITE}/${dir}`, priority: '0.3' })),
+  // Pages for specific searches; each presets an existing tool (see tools/<slug>/index.html).
+  ...['compress-jpeg-to-50kb', 'compress-image-to-100kb', 'compress-image-for-whatsapp'].map((slug) => ({ loc: `${SITE}/tools/${slug}`, priority: '0.7' })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -148,7 +150,8 @@ function minifyHtml(html) {
     .replace(/(<script\b([^>]*)>)([\s\S]*?)(<\/script>)/gi, (m, open, attrs, code, close) => {
       if (!code.trim() || /\bsrc=/.test(attrs)) return m;
       if (/application\/ld\+json/.test(attrs)) return open + JSON.stringify(JSON.parse(code)) + close;
-      return open + minifyJs(code).trim() + close;
+      // Inline snippets (analytics, theme) define globals on purpose, so they are not wrapped.
+      return open + transformSync(code, { loader: 'js', minify: true, legalComments: 'none' }).code.trim() + close;
     })
     .replace(/\n\s*\n+/g, '\n');
 }

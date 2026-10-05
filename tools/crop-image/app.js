@@ -220,16 +220,20 @@ function cropImage() {
     const tempCtx = tempCanvas.getContext('2d');
     tempCtx.drawImage(state.image, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
 
-    state.resultUrl = tempCanvas.toDataURL('image/png');
+    // Keep the original format: a JPG photo saved as PNG would come out several times bigger.
+    // JPG and WebP are written at high quality; PNG (and GIF, which cannot be written) as PNG.
+    const outputType = ['image/jpeg', 'image/webp'].includes(state.sourceFile.type) ? state.sourceFile.type : 'image/png';
+    const extension = { 'image/jpeg': 'jpg', 'image/webp': 'webp' }[outputType] || 'png';
+    state.resultUrl = tempCanvas.toDataURL(outputType, 0.95);
     resultImage.src = state.resultUrl;
-    resultMeta.textContent = `${cropW} × ${cropH}px`;
+    resultMeta.textContent = `${cropW} × ${cropH}px · ${extension.toUpperCase()}`;
 
     processingCard.classList.add('is-hidden');
     resultCard.classList.remove('is-hidden');
     processButton.disabled = false;
     state.processing = false;
 
-    const filename = state.sourceFile.name.split('.')[0] + '-cropped.png';
+    const filename = state.sourceFile.name.replace(/\.[^.]+$/, '') + '-cropped.' + extension;
     downloadButton.href = state.resultUrl;
     downloadButton.download = filename;
 

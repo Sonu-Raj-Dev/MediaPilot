@@ -25,6 +25,9 @@ const qualityLabel = $('#qualityLabel');
 const qualityHint = $('#qualityHint');
 const formatSelect = $('#formatSelect');
 const formatNote = $('#formatNote');
+const targetSelect = $('#targetSelect');
+const customTargetRow = $('#customTargetRow');
+const customTarget = $('#customTarget');
 const savingsLine = $('#savingsLine');
 const savingsText = $('#savingsText');
 const savingsPercent = $('#savingsPercent');
@@ -84,19 +87,82 @@ function qualityDescription(value) {
   return 'Smallest, visible loss';
 }
 
+// Target size in bytes, or 0 when the quality slider is in charge. A KB is counted as 1000 bytes:
+// some upload forms count that way and some use 1024, and 1000 passes both.
+function targetBytes() {
+  const kb = targetSelect.value === 'custom' ? Number(customTarget.value) : Number(targetSelect.value);
+  return kb > 0 ? Math.round(kb * 1000) : 0;
+}
+
 function currentType() {
-  return targetType(state.sourceFile?.type || '', formatSelect.value);
+  const type = targetType(state.sourceFile?.type || '', formatSelect.value);
+  // PNG cannot be made smaller by quality, so a size target needs a lossy format.
+  return type === 'image/png' && targetBytes() ? 'image/webp' : type;
 }
 
 function updateControls() {
   const type = currentType();
   const applies = qualityApplies(type);
-  qualityRange.disabled = !applies;
-  qualityLabel.textContent = applies ? qualityRange.value : '—';
-  qualityHint.textContent = applies ? qualityDescription(Number(qualityRange.value)) : 'PNG is lossless';
-  formatNote.textContent = applies
-    ? 'Auto keeps JPG and WebP as they are, and switches PNG to WebP, which makes much smaller files while keeping transparency.'
-    : 'PNG is lossless, so quality has no effect. Choose WebP to actually shrink this image.';
+  const target = targetBytes();
+  customTargetRow.classList.toggle('is-hidden', targetSelect.value !== 'custom');
+  qualityRange.disabled = !applies || Boolean(target);
+  qualityLabel.textContent = target ? 'Auto' : applies ? qualityRange.value : '—';
+  qualityHint.textContent = target ? `Best quality under ${formatSize(target)}` : applies ? qualityDescription(Number(qualityRange.value)) : 'PNG is lossless';
+  formatNote.textContent = target && formatSelect.value === 'image/png'
+    ? 'PNG cannot be shrunk to a set size, so WebP is used instead (it keeps transparency).'
+    : applies
+      ? 'Auto keeps JPG and WebP as they are, and switches PNG to WebP, which makes much smaller files while keeping transparency.'
+      : 'PNG is lossless, so quality has no effect. Choose WebP to actually shrink this image.';
+}
+
+// One encode of the current image at a scale (1 = original size) and quality (0..1).
+async function encodeAt(scale, quality, type) {
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(state.image.width * scale));
+  canvas.height = Math.max(1, Math.round(state.image.height * scale));
+  const context = canvas.getContext('2d');
+  if (type === 'image/jpeg') {
+    // JPG has no transparency; without a fill, transparent areas turn black.
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+  }
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(state.image, 0, 0, canvas.width, canvas.height);
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, type, qualityApplies(type) ? quality : undefined));
+  const size = { width: canvas.width, height: canvas.height };
+  canvas.width = 0;
+  canvas.height = 0;
+  return blob && Object.assign(blob, { dimensions: size });
+}
+
+// Below this quality JPG/WebP turn visibly blocky; a slightly smaller picture looks better.
+const MIN_TARGET_QUALITY = 0.45;
+
+// Best result under maxBytes. First the picture size: if even MIN_TARGET_QUALITY is too big, the
+// image is made smaller by the area that should be needed (one encode per try, usually one or
+// two). Then the highest quality that fits at that size, by halving the range (6 encodes at the
+// final, often much smaller, size). Real encodes, not estimates: how small a picture gets depends
+// entirely on its content.
+async function fitToTarget(type, maxBytes) {
+  let scale = 1;
+  let fits = null;
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const probe = await encodeAt(scale, MIN_TARGET_QUALITY, type);
+    if (!probe) return null;
+    if (probe.size <= maxBytes) { fits = probe; break; }
+    scale *= Math.max(0.2, Math.sqrt(maxBytes / probe.size) * 0.92);
+    if (state.image.width * scale < 16 || state.image.height * scale < 16) return null;
+  }
+  if (!fits) return null;
+  let low = MIN_TARGET_QUALITY;
+  let high = 0.95;
+  for (let step = 0; step < 6; step++) {
+    const quality = (low + high) / 2;
+    const blob = await encodeAt(scale, quality, type);
+    if (!blob) break;
+    if (blob.size <= maxBytes) { fits = blob; low = quality; } else { high = quality; }
+  }
+  return fits;
 }
 
 // Re-encodes at the current settings and reports the real byte count. Guessing a size from the
@@ -112,19 +178,11 @@ async function encode() {
 
   try {
     const type = currentType();
-    const quality = Number(qualityRange.value) / 100;
-    const canvas = document.createElement('canvas');
-    canvas.width = state.image.width;
-    canvas.height = state.image.height;
-    canvas.getContext('2d').drawImage(state.image, 0, 0);
-
-    const blob = await new Promise((resolve) => {
-      canvas.toBlob(resolve, type, qualityApplies(type) ? quality : undefined);
-    });
-    canvas.width = 0;
-    canvas.height = 0;
+    const target = targetBytes();
+    if (target) previewStatus.lastElementChild.textContent = 'Finding the best quality…';
+    const blob = target ? await fitToTarget(type, target) : await encodeAt(1, Number(qualityRange.value) / 100, type);
     if (!blob) {
-      showToast('This image could not be written in that format.', true);
+      showToast(target ? `This image could not be made smaller than ${formatSize(target)}.` : 'This image could not be written in that format.', true);
       return;
     }
 
@@ -142,12 +200,15 @@ async function encode() {
     savingsLine.classList.toggle('is-bad', saved <= 0);
     savingsText.textContent = `${formatSize(state.sourceFile.size)} → ${formatSize(blob.size)}`;
     savingsPercent.textContent = saved > 0 ? `−${saved}%` : `+${Math.abs(saved)}%`;
-    frameReadout.textContent = `${state.image.width} × ${state.image.height} · ${extensionFor(type).toUpperCase()}`;
+    const { width, height } = blob.dimensions;
+    const resized = width !== state.image.width;
+    frameReadout.textContent = `${width} × ${height}${resized ? ' (made smaller to fit)' : ''} · ${extensionFor(type).toUpperCase()}`;
     processButton.disabled = false;
     if (!resultCard.classList.contains('is-hidden')) refreshResult();
   } finally {
     state.encoding = false;
     previewStatus.classList.remove('working');
+    previewStatus.lastElementChild.textContent = 'Ready';
     if (state.queued) {
       state.queued = false;
       encode();
@@ -241,6 +302,29 @@ formatSelect.addEventListener('change', () => {
   updateControls();
   encode();
 });
+targetSelect.addEventListener('change', () => {
+  updateControls();
+  if (targetSelect.value === 'custom') { customTarget.focus(); if (!customTarget.value) return; }
+  encode();
+});
+customTarget.addEventListener('change', () => {
+  updateControls();
+  encode();
+});
+
+// Pages for a specific size ("compress JPEG to 50KB") preset the target and format through
+// data attributes on <body>; ?kb=80 in the address does the same for any size.
+(function applyPreset() {
+  const kb = Number(new URLSearchParams(location.search).get('kb')) || Number(document.body.dataset.targetKb) || 0;
+  const format = document.body.dataset.format;
+  if (format) formatSelect.value = format;
+  if (kb > 0) {
+    const option = [...targetSelect.options].find((o) => Number(o.value) === kb);
+    if (option) targetSelect.value = option.value;
+    else { targetSelect.value = 'custom'; customTarget.value = String(kb); }
+  }
+  updateControls();
+})();
 
 imageInput.addEventListener('change', (event) => loadImage(event.target.files[0]));
 replaceButton.addEventListener('click', () => imageInput.click());
