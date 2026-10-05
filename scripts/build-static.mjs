@@ -12,6 +12,8 @@ const outDir = path.join(root, 'dist');
 
 const sourceFiles = ['index.html', 'app.js', 'styles.css', 'home.css', 'home.js', 'hero-canvas.js', 'tools-data.js', 'tool.css', 'tool-shell.js', 'adsense-config.js', 'adsense-component.js', 'favicon.svg', 'og-image.png'];
 const vendorFiles = [
+  ['node_modules/js-beautify/js/lib/beautifier.min.js', 'vendor/beautifier.min.js'],
+  ['node_modules/js-beautify/js/lib/beautifier.min.js', 'dist/vendor/beautifier.min.js'],
   ['node_modules/@techstark/opencv-js/dist/opencv.js', 'vendor/opencv.js'],
   ['node_modules/@techstark/opencv-js/dist/opencv.js', 'dist/vendor/opencv.js'],
   ['node_modules/tesseract.js/dist/tesseract.min.js', 'dist/vendor/tesseract.min.js'],

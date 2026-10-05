@@ -7,6 +7,7 @@ export const CATEGORIES = [
   { id: 'image', label: 'Image', blurb: 'Tools for editing and optimizing images' },
   { id: 'document', label: 'Converters', blurb: 'Tools for converting documents' },
   { id: 'pdf', label: 'PDF', blurb: 'Tools for merging, splitting and converting PDF files' },
+  { id: 'formatter', label: 'Formatters', blurb: 'Format, validate and view JSON and HTML' },
 ];
 
 // Icons are inline SVG bodies (24x24, currentColor strokes) so the page ships no icon library.
@@ -33,6 +34,8 @@ const icon = {
   audio: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
   mute: '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/>',
   rotateVideo: '<rect x="2" y="7" width="13" height="11" rx="2"/><path d="M19 3a4 4 0 0 1 3 4v1"/><path d="m20 6 2 2 2-2"/>',
+  json: '<path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h1"/><path d="M16 21h1a2 2 0 0 0 2-2v-5a2 2 0 0 1 2-2 2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>',
+  code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
 };
 
 export const TOOLS = [
@@ -322,6 +325,27 @@ export const TOOLS = [
     category: 'pdf',
     icon: icon.numberPdf,
     keywords: ['page numbers', 'number pages', 'pagination', 'paginate', 'pdf', 'add page numbers', 'footer', 'numbering'],
+  },
+  {
+    id: 'json-formatter',
+    name: 'JSON Formatter',
+    short: 'JSON Formatter',
+    description: 'Format, validate and explore JSON as a grid.',
+    href: '/tools/json-formatter',
+    category: 'formatter',
+    icon: icon.json,
+    keywords: ['json', 'formatter', 'beautify', 'pretty print', 'validate', 'validator', 'viewer', 'grid', 'minify', 'json grid', 'json viewer'],
+    popular: true,
+  },
+  {
+    id: 'html-formatter',
+    name: 'HTML Formatter',
+    short: 'HTML Formatter',
+    description: 'Format HTML and see it live as you type.',
+    href: '/tools/html-formatter',
+    category: 'formatter',
+    icon: icon.code,
+    keywords: ['html', 'formatter', 'beautify', 'pretty print', 'viewer', 'preview', 'live', 'editor', 'minify', 'html viewer', 'code'],
   },
 ];
 
