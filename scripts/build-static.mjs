@@ -131,6 +131,9 @@ Allow: /
 Sitemap: ${SITE}/sitemap.xml
 `);
 
+fs.writeFileSync(path.join(outDir, 'ads.txt'), `google.com, pub-5308568581303754, DIRECT, f08c47fec0942fa0
+`);
+
 // Ship our own code minified: no comments, short local names, no source maps. This does not stop
 // anyone saving the files (a browser has to download code to run it), but it makes them much
 // harder to read or reuse and keeps the explanatory comments out of public view.
