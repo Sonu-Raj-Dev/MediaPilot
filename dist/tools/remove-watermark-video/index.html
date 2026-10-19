@@ -82,6 +82,56 @@
         </aside>
       </div>
     </section>
+    <section class="section" style="padding-bottom:30px">
+      <div class="shell">
+        <article class="guide">
+          <h2>How to remove a logo or watermark from a video</h2>
+          <ol>
+            <li><strong>Choose your video.</strong> MP4, MOV, WebM, AVI, MKV and WMV files are supported.</li>
+            <li><strong>Mark every position.</strong> Drag a box over the logo on the preview frame. If the mark appears in more than one place, add a box for each. <em>Lower corners</em> and <em>Top corners</em> add boxes in the usual logo spots in one click.</li>
+            <li><strong>Choose a finish.</strong> Pick the gentlest option that hides the mark (see below), and adjust <em>Mask expansion</em> if a faint outline is still visible.</li>
+            <li><strong>Download.</strong> The cleaned video is saved as MP4, with the original sound kept when the file has it.</li>
+          </ol>
+          <p>The video is processed on your own device. It is never uploaded. Keep the tab open until it finishes; long or high-resolution videos take a while.</p>
+          <h2>The four finishes</h2>
+          <table class="guide-table">
+            <tr><th>Finish</th><th>What it does</th><th>Best for</th></tr>
+            <tr><td>Reconstruct</td><td>Fills the area from the pixels around it, frame by frame</td><td>Small logos over plain or slowly changing backgrounds</td></tr>
+            <tr><td>Soften</td><td>Blurs the area so the mark is no longer sharp</td><td>Busy or moving backgrounds where a fill would look odd</td></tr>
+            <tr><td>Pixelate</td><td>Turns the area into large blocks</td><td>Hiding a phone number, a name or a number plate</td></tr>
+            <tr><td>Crop away</td><td>Cuts the edge of the frame off</td><td>Marks close to an edge; leaves no artefacts at all</td></tr>
+          </table>
+          <p><strong>Mask expansion</strong> grows each box by a few pixels. Raise it if a thin halo of the logo is left behind; lower it if the cleaned patch looks bigger than it needs to be.</p>
+          <h2>Please use it responsibly</h2>
+          <p>This tool is meant for videos you made or have the right to edit: for example removing your old channel logo before re-uploading your own clip, hiding a burned-in timestamp from a dashcam or security camera, or blurring a private detail before sharing. Removing a creator’s watermark from their video does not give you permission to re-post it, and platforms treat that as copyright infringement.</p>
+          <h2>Tips for the best result</h2>
+          <ul>
+            <li>Boxes stay in the same place for the whole video, so a logo that moves around needs a box for each spot it visits.</li>
+            <li>Keep boxes tight. Bigger areas are harder to fill naturally and take longer to process.</li>
+            <li>If you only need part of the clip, <a href="/tools/trim-video">trim it</a> first so there are fewer frames to clean.</li>
+          </ul>
+          <h2>Frequently asked questions</h2>
+          <details>
+            <summary>How big can the video be?</summary>
+            <p>Up to 800 MB. How fast it runs depends on your device; a computer is much quicker than a phone for long videos.</p>
+          </details>
+          <details>
+            <summary>Is the sound kept?</summary>
+            <p>Yes. The original audio is added back to the cleaned video when the file has a sound track.</p>
+          </details>
+          <details>
+            <summary>Why does the cleaned patch look smudged?</summary>
+            <p>The background behind the mark is moving or detailed. Try <em>Soften</em>, or <em>Crop away</em> if the logo is near an edge.</p>
+          </details>
+          <details>
+            <summary>Is my video uploaded?</summary>
+            <p>No. All processing happens in your browser.</p>
+          </details>
+          <h2>Related tools</h2>
+          <ul class="guide-links"><li><a href="/tools/trim-video">Trim video</a></li><li><a href="/tools/compress-video">Compress video</a></li><li><a href="/tools/remove-watermark-image">Remove watermark from image</a></li><li><a href="/tools/mute-video">Mute video</a></li></ul>
+        </article>
+      </div>
+    </section>
   </main>
   <footer class="site-footer"><div>MEDIAPILOT</div><div data-i18n="footerTagline">Online tools for video, images, and file conversion</div><div>EN</div></footer>
   <div class="language-modal is-hidden" id="languageModal" role="dialog" aria-modal="true" aria-labelledby="languageTitle">

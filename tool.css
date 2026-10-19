@@ -222,3 +222,11 @@
 .guide-links a { display:inline-block; padding:6px 12px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--text); font-size:13.5px; font-weight:600; text-decoration:none; }
 .guide-links a:hover { border-color:var(--accent); color:var(--accent-text); }
 .guide-links a[aria-current="page"] { background:var(--accent-soft); border-color:var(--accent); color:var(--accent-text); }
+
+.guide a { color:inherit; text-decoration:underline; text-underline-offset:2px; }
+.guide .guide-links a { text-decoration:none; }
+.guide details { margin-bottom:12px; padding:16px; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); }
+.guide summary { cursor:pointer; font-weight:600; font-size:15px; color:var(--text); }
+.guide details p { margin:10px 0 0; font-size:14px; }
+/* A wide table scrolls inside itself on phones instead of widening the whole page. */
+@media (max-width:560px){ .guide-table { display:block; overflow-x:auto; } }

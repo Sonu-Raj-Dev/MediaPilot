@@ -97,7 +97,7 @@ if (fs.existsSync(toolRoot)) {
 }
 
 // Standalone pages served at /<name> (each is a folder with an index.html).
-const pageDirs = ['privacy', 'terms'];
+const pageDirs = ['about', 'contact', 'privacy', 'terms'];
 for (const dir of pageDirs) {
   copyDirectory(path.join(srcDir, dir), path.join(outDir, dir));
 }

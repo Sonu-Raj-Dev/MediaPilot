@@ -370,7 +370,9 @@ html.reveal-armed .reveal:not(.is-visible){opacity:0;transform:translateY(14px)}
   .tool-grid,.feature-grid,.popular-grid,.foot-grid{grid-template-columns:1fr}
   .hero-buttons{flex-direction:column;align-items:stretch}
   .btn{width:100%}
-  .search-row{flex-direction:column;align-items:stretch}
+  /* nowrap: a wrapping column sizes its line to the widest child (the chip row), not the
+     container, which pushed the whole page wider than the phone screen. */
+  .search-row{flex-direction:column;flex-wrap:nowrap;align-items:stretch}
   /* The row stacks here, and in a column flex-basis sizes the HEIGHT: the desktop
      `flex:1 1 340px` made the field 340px tall around a 46px input, dropping the icon and
      the / hint (both at top:50%) far below it. Let the field be as tall as its input. */
@@ -378,3 +380,13 @@ html.reveal-armed .reveal:not(.is-visible){opacity:0;transform:translateY(14px)}
   .filter-row{overflow-x:auto;padding-bottom:2px}
   .nav-icon-button span{display:none}
 }
+
+/* Written overview + FAQ near the bottom of the homepage. */
+.home-guide{max-width:760px;color:var(--text-soft);font-size:15px;line-height:1.7}
+.home-guide h3{margin:26px 0 6px;color:var(--text);font-size:17px}
+.home-guide p{margin:0 0 12px}
+.home-guide a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.home-guide strong{color:var(--text)}
+.home-guide details{margin-bottom:12px;padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface)}
+.home-guide summary{cursor:pointer;font-weight:600;color:var(--text)}
+.home-guide details p{margin:10px 0 0;font-size:14px}

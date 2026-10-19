@@ -53,7 +53,7 @@ function footerMarkup() {
       </div>
       <nav class="foot-col" aria-label="Resources">
         <h3>Resources</h3>
-        <ul><li><a href="/#all-tools">All tools</a></li><li><a href="/#how-it-works">How it works</a></li><li><a href="/#why">Why MediaPilot</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul>
+        <ul><li><a href="/#all-tools">All tools</a></li><li><a href="/#how-it-works">How it works</a></li><li><a href="/#why">Why MediaPilot</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li><li><a href="/privacy">Privacy</a></li><li><a href="/terms">Terms</a></li></ul>
       </nav>
     </div>
     <div class="shell foot-base"><span>© 2026 MediaPilot</span><span>Processed locally. Never uploaded.</span></div>`;
